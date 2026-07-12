@@ -8,7 +8,7 @@
     "created_at": "2026-07-02T10:03:28Z",
     "updated_at": "2026-07-02T10:03:28Z",
     "raw": "Discussion about this site, its organization, how it works, and how we can improve it.",
-    "url": "https://kas-smiths.org/t/-/1/1"
+    "url": "https://kas-smiths.org/t/about-the-site-feedback-category/1/1"
   },
   {
     "post_id": 3,
@@ -19,7 +19,7 @@
     "created_at": "2026-07-02T10:03:29Z",
     "updated_at": "2026-07-02T10:03:29Z",
     "raw": "Create topics here that don’t fit into any other existing category.",
-    "url": "https://kas-smiths.org/t/-/3/1"
+    "url": "https://kas-smiths.org/t/about-the-general-category/3/1"
   },
   {
     "post_id": 6,
@@ -30,7 +30,7 @@
     "created_at": "2026-07-02T10:03:43Z",
     "updated_at": "2026-07-02T20:21:30Z",
     "raw": "Welcome to Kas Smiths! 👋\n\nKas-Smiths is a workshop for Kaspa ecosystem coordination.\n\nA place to discuss and forge standards, protocols, tooling, wallets, applications, and the shared infrastructure being built on top of Kaspa.\n\nThe goal is to create a practical space where ideas can be proposed, challenged, improved, and eventually turned into something the ecosystem can build on.\n\nJoin, ask questions, challenge ideas, refine drafts, and help shape the metal. ⚒️",
-    "url": "https://kas-smiths.org/t/-/5/1"
+    "url": "https://kas-smiths.org/t/welcome-to-kas-smiths/5/1"
   },
   {
     "post_id": 37,
@@ -41,7 +41,7 @@
     "created_at": "2026-07-03T15:56:12Z",
     "updated_at": "2026-07-03T15:56:12Z",
     "raw": "Great Idea, looking forward to seeing what people’s thought are on these topics \n\nThere is a fair few smaller low key builders I have come across that this will be great for",
-    "url": "https://kas-smiths.org/t/-/5/2"
+    "url": "https://kas-smiths.org/t/welcome-to-kas-smiths/5/2"
   },
   {
     "post_id": 8,
@@ -52,7 +52,7 @@
     "created_at": "2026-07-02T14:46:50Z",
     "updated_at": "2026-07-02T14:46:50Z",
     "raw": "(Replace this first paragraph with a brief description of your new category. This guidance will appear in the category selection area, so try to keep it below 200 characters.)\n\nUse the following paragraphs for a longer description, or to establish category guidelines or rules:\n\n- Why should people use this category? What is it for?\n\n- How exactly is this different than the other categories we already have?\n\n- What should topics in this category generally contain?\n\n- Do we need this category? Can we merge with another category, or subcategory?\n",
-    "url": "https://kas-smiths.org/t/-/7/1"
+    "url": "https://kas-smiths.org/t/about-the-asset-standards-category/7/1"
   },
   {
     "post_id": 9,
@@ -63,7 +63,7 @@
     "created_at": "2026-07-02T18:30:02Z",
     "updated_at": "2026-07-07T05:32:38Z",
     "raw": "The Toccata HF enhanced Kaspa's UTXOs to preserve covenant lineages, creating a path for native assets.\n\nAt this early stage of the ecosystem, there is a need to establish shared covenant standards to ensure interoperability, consistency, and long-term compatibility across tools and implementations.\n\nA solid standard should define the minimal identity and interaction surface of a token covenant. It should make it possible to:\n\n* identify token UTXOs\n* decode token state transitions\n* construct valid transfer transactions\n\nIn this draft below, written with the help of Michael, IzioDev, Alex, and Ori, I propose a minimal specification interface that enables recognition, tracking, and interaction with token covenants, while remaining extendable so that additional features can be layered on without breaking compatibility.\n<br>\n\n\n\n[details=\"KCC20 Specification\"]\n\n# KCC20 Interface\n\nA KCC20 token is a covenant instance that implements a minimal fungible-token interface.\n\nTo be KCC20-compatible, a covenant must:\n* Maintain basic token state:\n* who is the owner of a token quantity\n* the amount of quantity they own\n* Provide a transfer entrypoint that follows the KCC20 transfer convention.\n\nKCC20 interaction can be reduced to two responsibilities:\n* determine current KCC20 state\n* create valid next-state transactions\n\nThis naturally separates into two roles.\n\n## Reader\n\nA Reader observes accepted Kaspa transactions and projects KCC20 state.\n\nGiven accepted transactions and token descriptors, it identifies KCC20 activity, decodes token state, and maintains the live KCC20 UTXO set.\n\n## Writer\n\nA Writer consumes Reader-provided state and user intent.\n\nGiven live KCC20 UTXOs, decoded token state, and token descriptors, it constructs valid KCC20 transactions.\n\n# Token Descriptor\n\nEach known KCC20 token covenant is described by a descriptor artifact.\n\nThe descriptor is defined per token covenant id and provides the minimal information required to identify token UTXOs, decode their state, construct covenant outputs, and build valid transfer input sigscripts.\n\n```text\nTokenDescriptor {\n    prefix\n    suffix\n    state_layout\n    leader_entrypoint_selector\n    delegator_entrypoint_selector\n}\n```\n\n`prefix` and `suffix` are the script bytes before and after the encoded token state.\n\nA Reader uses them to verify that decoded states match actual output locking scripts.\n\nA Writer uses them to reconstruct valid token outputs.\n\n`state_layout` defines how raw state bytes are decoded and encoded.\n\nIt must include the standard KCC20 state header fields:\n\n* `owner_identifier`\n* `identifier_type`\n* `amount`\n\nA Reader uses `state_layout` to decode accepted state transitions.\n\nA Writer uses `state_layout` to encode previous and successor states.\n\n`leader_entrypoint_selector` and `delegator_entrypoint_selector` are used to build the input sigscripts for a transfer transaction.\n\n# Reader Operation\n\nA Reader owns a descriptor artifact for each known KCC20 token covenant.\n\nIt tracks accepted Kaspa transactions and, for each transaction with inputs matching registered token descriptors:\n\n1. Identifies the covenant input leader, by convention the first covenant input.\n2. Extracts the declared raw `next_states` byte array from the leader input sigscript.\n3. Decodes raw `next_states` bytes into an array of states using `state_layout`.\n4. Verifies each decoded next state against the matching transaction output.\n5. Updates the live KCC20 UTXO set only after verification succeeds.\n\n> **Note:** The transfer convention expects a verification-mode covenant declaration. A transfer entrypoint should have a known next-state shape, where the Writer provides the intended next states in the sigscript, and the entrypoint verifies those states instead of calculating them at runtime.\n\nThe Reader must not trust declared `next_states`, and for each decoded next state, it reconstructs the expected output script and matches it against the actual output script.\n\n```text\ndecoded_next_states = decode(next_states_raw, state_layout)\n\nfor index, next_state in enumerate(decoded_next_states):\n    encoded_state = encode(next_state, state_layout)\n\n    expected_output_p2sh =\n        P2SH(prefix || encoded_state || suffix)\n\n    output_index =\n        cov_output_index(index)\n\n    output_p2sh =\n        outputs[output_index].spk\n\n    assert output_p2sh == expected_output_p2sh\n```\n\nThe Reader updates its token UTXO index based on verified state transitions.\n\n# Writer Operation\n\nA Writer queries a Reader for up-to-date token state and descriptors, then creates a valid transaction according to user intent.\n\nThe Writer:\n\n1. Fetches relevant owner token UTXOs from the Reader.\n2. Verifies the Reader's indexed decoded state by matching each input `spk` against `P2SH(prefix || encoded_state || suffix)`.\n3. Calculates the state transition and produces `prev_states` and `next_states`.\n4. Creates the sigscript for the leader input.\n\n```text\nredeem_script =\n    prefix || encode(prev_states[0], state_layout) || suffix\n\nbuilder.append(redeem_script)\nbuilder.append(leader_entrypoint_selector)\n\nfor arg in transfer_arguments:\n    builder.append(arg)\n```\n\nThe leader transfer arguments include the declared transition data:\n\n* `next_states`\n* `authorization_data`\n\nThe Writer then creates sigscripts for the other delegating inputs:\n\n```text\nfor prev_state in prev_states[1:]:\n    redeem_script =\n        prefix || encode(prev_state, state_layout) || suffix\n\n    builder.append(redeem_script)\n    builder.append(delegator_entrypoint_selector)\n```\n\nThe Writer sets output scripts according to `next_states`:\n\n```text\nfor index, next_state in enumerate(next_states):\n    encoded_state =\n        encode(next_state, state_layout)\n\n    outputs[cov_output_index(index)].spk =\n        P2SH(prefix || encoded_state || suffix)\n```\n\nFinally, the Writer lets the user sign the transaction and broadcasts it to a Kaspa node.\n\n# Extension State\n\nA KCC20 token state may extend the standard KCC20 state header with token-specific state.\n\n```text\nencoded_state =\n    encoded_kcc20_state || extension_state_bytes\n```\n\nGeneric Readers are only required to understand the standard KCC20 header, and generic Writers are only required to understand the KCC20 transfer convention.\n\nIf inputs have different extension state, the Writer must fail instead of deciding how to combine custom state.\n\n# Additional Notes\n\nExplorers should provide a service that lets users reveal token genesis transactions and expose the pre-compiled Silver logic. This allows deployed token covenants to be matched against visible rules, verified, and followed through state transitions over time.\n\n-----\n\n<br>\n\n\n[/details]\n\n\nA few open questions that would benefit from further discussion:\n\n* How should we  SDK conventions to support covenant interoperability?\n* How should the standard address stablecoin-oriented features such as mint, burn, freeze, and pause? \n\nPersonally, to me this feels like a great moment, the time for the community and ecosystem to meet, collaborate, partner up and together forge the first covenant convention on top of Kaspa.\nI would appreciate very much any feedback, ideas, suggestions and comments.\n\n\n-------\n<br>\nEdit - <br> I am adding two additional follow up drafts. \n<br>\nThe first is a practical SilverScript interface shape, aimed be pragmatic and concise for developers.\n<br> \nThe second is an extension proposal for borrowing. Addressing KIP9's storage mass restriction to allow receiving tokens into existing token UTXOs.\n\nAny feedback is welcomed!<br>\n\n<br>\n\n[details=\"KCC20 SilverScript Interface\"]\n\n# KCC20 Interface\n\nA KCC20 token is a SilverScript covenant that exposes a standard token state shape and a standard transfer method shape, enabling wallets, apps, SDKs, and indexers to reliably reconstruct, interpret, and interact with token UTXOs.\n\n## Specification\n\nA KCC20-compatible SilverScript contract must:\n\n1. maintain the standard KCC20 state header\n2. define a transfer method following the KCC20 transfer convention\n3. provide a token descriptor artifact\n\nCompatibility is defined by the contract interface shape and descriptor, not by source-level function names.\n\n## Token State\n\nEvery KCC20 token state begins with the standard KCC20 state header:\n\n```silverscript\ncontract KCC20Token() {\n    byte[32] ownerIdentifier\n    byte identifierType\n    int amount\n}\n```\n\nToken contracts may extend their state beyond the standard header.\n\n`ownerIdentifier` is interpreted according to `identifierType`.\n\n```\nIDENTIFIER_PUBKEY      = 0x00\nIDENTIFIER_SCRIPT_HASH = 0x01\nIDENTIFIER_COVENANT_ID = 0x02\n```\n\nThese types represent the standard KCC20 ownership forms: direct ownership by public key, ownership by script conditions, or ownership delegated to another covenant.\n\n## Transfer Method\n\nA KCC20 token must define a SilverScript transfer method with the following logical shape:\n\n```silverscript\n#[covenant(binding = cov, from = maxCovIns, to = maxCovOuts)]\nfunction transfer(\n    State[] prevStates,\n    State[] newStates,\n    sig[] sigs,\n    byte[] witnesses\n)\n```\n\n`prevStates` are the token states consumed by the transaction.\n\n`newStates` are the token states created by the transaction.\n\n`sigs` are per-input authorization signatures.\n\n`witnesses` are per-input authorization metadata used by the transfer method to resolve how each consumed state is authorized.\n\n## Token Descriptor Artifact\n\nEach KCC20 token must provide a descriptor artifact.\n\nThe descriptor is defined per token covenant id and provides the minimal information required for tooling to decode token state, reconstruct token outputs, and build valid transfer transactions.\n\n```text\nTokenDescriptor {\n    prefix\n    suffix\n    state_layout\n    leader_entrypoint_selector\n    delegator_entrypoint_selector\n    optional_extensions\n}\n```\n\n`prefix` and `suffix` are the script bytes before and after the encoded token state.\n\n`state_layout` defines how raw state bytes are encoded and decoded, including any extended state beyond the standard KCC20 header.\n\n`leader_entrypoint_selector` and `delegator_entrypoint_selector` identify the compiled transfer paths used to create a token transfer.\n\nNote- In SilverScript, a `#[covenant]` declaration defines a covenant state transition that is implemented through leader and delegator transfer paths. For more details, see the SilverScript covenant declaration documentation.\n\n`optional_extensions` is an array of strings, where each string is the identifier of a standard KCC20 extension supported by the token.\n\n## Optional Extensions\n\nA KCC20 token may support standard optional extensions.\n\nExtensions must be declared in `optional_extensions`.\n\nGeneric tooling may ignore unsupported extensions, but must not construct transactions that depend on an extension it does not understand.\n\nThis keeps the base KCC20 interface small while still allowing tokens to support richer behavior through explicit extensions.\n\n[/details]\n<br>\n\n\n[details=\"KCC20 Borrowed Receive Extension v1\"]\n\n# KCC20 Borrowed Receive Extension v1\n\n`kcc20_borrowed_receive_v1` enables additive receive for KCC20 tokens.\n\nAn existing recipient token UTXO may be consumed without normal owner authorization only if it is recreated with a higher token amount.\n\n## Motivation\n\nKIP9 requires each new UTXO to include KAS for storage.\n\nFor asset transfers, this means the sender must fund every new recipient token UTXO, or the recipient must co-sign and provide their own KAS.\n\nBorrowed receive allows a sender to use an existing recipient token UTXO as the receive target.\n\nInstead of creating a fresh recipient token UTXO, the sender consumes the recipient’s existing token UTXO and recreates it in place with a larger token amount.\n\n## Specification\n\nThis extension reserves the witness value:\n\n```text\nBORROWED_RECEIVE = 0xFF\n```\n\nThe transfer witness contains one witness byte per token input.\n\nIf:\n\n```text\nwitnesses[i] == BORROWED_RECEIVE\n```\n\nthen token input `i` is treated as a borrowed receive input.\n\nBorrowed receive uses strict positional pairing:\n\n```text\nborrowed input i -> token output i\n```\n\nThe borrowed input at position `i` must be recreated by the token output at position `i`.\n\nThis avoids explicit indexing and prevents multiple borrowed inputs from being merged into one output.\n\n## Required Conditions\n\nFor every borrowed receive pair, the transfer method must enforce:\n\n* paired output exists at the same covenant output position\n* owner identifier unchanged\n* identifier type unchanged\n* token amount strictly increases\n* KAS value preserved or increased\n* all non-amount token state unchanged\n\nThe only allowed token-state change is:\n\n```text\nnewStates[i].amount > prevStates[i].amount\n```\n\n## Composition With Normal Transfer\n\nThe following sketch shows the intended shape inside the regular transfer authorization loop:\n\n```silverscript\nfor(i, 0, prevStates.length, maxCovIns) {\n    if (witnesses[i] == BORROWED_RECEIVE) {\n        require(prevStates[i].identifierType == newStates[i].identifierType);\n        require(prevStates[i].ownerIdentifier == newStates[i].ownerIdentifier);\n        require(newStates[i].amount > prevStates[i].amount);\n        byte[32] covId = OpInputCovenantId(this.activeInputIndex);\n        require(\n            tx.outputs[OpCovOutputIdx(covId, i)].value >=\n            tx.inputs[OpCovInputIdx(covId, i)].value\n        );\n\n        // Any token state outside `amount` must remain unchanged.\n        // Exact comparison depends on the token's state_layout.\n    }\n}\n```\n\n[/details]",
-    "url": "https://kas-smiths.org/t/-/8/1"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/1"
   },
   {
     "post_id": 32,
@@ -74,7 +74,7 @@
     "created_at": "2026-07-03T14:31:10Z",
     "updated_at": "2026-07-03T14:31:10Z",
     "raw": "[quote=\"Manyfest, post:1, topic:8\"]\n* [details]\n\n  [/details]\n\n  * How should the standard address stablecoin-oriented features such as mint, burn, freeze, and pause, without overloading the minimal token interface?\n\n[/quote]\n\nDo you see these as something similar to [ERC20 extensions](https://docs.openzeppelin.com/contracts/5.x/api/token/ERC20#extensions)?\n\nThinking from a stablecoin perspective. The following uses the classic EVM/ERC20 mental model. Which may not work here.\n\nFrom issuer point of view, setting aside technicals for a moment. I think I require the following features. Some may be optional per issuer base on their requirements.\n\n* Mint/burn (maybe there is a distinction between mint/burn allowed by issuer only vs. end-user initiated. not entirely sure). With global mint/burn maximums, per end-user maximums, etc.\n* Whitelist/blacklist - Prevent holders from transferring to unapproved parties (via either whitelist or blacklist). Ability to update the whitelist/blacklist.\n* Pause - stop everyone from transferring\n* Freeze - a certain address from transferring\n* Force transfer - from a specific (blacklisted) address (I think Circle requires this)\n* Force burn - from a specific (blacklisted) address\n* See balances of all holders\n* See all current stablecoin UTXOs\n* See full tx history of all holders\n\nI think some of these are required by upcoming regulation in US. Not that US is the only concern :slight_smile: \n\nThen from a stablecoin holder perspective, I think the following is needed:\n\n* Transfer\n* Allowance - maybe a nice to have. Grant a dapp or another party the ability to spend on my behalf. Up to a specified amount or my entire balance. \n* Remove/update allowance\n* See my full tx history\n* See all of my current UTXOs\n\nFrom a \"dapp\" perspective:\n\n* The ability to spend on behalf of a user (who granted me some allowance)\n\nIt's probably missing a lot.\n\nAlso I would guess any hypothetical stablecoin issue will want/need to run their kcc20 indexer service.",
-    "url": "https://kas-smiths.org/t/-/8/2"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/2"
   },
   {
     "post_id": 35,
@@ -85,7 +85,7 @@
     "created_at": "2026-07-03T15:15:15Z",
     "updated_at": "2026-07-04T02:42:20Z",
     "raw": "I think this largely makes sense as a minimal/core spec for KCC20. With the understanding that other features are separate roles/specs (minter, extension features, etc).\n\nThis is outside the scope of this spec, but guidelines for wallet developers may be beneficial as part of this effort. I think there are unintuitive things wallet devs will need to do to support kcc20.\n\nAlso, would be remiss not to mention - I feel that the current level at which this conversation exists is challenging. Comprehending and reasoning here requires pre-requisite knowledge, as well as thinking from a new mental model. Which is OK, this is the start of something new :slight_smile:  Just comparing to ERC20 which is quite easy to read a grasp. Feels like ERC20 is at a higher abstraction level, enabled by the underlying layers. This is probably where your point on *\"How should we define SilverScript artifact and SDK conventions to support covenant interoperability?\"* comes into play. Again, just remiss not to mention that this could move up to higher levels as it’s built out. I will think a bit on SDK.\n\nEDIT: some edits to reduce verbosity",
-    "url": "https://kas-smiths.org/t/-/8/3"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/3"
   },
   {
     "post_id": 39,
@@ -96,7 +96,7 @@
     "created_at": "2026-07-03T18:34:55Z",
     "updated_at": "2026-07-03T18:34:55Z",
     "raw": "would it make sense to build a DeFi node software that people would run alongside their Kaspa node, and use to store, advertise, maintain and exchange token descriptors among peers? (and in the future, liquidity pool descriptors and similar DeFi constructs)",
-    "url": "https://kas-smiths.org/t/-/8/4"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/4"
   },
   {
     "post_id": 41,
@@ -107,7 +107,7 @@
     "created_at": "2026-07-03T23:00:40Z",
     "updated_at": "2026-07-03T23:00:40Z",
     "raw": "[quote=\"smartgoo, post:3, topic:8\"]\nI think guidelines for wallet developers will be needed at some point part of this effort. I think there are a lot of non-intuitive things wallet devs will need to accomodate kcc20 support.\n\n[/quote]\n\nThinking about the higher-level abstractions will likely also catch some unknown unknowns that are hard to see from the spec side (e.g. what should a wallet dev's code look like?). Perhaps we could sketch out PoC examples in the SDKs while the spec is still being drafted. It might also lower the barrier to this conversation. As smartgoo noted, participating currently requires a lot of prerequisite knowledge. That's expected this early, examples are just the fastest way to build the mental model.\n\nI also think it would make sense to include a conformance suite / canonical test vectors published with the spec (similar to how BIP-32/39 ship test vectors).",
-    "url": "https://kas-smiths.org/t/-/8/5"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/5"
   },
   {
     "post_id": 44,
@@ -118,7 +118,7 @@
     "created_at": "2026-07-04T09:42:44Z",
     "updated_at": "2026-07-04T09:42:44Z",
     "raw": "I support the direction of KCC20, but I don’t think it should replace or invalidate KRC-20. The key issue is **continuity, not reset**.\n\nKRC-20 already represents real deployed tokens and liquidity. Any new covenant-based standard should therefore act as a **unified interface layer**, not a competing system.\n\nProposed path forward :\n\n* KCC20 defines the canonical covenant token interface\n* KRC-20 is preserved through compatibility/mapping in indexers and wallets\n* migration is optional, not forced\n* both standards remain readable under a unified model\n\nIf KCC20 becomes a “new ecosystem” that sidelines KRC-20, it risks fragmenting liquidity and slowing adoption. If instead it standardizes and unifies token interaction, it strengthens Kaspa’s ecosystem.",
-    "url": "https://kas-smiths.org/t/-/8/6"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/6"
   },
   {
     "post_id": 52,
@@ -129,18 +129,7 @@
     "created_at": "2026-07-04T18:06:36Z",
     "updated_at": "2026-07-04T18:06:36Z",
     "raw": "\nGreat work on this spec. The descriptor model is exactly what's needed for tokens to be readable across the ecosystem without each issuer shipping their own indexer code.\n\nWe (KRON, kron.technology) run a launchpad/DEX on native-L1 covenants, and our fungible token follows the same design this spec describes: state header `ownerIdentifier (byte[32]) / identifierType (byte) / amount (int)`, with one extension field appended (`isMinter (bool)`), and a verification-mode `transfer` entrypoint where the writer supplies next states in the sigscript. We intend to publish a spec-shape TokenDescriptor for every token on the platform so any compliant Reader can index them.\n\nOne question before we do. Our covenant has a **single entrypoint**, so silverc compiles it with `without_selector: true,` there are no entrypoint selectors in the script at all. As a side effect of the state sitting at the very front of the script, the descriptor's `prefix` is also **empty** (output script = `P2SH(encoded_state ‖ suffix)`).\n\nHow should a descriptor express this case?\n\n* Should `leader_entrypoint_selector` / `delegator_entrypoint_selector` be empty byte strings, null/absent, or something else?\n* For Writers: is the intended sigscript for a no-selector covenant simply `redeem_script, next_states, authorization_data` for the leader (selector omitted entirely rather than pushed as an empty item), and bare `redeem_script` for delegators?\n* Is an empty `prefix` valid as-is, or should descriptors flag it explicitly?\n\nHappy to test whichever convention you settle on against our live deployments and report back , we'd rather have the single-entrypoint case pinned down in the spec than have every Reader handle it differently.",
-    "url": "https://kas-smiths.org/t/-/8/7"
-  },
-  {
-    "post_id": 54,
-    "topic_id": 8,
-    "post_number": 8,
-    "username": "Shawn",
-    "display_name": null,
-    "created_at": "2026-07-04T18:41:43Z",
-    "updated_at": "2026-07-04T18:41:43Z",
-    "raw": "Following up on my post above, a few of the topics that came up are things we ran into while building KRON. I'll share what we learned where it's relevant to the standard, while keeping the platform-specific details out of it.\n\nOn stablecoins, I think there are two separate categories. Things that are already solved, and things that have fundamental design constraints that are worth acknowledging now instead of discovering later.\n\nMinting and burning with supply caps don't require anything new from this spec. The pattern used in the reference contracts is the right one, and  instead of a key owning the minter branch, ownership belongs to the covenant ID of a separate controller contract. That controller is responsible for issuance policy caps, remaining supply, authorization, while the asset covenant simply enforces conservation of supply on normal transfers and allows supply changes only through the minter branch.\n\nOne clarification on what we've actually built is covenant-ID ownership is already used throughout our production system. Platform contracts hold token balances that way and it's exercised on every trade. We've also implemented and script-verified a budget-based controller using the KCC20Minter model from the book. Our live tokens are intentionally fixed supply, so we haven't enabled minting in production, but the design has been validated. Either way, I see issuance policy as a controller concern rather than something the core standard needs to define.\n\nThe harder problems all stem from one property of UTXO covenants: they can prove that something is present in a transaction, but they can't prove that something is absent.\n\nThat makes whitelists straightforward. Membership can be represented by an issuer-issued credential that the holder co-spends, so the transaction itself proves membership.\n\nBlacklists, freezes, and pause mechanisms are different. To prove an account is *not* frozen, every transfer has to reference issuer-controlled state. That generally means either the issuer participates in every transfer or every transaction references a shared registry UTXO. Once you introduce a shared registry, the registry version becomes the serialization point for the entire token. That's a perfectly reasonable design for a regulated stablecoin, but it has to be baked into the covenant from day one. These contracts are immutable after deployment, so features like freezes or forced transfers can't be retrofitted later. They either exist at genesis or they never exist.\n\nSo I agree with where smartgoo landed to keep the core standard minimal, define these as explicit extension profiles, and let the descriptor identify which profile a token implements so wallets know what they're dealing with.\n\nThe abstraction discussion also resonated because we ended up building most of those missing layers ourselves. Looking back, there were really three separate pieces.\n\nThe first is balances. Wallets shouldn't need to know anything about UTXOs or state encoding. They should just see an address and a balance. That's what the combination of a descriptor and an indexer provides. Honestly, I think the descriptor is the most important part of this entire effort and should probably be the first thing that's nailed down.\n\nWhile implementing ours, another edge case surfaced. Describing how `state_layout` maps onto the actual script encoding. Our state region uses opcode-framed pushes with a fixed-width amount field. The fixed width is what lets us splice state into precompiled scripts without recompiling. A reader that assumes minimal script integers or a single blob push would silently decode incorrect balances instead of failing to parse. It feels like descriptors should explicitly define field offsets, widths, push framing, and endianness so every implementation interprets state identically.\n\nThe second layer is transfers. From an SDK perspective there's no reason developers shouldn't be able to call something as simple as `transfer(to, amount)` and let the SDK handle UTXO selection, state encoding, and SigScript construction internally.\n\nIt doesn't even require shipping a compiler. We splice precompiled template bytes at runtime and that works well.\n\nThe piece that actually needs standardization is the compiled artifact itself: what information a covenant exposes after compilation prefix, suffix, state layout, entrypoints, and so on. Every SDK will ultimately build on that representation, and it's largely the same information carried by the descriptor, so those two pieces should probably be designed together.\n\nThe third layer is signing, which usually doesn't become obvious until you start working with wallet developers.\n\nWallets aren't going to embed a covenant engine into their signing flow, and they shouldn't have to. The approach we've found works well is presence-based ownership. Token balances are owned by ordinary addresses, and spending them simply requires including an input from that address in the transaction. The wallet signs that input exactly like any other PSKT input without ever evaluating the covenant script.\n\nThat's the motivation behind the proposed Kaspa Wallet Standard:\n\nhttps://github.com/kaspa-wallet-standard/kaspa-wallet-standard\n\nThe current draft defines a frozen wire contract, includes a small reference implementation, and provides adapters for KasWare and Kastle.\n\nThe key signing rule is simple. Wallets sign only the inputs explicitly requested by the dApp and leave covenant-controlled inputs alone. Those might represent a curve, a liquidity pool, or a presence-owned token UTXO. Re-signing those inputs changes the transaction and can invalidate it.\n\nWe also intentionally modeled our balance API after the Kasplex KRC-20 indexer, which follows the compatibility path DontAbandonKRC20 mentioned. That means wallets already supporting KRC-20 have very little additional work to display these assets.\n\nIf I were prioritizing the work, I'd start with descriptor encoding, including the edge cases. Next would be artifact conventions, since they're closely related. After that I'd write a concise wallet integration guide, the wallet standard above is intended as a starting point for the connect-and-sign side and finally define issuer extension profiles as separate specifications.\n\nI also agree with carlssonk about canonical test vectors. A BIP-32/BIP-39-style conformance suite is what lets independent implementations actually interoperate instead of each making slightly different assumptions. The encoding edge cases above are exactly the sort of thing those vectors should lock down.\n\nWe're happy to contribute test vectors from our production deployments, along with our API documentation and SDK (`@kronsdk/kron-sdk` on npm), if they're useful.\n\nAnd yes, the discussion is pretty low-level right now, but that's exactly where it needs to be. This is the foundation everything else will end up building on.",
-    "url": "https://kas-smiths.org/t/-/8/8"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/7"
   },
   {
     "post_id": 55,
@@ -151,7 +140,7 @@
     "created_at": "2026-07-04T18:54:14Z",
     "updated_at": "2026-07-04T18:54:14Z",
     "raw": "Hi! Welocme and thanks for the reply.\n\nI did not know about ERC20 extensions, I only assumed they exists informally. \n\nRegarding issuer policies, the challenge is that there is no global token state. Tokens are distinct utxos, and hence it's tricky to allow global lists, freezes and such. \nThe solution might be creating a token which forces the existence of a global state utxo, which would hold those global states. The global state utxo could be a pool of utxos, which each token transfer would had to spend along side with. In these pool, the state could be updated by the issuer and force their policy.\n\n\n\n[quote=\"smartgoo, post:2, topic:8\"]\n* Allowance - maybe a nice to have. Grant a dapp or another party the ability to spend on my behalf. Up to a specified amount or my entire balance.\n[/quote]\n\n^ This could be implemented by giving your token to a script/covenant which is has a multisig logic or any other custom one. This is a neat feature of ownership in this model. \n\n[quote=\"smartgoo, post:2, topic:8\"]\n* See my full tx history\n* See all of my current UTXOs\n[/quote]\n^ Those would be enabled when an indexer implement the Reader part of the spec, and persist it readings.\n\n[quote=\"smartgoo, post:2, topic:8\"]\n* The ability to spend on behalf of a user (who granted me some allowance)\n[/quote]\n^ Again, the power of ownership could allow you to transfer the token to any game/app/contract, which could implement some kind of restrictive spending conditions.\n\n\n\nThank you for taking the time to reply.",
-    "url": "https://kas-smiths.org/t/-/8/9"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/9"
   },
   {
     "post_id": 61,
@@ -162,7 +151,7 @@
     "created_at": "2026-07-05T08:57:25Z",
     "updated_at": "2026-07-05T08:57:25Z",
     "raw": "[quote=\"bitcat, post:4, topic:8, full:true\"]\nwould it make sense to build a DeFi node software that people would run alongside their Kaspa node, and use to store, advertise, maintain and exchange token descriptors among peers? (and in the future, liquidity pool descriptors and similar DeFi constructs)\n[/quote]\n\nMakes sense to me. I imagine this as a generalization of the Reader I suggested , a general-purpose covenant tracker that maintains its own UTXO set of the specific covenants it tracks. \nSemantically I see it more as a covenant-state-tracker and less as a DeFi node.",
-    "url": "https://kas-smiths.org/t/-/8/10"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/10"
   },
   {
     "post_id": 67,
@@ -173,7 +162,7 @@
     "created_at": "2026-07-05T17:44:06Z",
     "updated_at": "2026-07-05T17:44:06Z",
     "raw": "[quote=\"carlssonk, post:5, topic:8\"]\nPerhaps we could sketch out PoC examples in the SDKs while the spec is still being drafted.\n[/quote]\nDefiantly, I am in between stuff, but later this week I'll post an update regarding with more practical Silver examples and refs.",
-    "url": "https://kas-smiths.org/t/-/8/11"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/11"
   },
   {
     "post_id": 68,
@@ -184,7 +173,7 @@
     "created_at": "2026-07-05T17:47:21Z",
     "updated_at": "2026-07-05T17:47:21Z",
     "raw": "I agree there should be an effort for porting KRC tokens in. The issue is, there are not on L1, so a bridge would require a trusted party (it just can not happen without trust assumptions unfortunatlly)\nI would be happy to push on this direction, but would need some help from KRC guys/communities. If you can connect me with any, I'd be happy to coordinate on this.",
-    "url": "https://kas-smiths.org/t/-/8/12"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/12"
   },
   {
     "post_id": 76,
@@ -195,7 +184,7 @@
     "created_at": "2026-07-07T05:38:11Z",
     "updated_at": "2026-07-07T05:38:22Z",
     "raw": "@here\nI've edited in the original post two drafts. If you guys could have a look that would be great.\nIs the SilverScript interface is clear enough? Do you feel like anything is missing?\n\nHow do you feel about the optional-extensions? \n\nI imaged something like this -\n```optional_extensions=[\"kcc20_borrowed_receive_v1\", ..]```",
-    "url": "https://kas-smiths.org/t/-/8/13"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/13"
   },
   {
     "post_id": 110,
@@ -206,7 +195,7 @@
     "created_at": "2026-07-10T13:53:32Z",
     "updated_at": "2026-07-11T18:28:15Z",
     "raw": "In the last few days I made significant progress in the Argent compiler, and I believe some of the features that evolved may be important to this spec discussion.\n\nIt boils down to a term I call **open ICC**.\n\nICC stands for Inter-Covenant Communication, or more specifically the idea of two or more covenants being co-spent in the same transaction in some interlinked way. Open ICC means that the interacting contracts do not have to fully know each other at compile time.\n\n### Starting from the simple case\n\nIn the context of assets, the most basic form of interaction is an atomic swap between two asset UTXOs:\n\n```\nAlice's asset A + Bob's asset B\n    ->\nasset A to Bob + asset B to Alice\n\n```\n\nBoth users sign the complete transaction, so each signer authorizes the full transition after inspecting the transfer amounts on both assets.\n\nThis already gives atomicity, but the relation is mostly mediated by signatures. Neither asset covenant needs to understand the other transition.\n\nA more interesting ICC pattern is asymmetric:\n\n```\nAsset A requires Controller C to be co-spent.\n\nController C observes and validates A's transition.\n\n```\n\nA treats the presence of C as its authorization condition. C is compiled against A, understands its exact state layout and surrounding contract template, and validates the relevant A inputs and outputs.\n\nI call this **closed ICC**, because C is compiled against a specific A implementation.\n\n### Open ICC\n\nOpen, or dynamic, ICC targets the case where A is authorized by C, but C was not compiled against the concrete A implementation.\n\nIt currently relies on two main features.\n\nFirst, C can observe an actor following some fixed state layout, call it `Capsule`, without knowing the concrete contract at compile time.\n\n```javascript\nstate Capsule {\n    ...\n}\n\nstate ControllerState {\n    byte[32] agent_covid;\n    actor<Capsule> agent_type;\n    ...\n}\n\nactor Controller owns ControllerState {\n    entry advance()\n    observes remote by self.agent_covid {\n        inputs  { agent: self.agent_type; }\n        outputs { agent: self.agent_type; }\n    }\n    emits { controller: Controller; } {\n        Capsule next_state = ...;\n\n        require remote.outputs become {\n            agent <- self.agent_type(next_state);\n        };\n\n        ...\n    }\n}\n\n```\n\nThe controller receives an `actor<Capsule>` representing the concrete contract template.\n\nAlthough it was not compiled against that contract, it can:\n\n* decode the foreign input using the known `Capsule` layout\n\n* verify that the non-state parts match the supplied contract template hash\n\n* inspect and constrain the state transition\n\n* require an output using the same concrete contract plus the updated state\n\nThis already gives dynamic onchain composition, but it limits every compatible implementation to exactly the same state layout. That is highly limiting and leads to the second feature.\n\n### Virtual state\n\nA capsule can contain an opaque virtual field:\n\n```javascript\nstate Capsule {\n    ...\n    virtual memory;\n    ...\n}\n\n```\n\nEach concrete implementation can expand it into a different typed object:\n\n```javascript\nstate AgentMemory {\n    int hunger;\n    ...\n}\n\nstate AgentState expands Capsule {\n    memory: AgentMemory;\n}\n\nactor Agent owns AgentState {\n    entry step(...) emits { agent: Agent; } {\n        AgentState next_state = {\n            ...\n            memory: AgentMemory {\n                hunger: memory.hunger + 1,\n                ...\n            },\n            ...\n        };\n\n        become agent <- Agent(next_state);\n    }\n}\n\n```\n\nThe base `Capsule` contains only a digest for `memory`.\n\nThe open observer can inspect and constrain the shared Capsule fields while allowing the virtual field to change without understanding its contents. The concrete `Agent` contract receives the `AgentMemory` preimage, verifies it against the digest, exposes its typed fields, and repacks the updated object into the next digest.\n\nSo both contracts constrain the same output:\n\n```\nController:\n    understands and constrains the shared Capsule state\n\nAgent:\n    understands and constrains its expanded Memory state\n\n```\n\nNeither has to understand the other's internal logic.\n\nA working example of this model is here:\n\n* [ICC Semantics](https://github.com/michaelsutton/argent/blob/master/docs/icc-semantics.md)\n\n* [`core.ag`](https://github.com/michaelsutton/argent/blob/master/examples/open_icc/core.ag)\n\n* [`agent.ag`](https://github.com/michaelsutton/argent/blob/master/examples/open_icc/agent.ag)\n\n* [generated `Cell.sil`](https://github.com/michaelsutton/argent/blob/master/examples/build/open_icc_core/sil/Cell.sil)\n\n* [generated `Forager.sil`](https://github.com/michaelsutton/argent/blob/master/examples/build/open_icc_agent/sil/Forager.sil)\n\nThe generated contracts are ordinary Silverscript. Argent also packages the contracts, state layouts, entrypoints, template commitments, routing information, hidden witness recipes and attached-app fingerprints into portable artifacts consumed by `argent-runtime`.\n\n### Back to KCC20\n\nIn the context of KCC20, this means we may now have tools for defining **onchain composability standards**, rather than only offchain wallet and indexer standards.\n\nFor example, the stable KCC20 state could contain the common asset fields plus a virtual extension:\n\n```javascript\nstate KCC20State {\n    byte[32] owner_identifier;\n    byte identifier_type;\n    int amount;\n\n    virtual extension;\n}\n\n```\n\nThe exact fields and types are of course part of the spec discussion.\n\nA concrete asset could then expand the extension into any state it needs:\n\n```javascript\nstate AssetMemory {\n    covid controller_id;\n    bool is_minter;\n    ...\n}\n\nstate AssetState expands KCC20State {\n    extension: AssetMemory;\n}\n\n```\n\nThe common KCC20 fields remain directly visible onchain, while controller logic, minting state, borrower policy or any other implementation-specific state lives behind the extension digest.\n\nAny asset implementing the standard is still usable by another covenant as:\n\n```javascript\nactor<KCC20State>\n\n```\n\nThe composing covenant understands the standard asset state, while the asset implementation retains arbitrary internal state and independently validates it.\n\n### A DEX as an example of dynamic composition\n\nA DEX is a useful example because the composing covenant can be written once, while the concrete assets it interacts with may only be chosen much later.\n\nA pool actor could open-observe two KCC20 transitions belonging to two different asset covenants in the same transaction. It would compile only against `KCC20State`, not against the concrete implementation of either asset.\n\nFor example:\n\n```\ntrader asset A\npool reserve A\npool reserve B\npool A/B actor\n        |\n        v\nupdated reserve A\nupdated reserve B\nasset B to trader\nupdated pool actor\n\n```\n\nThe pool could verify onchain that:\n\n```\nreserve A increased by dx\nreserve B decreased by dy\nthe configured ratio/invariant holds\nboth reserves remain owned by the pool\n\n```\n\nAt the same time:\n\n* asset A independently validates its own authorization, conservation and extension-state transition\n\n* asset B independently validates its own authorization, conservation and extension-state transition\n\n* the pool does not need to understand either asset's concrete controller or policy state\n\nThis is different from an offchain SDK merely knowing how to construct transactions for several asset implementations. A DEX compiled against `KCC20State` could directly inspect and constrain future compatible asset implementations onchain.\n\nFor actual reserve ownership, one possible design is a DEX root controlling a family of pair-specific pool covenants:\n\n```\n                    DEX root / registry\n                    /                 \\\n             Pool A/B covid        Pool A/C covid\n                /      \\              /      \\\n          A reserve   B reserve  A reserve   C reserve\n\n```\n\nThe reserve UTXOs are owned by the pair-specific covenant id, giving narrowly scoped co-spend authorization. The root can register or control the family of pools without directly being the broad owner of every reserve.\n\nThere are probably other DEX designs involving another level of indirection or more elaborate authorization chaining. That part can remain a problem for the DEX designers. The important point for this discussion is that the KCC20 state itself can be made generically inspectable and composable onchain.\n\n---\n\nArgent is still experimental, but this point is relevant to the KCC20 state design now.\n\nIf the first standard adopts a closed state layout, adding implementation-owned extension state later may require an incompatible format after wallets, indexers and assets have already converged around the original one.\n\nKCC20 does not need to depend on Argent. But reserving and defining this extension point early may be essential for future onchain composability.",
-    "url": "https://kas-smiths.org/t/-/8/16"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/16"
   },
   {
     "post_id": 112,
@@ -217,7 +206,7 @@
     "created_at": "2026-07-10T14:56:34Z",
     "updated_at": "2026-07-10T14:57:25Z",
     "raw": "That’s huge. Thank you for going to such depths in the explanation. \n\nI clearly see how allowing extended/virtual state would benefit composability, and DX in general. \n\nOne thing I did not understand is what is the benefit of open icc in the DEX example, it seems that the pair-pool is still tied to a specific pair of tokens, what is the advantage of open-icc in that case? If I understand correctly, open icc allows to create one general purpose pool-actor which can enforce the swap validation over any reserve pair? Or do I miss here something?",
-    "url": "https://kas-smiths.org/t/-/8/18"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/18"
   },
   {
     "post_id": 113,
@@ -228,7 +217,7 @@
     "created_at": "2026-07-10T15:19:12Z",
     "updated_at": "2026-07-10T15:19:12Z",
     "raw": "[quote=\"Manyfest, post:18, topic:8\"]\nIf I understand correctly, open icc allows to create one general purpose pool-actor which can enforce the swap validation over any reserve pair? Or do I miss here something?\n\n[/quote]\n\nIt's just a very initial sketch, but in short, the pair controller is not meant to be a different contract, only a different covenant id. \n\nBtw this specific design requires \\~N^2 controllers for N asset types, so it's sub-ideal anyway.",
-    "url": "https://kas-smiths.org/t/-/8/19"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/19"
   },
   {
     "post_id": 116,
@@ -239,7 +228,7 @@
     "created_at": "2026-07-10T18:52:17Z",
     "updated_at": "2026-07-10T19:43:07Z",
     "raw": "[quote=\"Shawn, post:8, topic:8\"]\nfreezes, and pause mechanisms are different. To prove an account is *not* frozen, every transfer has to reference issuer-controlled state.\n\n[/quote]\n\nIt depends on design. I think it makes sense to take a look at solana or cardano models.\n\nFor example in solana there's no global state in mints except for mint authority, freeze authority and supply(let's remove the last one from discussion just because it's hard to fix the gap efficiently). Authorities may be replaced with covenants that have actual authorities in the state. The way it works in solana - freezer is able to freeze any token account of the same mint. The same property may be implemented as additional spending branch. Not only someone is able to spend but also a fixed authority, so freezing is actually a movement of tokens to another predefined spk, and unfreeze is moving tokens back",
-    "url": "https://kas-smiths.org/t/-/8/20"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/20"
   },
   {
     "post_id": 117,
@@ -250,7 +239,7 @@
     "created_at": "2026-07-10T19:51:26Z",
     "updated_at": "2026-07-10T19:51:26Z",
     "raw": "There are also hacks that require global state less often. For example it's possible to have a 2 phase transfers: send allows me to send tokens to some address, and they will be owned by some entity. However to spend it may be required to reference global state. So two states: pending transfer and ready to spend. Compounding/transaction may require additional checks",
-    "url": "https://kas-smiths.org/t/-/8/21"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/21"
   },
   {
     "post_id": 118,
@@ -261,7 +250,7 @@
     "created_at": "2026-07-10T20:01:36Z",
     "updated_at": "2026-07-10T20:01:36Z",
     "raw": "[quote=\"michaelsutton, post:16, topic:8\"]\nThe base `Capsule` contains only a digest for `memory`.\n\nThe open observer can inspect and constrain the shared Capsule fields while allowing the virtual field to change without understanding its contents. The concrete `Agent` contract receives the `AgentMemory` preimage, verifies it against the digest, exposes its typed fields, and repacks the updated object into the next digest.\n[/quote]\n\nNote: the compiler generates the deserialization logic verifying the supplied preimage against the stored digest, then and decodes according to the concrete layout. Here is the generated `.sil`:\n```\nentrypoint function step(/*...*/, byte[8] gen__memory_agent_memory_preimage) {\n  require(blake2b(gen__memory_agent_memory_preimage) == memory);\n  int gen__memory_hunger = OpBin2Num(gen__memory_agent_memory_preimage.slice(0, 8));\n\n  /* ... */\n}\n```",
-    "url": "https://kas-smiths.org/t/-/8/22"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/22"
   },
   {
     "post_id": 119,
@@ -272,7 +261,7 @@
     "created_at": "2026-07-10T21:39:30Z",
     "updated_at": "2026-07-10T21:39:30Z",
     "raw": "Correct me if I am wrong; this would allow one covenant to co-spend a second to 'ingest' its state (and advance it at the same time). Wouldn't this be limiting in the sense that reading the covenant state required spending it, making access serialized? Even at 10BPS if two or three TXs try to read the state concurrently, only one will succeed while the x amount of others fail since the covenant state/UTXO is spent.  Is there a solution/game theory I am missing? 🤔",
-    "url": "https://kas-smiths.org/t/-/8/23"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/23"
   },
   {
     "post_id": 120,
@@ -283,7 +272,7 @@
     "created_at": "2026-07-10T22:10:17Z",
     "updated_at": "2026-07-10T22:10:17Z",
     "raw": "Michael, this closed vs open ICC framing matches our setup almost exactly, we're a live example of the closed side, and it's worth naming what that cost in production.\n\nOur DEX pool is a covenant compiled per token. The pool template carries its own copy of the token's state struct (owner, type, amount, plus the isMinter extension) and validates every token output it touches against that specific token's baked-in prefix, suffix and template hash. So the pool literally cannot trade an asset it wasn't compiled against, a new token means a freshly compiled and deployed pool. For a launchpad that mints its own tokens that's tolerable, but the second cost bites harder because the pool is bound to exact template bytes, any covenant upgrade forks the whole address space, and we've had to build a template versioning and pinning system just to keep already deployed tokens on the testnet tradable after we change the covenant.\n\nYour KCC20State example is basically our layout, and our extension would be almost exactly your AssetMemory, controller_id plus is_minter. The reason it maps so cleanly is that our supply rules are already split the way open ICC wants.  The token covenant enforces its own conservation and minter policy, and the pool really only cares about reserve amounts and ownership. The pool reading isMinter today is largely redundant defense in depth on a rule the asset already enforces. So under open ICC the pool would constrain only the common Capsule fields and the reserve invariant, and the minter/controller state would sit behind the extension digest where the pool never has to see it. The other half of our coupling, the token template hash we bake in at compile time, is the part actor<Capsule> turns into a dynamically supplied template. Between the two features, that's essentially the versioning machinery we run today going away.\n\nOn the pair-specific pool family, I agree that  it doesn't scale cleanly (you flagged the \\~N² count yourself), and we've hit the adjacent wall from the throughput side too. A single pool UTXO per token serializes trades under load, which is what pushed us toward batched execution. Probably worth keeping those two axes separate though, open ICC fixes composability without touching throughput, they want different answers.\n\nIf it's useful I'm happy to write up the closed-ICC pool plus template-pinning setup we run as a concrete reference for what the capsule pattern would replace, real bytes rather than a sketch.",
-    "url": "https://kas-smiths.org/t/-/8/24"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/24"
   },
   {
     "post_id": 121,
@@ -294,7 +283,7 @@
     "created_at": "2026-07-10T22:33:08Z",
     "updated_at": "2026-07-10T22:33:08Z",
     "raw": "Nice fix for the KIP-9 output cost, and the additive only envelope (owner fixed, amount up, KAS preserved) looks safe. One second order thing from running covenant tokens in production is borrowed receive lets anyone change your UTXO's outpoint, which griefs pre-signed, outpoint bound transactions. On our side a sell is built and signed against the token UTXO's outpoint, so a stranger borrowing a token into it before the tx lands invalidates the order and forces a rebuild. It's additive only so not theft, purely availability, but maybe worth a security note on the pre-signed-tx interaction, and a per UTXO opt out for holders who don't want their balance mutable by strangers. Genuinely useful for airdrops and streaming, just worth pinning the griefing surface down in the spec.",
-    "url": "https://kas-smiths.org/t/-/8/25"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/25"
   },
   {
     "post_id": 127,
@@ -305,7 +294,7 @@
     "created_at": "2026-07-11T09:26:19Z",
     "updated_at": "2026-07-11T09:26:19Z",
     "raw": "This is a property of the in-place UTXO model, it gives the most freedom to application developers as they have the choice to partition the state(s) according to app needs. If the state require frequent parallel reads on the same storage unit, a common pattern is to replicate the state among multiple UTXOs. If your app can't afford temporary state drift among replicated units, then you can think of other solutions such as authenticated state provider (and pass as witness).",
-    "url": "https://kas-smiths.org/t/-/8/26"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/26"
   },
   {
     "post_id": 128,
@@ -316,7 +305,7 @@
     "created_at": "2026-07-11T10:06:01Z",
     "updated_at": "2026-07-11T10:06:01Z",
     "raw": "I suppose one can also sign over cov_id (as far as I understand), so if there's a temporary activity spike, your tx will simply be slightly delayed instead or failing.",
-    "url": "https://kas-smiths.org/t/-/8/27"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/27"
   },
   {
     "post_id": 134,
@@ -327,7 +316,7 @@
     "created_at": "2026-07-11T11:11:19Z",
     "updated_at": "2026-07-11T11:11:19Z",
     "raw": "[quote=\"Max143672, post:21, topic:8, full:true\"]\nThere are also hacks that require global state less often. For example it’s possible to have a 2 phase transfers: send allows me to send tokens to some address, and they will be owned by some entity. However to spend it may be required to reference global state. So two states: pending transfer and ready to spend. Compounding/transaction may require additional checks\n[/quote]\n\nThat is a nice solution. I am unsure though if would this be enough control for a  stable coin issuers , or would they demand a stricter \"global state like\" policy, as you suggested in your next comment.\nI wish we could sit down and discuses about this with real relevant organizations.\n\nIt's an interesting solution, to use a proxy covenant, the issuer then could create a pool of such covenants and update them to represent its policy.",
-    "url": "https://kas-smiths.org/t/-/8/28"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/28"
   },
   {
     "post_id": 135,
@@ -338,7 +327,7 @@
     "created_at": "2026-07-11T11:22:20Z",
     "updated_at": "2026-07-11T11:22:20Z",
     "raw": "You would need some nonce mechanism for that, but it is a legit solution for concurrency.",
-    "url": "https://kas-smiths.org/t/-/8/29"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/29"
   },
   {
     "post_id": 145,
@@ -349,7 +338,7 @@
     "created_at": "2026-07-11T19:16:14Z",
     "updated_at": "2026-07-11T19:21:08Z",
     "raw": "I flagged and removed this comment. \n\nIts a long text which mixes unrelated and non-relevant concerns, and a project promotion.\n\n\nI also removed other comments which are not centered around the protocol discussion. \n\nI really appreciate the eagerness to build  and I am all up for more ecosystem projects. But this thread aims to converge on a lean interface, let's keep it focused on this please.",
-    "url": "https://kas-smiths.org/t/-/8/33"
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/33"
   },
   {
     "post_id": 11,
@@ -360,7 +349,7 @@
     "created_at": "2026-07-02T21:23:07Z",
     "updated_at": "2026-07-05T13:24:04Z",
     "raw": "I want to be kaspian \n\nI am signed up i want to use kaspa in pharmaceuticals R&D how to build supply chain .",
-    "url": "https://kas-smiths.org/t/-/10/1"
+    "url": "https://kas-smiths.org/t/hello-kaspa-world/10/1"
   },
   {
     "post_id": 16,
@@ -371,7 +360,7 @@
     "created_at": "2026-07-03T11:24:22Z",
     "updated_at": "2026-07-03T11:24:22Z",
     "raw": "Hello hello, if you willing to share more detail, we could discuses and brainstorm about it",
-    "url": "https://kas-smiths.org/t/-/10/2"
+    "url": "https://kas-smiths.org/t/hello-kaspa-world/10/2"
   },
   {
     "post_id": 31,
@@ -382,7 +371,7 @@
     "created_at": "2026-07-03T14:02:46Z",
     "updated_at": "2026-07-03T14:02:46Z",
     "raw": "# Kaspa × Pharmaceutical Industry — Expected Outcomes\n\n## 1. Real-Time GMP Compliance (Shift from retrospective → live)\n\n* Continuous, immutable manufacturing audit trail\n* Instant visibility of batch events (no paper-based reconciliation delays)\n* Reduced regulatory inspection burden\n* Faster deviation detection and response\n\n**Outcome:** Manufacturing becomes “always audit-ready”\n\n---\n\n## 2. End-to-End Drug Traceability (API → Patient)\n\n* Full product lifecycle tracking at unit level\n* Instant verification of authenticity at pharmacy level\n* Elimination of counterfeit drug entry into supply chain\n\n**Outcome:** Near-zero counterfeit penetration + full traceability in seconds\n\n---\n\n## 3. Faster Batch Release Cycles\n\n* Digital QA/QP approvals on-chain\n* Automated verification of analytical certificates and deviations\n* Reduced manual documentation bottlenecks\n\n**Outcome:** Batch release time significantly reduced without compliance risk\n\n---\n\n## 4. Clinical Trial Data Integrity Layer\n\n* Tamper-proof trial data timestamps and hashes\n* Real-time multi-site data synchronization validation\n* Strong audit trail for regulators (FDA/EMA-ready structure)\n\n**Outcome:** Higher trust + faster regulatory review cycles\n\n---\n\n## 5. Real-Time Pharmacovigilance System\n\n* Instant logging of adverse drug events globally\n* Early signal detection across distributed data sources\n* Reduced reporting delays from months → near real-time\n\n**Outcome:** Faster drug safety interventions and reduced patient risk\n\n---\n\n## 6. Global Pharma Supply Chain Transparency\n\n* Real-time tracking of temperature, transport, custody transfers\n* Smart alerts for cold-chain deviations\n* Cross-border supply verification without intermediaries\n\n**Outcome:** Reduced spoilage, wastage, and logistics fraud\n\n---\n\n## 7. AI Model & R&D Auditability\n\n* Fully traceable AI/ML decisions used in formulation development\n* Version-controlled experimental datasets\n* Regulatory-grade AI explainability layer\n\n**Outcome:** AI-assisted pharma R&D becomes regulator-compliant\n\n---\n\n## 8. Tech Transfer Transparency Across Sites\n\n* End-to-end documentation of scale-up processes\n* Unified record of process changes and validation batches\n* Reduced ambiguity between R&D and manufacturing teams\n\n**Outcome:** Faster and safer technology transfers\n\n---\n\n## 9. Reduced Regulatory Friction\n\n* Continuous inspection model replaces periodic audits\n* Regulators can verify live system data via nodes\n* Standardized global audit data structure\n\n**Outcome:** Lower compliance cost + faster approvals\n\n---\n\n## 10. IP Protection for Drug Development\n\n* Timestamped proof of invention and formulation history\n* Immutable record of experimental progression\n* Strong legal evidence for patent disputes\n\n**Outcome:** Stronger IP protection and reduced litigation risk\n\n---\n\n## 11. Decentralized Pharma Innovation Ecosystem (DeSci)\n\n* Community-driven funding of drug development projects\n* Transparent contribution tracking\n* Reward systems for research participation\n\n**Outcome:** Faster innovation + open pharmaceutical R&D ecosystem\n\n---\n\n## 12. Industrial-Scale Blockchain Adoption Beyond Finance\n\n* Demonstrates Kaspa use in regulated real-world industries\n* Positions Kaspa as **industrial-grade data infrastructure**\n* Expands adoption beyond crypto-native applications\n\n**Outcome:** Kaspa becomes a backbone for real-world enterprise systems",
-    "url": "https://kas-smiths.org/t/-/10/3"
+    "url": "https://kas-smiths.org/t/hello-kaspa-world/10/3"
   },
   {
     "post_id": 14,
@@ -393,7 +382,7 @@
     "created_at": "2026-07-03T06:25:26Z",
     "updated_at": "2026-07-03T06:33:56Z",
     "raw": "**Axiom: A Covenant-Native Framework for Agentic Commerce on Kaspa**\n\nHi everyone,\n\nI've been working on **Axiom**, a conceptual framework exploring how autonomous agents can interact economically using Kaspa's covenant surface.\n\n**Motivation**\nWhile most agent systems focus on orchestration and reasoning, the question that interests me is:\nHow can agents natively hold value, authorize actions, manage escrow, pay for services, and produce verifiable economic outcomes on-chain?\n\nToccata covenants now give us the primitives to explore this directly.\n\n**Core Idea**\nAxiom models agent interactions as sequences of atomic covenant state transitions rather than monolithic contracts.\n\nExample reference workflow (Agentic Pay):\n\ntext\n\n```\nintent → auth → data → escrow → pay → settle → logs\n```\n\nEach transition is verifiable and builds on the previous state.\n\n**Current Structure**\nPrimitives are grouped into layers:\n\n* **Orchestration**: intent, agents, mcp\n* **Identity & Governance**: auth, identity, governance\n* **Data**: data, oracle, logs\n* **Economic Layer**: pay, escrow, settle, borrow, repay, supply, treasury, compliance, compute\n* **Infrastructure**: kskd, custody, kurrent\n\nScope\nAxiom is not a protocol proposal or token standard. It is a reference architecture to explore practical patterns for agent-native commerce.\nSeveral settlement primitives have been tested with the Argent compiler.\nA small reference implementation of Agentic Pay is available on GitHub.\n\n https://github.com/axiomarchitecture/axiom-agentic-pay\n\n**Open Questions**\nI’m particularly interested in feedback on:\n\n* Covenant patterns for agent-controlled treasuries\n* Compliance & permissioning frameworks\n* Compute / inference settlement\n* Alignment with emerging standards such as KCC20\n* Indexing & observability needs for agent workflows\n\nCurrent draft: https://v0-axiomarchitecture.vercel.app/#igra\n\nHappy to receive criticism, suggestions, and collaboration.",
-    "url": "https://kas-smiths.org/t/-/13/1"
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/1"
   },
   {
     "post_id": 17,
@@ -404,7 +393,7 @@
     "created_at": "2026-07-03T11:28:39Z",
     "updated_at": "2026-07-03T12:23:32Z",
     "raw": "Hello and welcome. For intent based interactions `OpCheckSigFromStack` could be the solution, if you willing to read and inform yourself about it, I'd be happy to further discuss and brainstorm.",
-    "url": "https://kas-smiths.org/t/-/13/2"
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/2"
   },
   {
     "post_id": 20,
@@ -415,7 +404,7 @@
     "created_at": "2026-07-03T11:57:49Z",
     "updated_at": "2026-07-03T11:57:49Z",
     "raw": "@Manyfest Thanks for the pointer. I hadn't considered OpCheckDataSig for the intent layer specifically... makes sense as a lightweight authorization primitive before the covenant chain kicks in. Would be glad to dig into this further. How do you see it composing with multi-output covenant flows?",
-    "url": "https://kas-smiths.org/t/-/13/3"
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/3"
   },
   {
     "post_id": 22,
@@ -426,7 +415,7 @@
     "created_at": "2026-07-03T12:04:13Z",
     "updated_at": "2026-07-03T12:04:13Z",
     "raw": "The OP is allowing users to sign over data -- an intent basically (instead of a specific tx). This is handy for designing concurrent  transactions or ease the burden of needing to fetch live utxos inputs.\n\nThis related to input spending auth, so I am unsure what you mean by asking about outputs",
-    "url": "https://kas-smiths.org/t/-/13/4"
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/4"
   },
   {
     "post_id": 30,
@@ -437,7 +426,7 @@
     "created_at": "2026-07-03T12:38:33Z",
     "updated_at": "2026-07-03T12:38:33Z",
     "raw": "Apologies, I wrote OpCheckDataSig but meant OP_CHECKSIGFROMSTACK, of course — thanks for the clarification.\n\nThat distinction helps. So the intent layer would sit at input authorization (the agent signs a structured intent object, and the covenant verifies that signature), while output constraints remain a separate concern enforced by the covenant itself. Does that match how you see it?",
-    "url": "https://kas-smiths.org/t/-/13/5"
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/5"
   },
   {
     "post_id": 42,
@@ -448,7 +437,7 @@
     "created_at": "2026-07-04T06:14:09Z",
     "updated_at": "2026-07-04T06:14:09Z",
     "raw": "Relevant to the \"indexing & observability needs for agent workflows\" I mentioned:\n\n@0xKnitser just shipped **kascov** — a covenant explorer with JSON API, indexing since Toccata activation.\n\nThis solves a real pain point for making agent flows verifiable on-chain.\n\nhttps://kascov-explorer.web.app",
-    "url": "https://kas-smiths.org/t/-/13/6"
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/6"
   },
   {
     "post_id": 19,
@@ -459,7 +448,7 @@
     "created_at": "2026-07-03T11:35:25Z",
     "updated_at": "2026-07-03T12:25:16Z",
     "raw": "This category is for user-facing applications and product needs in the Kaspa\necosystem.\nDiscuss wallets, privacy, stable assets, payments, DEXs, prediction markets,\nmarketplaces, payroll, business use, and other real-world flows.\nFocus on the user problem, the product flow, the missing UX, and the ecosystem\ncapabilities needed to support it.\nMore technical standards, shared interfaces, covenant specs, wallet conventions,\nand protocol coordination should move to the relevant standards category.",
-    "url": "https://kas-smiths.org/t/-/14/1"
+    "url": "https://kas-smiths.org/t/about-the-product-use-cases-category/14/1"
   },
   {
     "post_id": 21,
@@ -470,7 +459,7 @@
     "created_at": "2026-07-03T12:00:18Z",
     "updated_at": "2026-07-04T08:25:08Z",
     "raw": "## TL;DR\n\n[x402](https://www.x402.org) is an open standard that lets websites, APIs, and AI agents charge and pay for individual HTTP requests. I have built a complete alpha implementation of native Kaspa support for it: specs, JSON schemas, test vectors, TypeScript packages, and a live testnet gateway that has settled real `testnet-10` payments.\n\nEverything is public at https://kaspa-x402.org.\n\nBefore I take this to the two standards bodies involved (CASA, which registers cross-chain network identifiers, and then the x402 Foundation), I want the community's eyes on it. One decision in particular, the network-identifier convention, is hard to change later. Objections and feedback are welcome until **24 July 2026**; after that I will proceed as described below.\n\n## What x402 is and why Kaspa fits\n\nWhen a server wants payment for a request, it replies with HTTP status `402 Payment Required` plus a machine-readable price offer. The client pays, retries the request with proof of payment attached, and the server verifies the payment and serves the response. That is the whole protocol. It was started by Coinbase, is now governed by a Linux Foundation project (the x402 Foundation, founded by Coinbase and Cloudflare), and is becoming the default way AI agents pay for APIs and tools.\n\nKaspa is unusually well-shaped for this. Paying per request only works when payment confirmation is not the slow path, and Kaspa's block cadence makes one-shot native payments practical at request time: my live gateway verifies accepted payments roughly a second after broadcast. Every blockchain currently in x402 (Solana, TON, Algorand, Stellar, Aptos, Hedera, and the EVM chains) is account-based. Kaspa would be the first UTXO chain, and this implementation is UTXO-native throughout: a payment is identified by its transaction id and outputs, not by account allowances.\n\n## What exists today (all public, all testnet-only)\n\n* **Standards site**: kaspa-x402 has the specs, JSON schemas, test vectors, and immutable release snapshots.\n* **Reference implementation**: https://github.com/elldeeone/kaspa-x402 with `@kaspa-x402/core`, `client`, `server`, and `covenant` packages on npm, plus a CLI and runnable examples.\n* **Live gateway**: https://demo.kaspa-x402.org is a public testnet-10 server you can pay right now. It runs an automated public health check and holds no spending keys.\n* **Recorded live evidence**: funded end-to-end payment runs on testnet-10, covering one-shot payments, safe handling of replayed and reused transactions, and escrow deposit/voucher settlement. Transaction ids are in the gateway docs and check out on the testnet explorer.\n* **Browser test client**: https://kaspa-x402.org/demo/ for connectivity checks and payment-header rehearsal (keys stay in browser memory).\n* Threat model, mainnet-readiness gates, versioning policy, and implementer guide, all published on the site.\n\nTo be explicit about limits: this is alpha, `testnet-10` only. The wire format is not frozen, and mainnet use is blocked by published gates (independent audit among them). Nothing here claims production readiness.\n\n## The two payment schemes I ship, and the two I deliberately do not\n\nx402 defines four payment schemes. This implementation ships two:\n\n* **`exact`**: a fixed-price one-shot KAS transfer. One caveat for implementers: KIP-9's storage-mass rules put a floor on standard output size (roughly 0.1 KAS), so `exact` prices cannot go below that.\n* **`batch-settlement`**: the micropayment path, for prices below that floor. A client locks funds in an escrow once, then signs a small voucher for each paid request; the chain is only touched again at claim or refund time. The demo gateway charges 500 sompi per request this way. The escrow covenant is written in SilverScript and validated against Rusty Kaspa consensus.\n\nThe other two schemes (`upto` and `auth-capture`) are missing for a technical reason, not oversight. Both need a payment authorisation that expires at a deadline, enforced on-chain. Kaspa's on-chain script (the layer SilverScript compiles down to) only supports lower-bound time locks, because a once-valid transaction must never become invalid. So an expiry can only be approximated by a refund race, and shipping that under upstream's stricter definition would overstate the guarantee. I built and consensus-validated a capped-authorisation covenant anyway (archived on the [`archive/capped-authorization-experiment`](https://github.com/elldeeone/kaspa-x402/tree/archive/capped-authorization-experiment) branch) and shelved it until upstream clarifies whether a refund-race expiry qualifies. The full write-up is the native-profile-boundary doc on the site.\n\n## What happens next, and where you can object\n\n**Step 1: register the `kaspa` network identifier (CASA).** Cross-chain standards, x402 included, need one agreed way to write \"which network is this?\". The convention is CAIP-2 identifiers: Ethereum mainnet is `eip155:1`, Stellar is `stellar:pubnet`. Kaspa has never registered one. I intend to open a PR at `ChainAgnostic/namespaces` registering:\n\n* `kaspa:mainnet`\n* `kaspa:testnet-10`\n\nThese are the names RK, explorers, and wallets already use. Some chains register a genesis-block hash instead; I chose names because that is how Kaspa already talks, and hash aliases can be added later if needed. The registration also sets how account addresses are written: the address without its `kaspa:`/`kaspatest:` prefix, since the identifier already names the network.\n\n**This is an objection check.** The identifier convention is the one decision that is hard to change later, so before I lodge the registration: if `kaspa:mainnet`-style identifiers would break or fight anything you know of, say so in this thread before **24 July 2026**. If nothing blocking comes up, I will open the PR.\n\n**Step 2: propose the Kaspa bindings to the x402 Foundation.** Once the identifier registration is in review, I will open a feature request at `x402-foundation/x402` proposing Kaspa support for the `exact` and `batch-settlement` schemes, following the same path Stellar, Aptos, and Hedera took.\n\n**Step 3: external implementers.** After that, I am looking for a few people to test their own clients against the live gateway and report what breaks. There is an implementer guide, a public faucet for testnet funds, and issue templates in the repo.\n\n## What I am asking\n\n1. **Objections to the `kaspa:` identifier convention** (the time-sensitive one, open until **24 July 2026**).\n2. Technical review of the specs, especially from anyone who has built on the WASM SDK.\n3. Anyone interested in being an early external implementer.\n4. Corrections: if anything published overstates what Kaspa or this implementation can do, I want to know first.",
-    "url": "https://kas-smiths.org/t/-/15/1"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/1"
   },
   {
     "post_id": 46,
@@ -481,7 +470,7 @@
     "created_at": "2026-07-04T14:39:49Z",
     "updated_at": "2026-07-04T14:39:49Z",
     "raw": "This is very cool!\n\nNo objections to the kaspa:mainnet / kaspa:testnet-10 identifiers, this makes sense. The network-to-address-prefix mapping may be worth making explicit though, to avoid confusion:\n`kaspa:mainnet → kaspa:`\n`kaspa:testnet-* → kaspatest:`\n\nI reviewed the specs from the WASM SDK's angle and have some findings (I reviewed this with Claude’s help so these points should probably be verified by someone from the core dev side before acting on them):\n\n- [kaspa-exact-v1](https://kaspa-x402.org/spec/kaspa-exact-v1/), PaymentPayload section: the spec requires `transaction` as a hex string but the WASM SDK currently only does JSON serialization. The byte format should be written into the spec itself. A new serializeToBytes() / deserializeFromBytes() may need to be added to the SDK.\n\n- [kaspa-batch-settlement-v1](https://kaspa-x402.org/spec/kaspa-batch-settlement-v1/), Voucher Digest section: the WASM SDK can only sign transactions and text messages (via signMessage). So it cannot produce a Schnorr signature over the spec's raw digest, suggestion: define the voucher as a plain text message, e.g. `kaspa:x402:escrow-voucher:v1|<network>|<script>|<txid>|<index>|<amount>`, signed with the standard signMessage.\n\n- One small correction: the ChannelConfig section defines the scriptPublicKey serialization as `uint16_le version || script bytes`, but rusty-kaspa's covenant introspection opcodes (OpTxInputSpk / OpTxOutputSpk) push the version big-endian, the two only agree because this profile pins version to 0. Worth either correcting to uint16_be or noting the version-0 pin explicitly.",
-    "url": "https://kas-smiths.org/t/-/15/3"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/3"
   },
   {
     "post_id": 49,
@@ -492,7 +481,7 @@
     "created_at": "2026-07-04T16:52:58Z",
     "updated_at": "2026-07-04T16:52:58Z",
     "raw": "Hi! Thank you for joining and posting.\nThe overview is great and I am with you on the identifiers names. \nLooking forward to dig into the code, I'll get to that later this week =]",
-    "url": "https://kas-smiths.org/t/-/15/4"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/4"
   },
   {
     "post_id": 51,
@@ -503,7 +492,7 @@
     "created_at": "2026-07-04T17:21:24Z",
     "updated_at": "2026-07-04T17:21:24Z",
     "raw": "@carlssonk Thanks, always great to have another set of eyes (or LLM) over this! I verified all three findings and shipped fixes as v0.1.0-alpha.4 (npm, the spec on the site, and the redeployed gateway).\n\n**Prefix mapping:** yes, that is 100% the intention. mainnet maps to kaspa:, testnet- to kaspatest:. The registration PR will state it explicitly.\n\n**Endianness:** confirmed, spec now reads uint16_be. One wrinkle: consensus hash preimages encode the version little-endian (hashing/tx.rs, sighash.rs), so the transaction builder keeps LE in that layer only.\n\n**Voucher signing**: confirmed. The covenant checks a raw `sha256(voucherMsg)` Schnorr signature, while the gateway was accepting SDK personal-message signatures. Fixed in alpha.4: spec, gateway verifier, state reset, and fresh funded evidence all now use raw-digest signing.\n\nThe hard bit is wallet support. The covenant needs the exact outpoint-bound digest, so plain-text SDK message signing does not map cleanly to the script. For now, batch implementers need a Schnorr library that can sign raw 32-byte digests. I would appreciate input here (from anyone), is a raw-hash Schnorr signing API the right shape, or is there a safer interface this should be asking for? Might need to brainstorm this one..\n\n**Transaction hex:** I’m leaning towards dropping it. The spec asks for serialised transaction hex, but the SDK does not expose a stable signed-transaction byte format, and the gateway already verifies exact payments from `transactionId + paymentOutputIndex + payTo` UTXO evidence.",
-    "url": "https://kas-smiths.org/t/-/15/5"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/5"
   },
   {
     "post_id": 69,
@@ -514,7 +503,7 @@
     "created_at": "2026-07-05T17:56:34Z",
     "updated_at": "2026-07-05T17:56:34Z",
     "raw": "This is a very exciting effort!\n\nI think the network identifiers proposed makes sense. Also, I intend to spend some time going through https://kaspa-x402.org over the coming weeks.",
-    "url": "https://kas-smiths.org/t/-/15/6"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/6"
   },
   {
     "post_id": 71,
@@ -525,7 +514,7 @@
     "created_at": "2026-07-06T06:54:57Z",
     "updated_at": "2026-07-06T06:54:57Z",
     "raw": "Quick follow up on the tx hex point I mentioned above.\n\nI have pushed \\`v0.1.0-alpha.5\\`. The \\`exact\\` payment payload no longer carries serialised transaction hex. It now carries \\`transactionId\\` and \\`paymentOutputIndex\\`.\n\nThe server verifies the selected pay to output from chain evidence.\n\nThe original shape came from trying to stay close to a “client sends transaction, server verifies or broadcasts it” flow but that ended up being the wrong fit. \n\nEverything is updated, docs and fresh hosted evidence are live at https://kaspa-x402.org and https://demo.kaspa-x402.org.\n\nSorry for the churn :folded_hands:",
-    "url": "https://kas-smiths.org/t/-/15/7"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/7"
   },
   {
     "post_id": 77,
@@ -536,7 +525,7 @@
     "created_at": "2026-07-07T07:43:39Z",
     "updated_at": "2026-07-07T07:43:39Z",
     "raw": "A couple feedback by only surfacing the implementation and proposal.\n\n[quote=\"elldeeone, post:1, topic:15\"]\nThe client pays\n\n[/quote]\n\nThe flow without a facilitator is: server verifies payload and settles (submit the transaction to the network).\nWith a facilitator: server round trip (up to twice) with facilitator and facilitator settles.\n\n\nCurrent implementation is wrong because the client settles.\n\n---\n\n[quote=\"elldeeone, post:1, topic:15\"]\n* **`batch-settlement`**\n\n[/quote]\n\nI think we can work around `exact`, make merchant address a P2SH, and use the borrow technique described in KIP-10. `batch-settlement` shouldn't exists if `exact` works at internet speed.",
-    "url": "https://kas-smiths.org/t/-/15/8"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/8"
   },
   {
     "post_id": 105,
@@ -547,7 +536,7 @@
     "created_at": "2026-07-09T05:53:26Z",
     "updated_at": "2026-07-09T05:55:00Z",
     "raw": "@IzioDev thanks again for taking a look. I reworked exact around KIP10 as you suggested, and agree it is better not to lock this into simple address-payment assumptions. The server now advertises reservation terms, the client returns a signed transaction artifact, and the server/facilitator verifies, settles, observes finality, then serves the response.\n\nI also get your point on `batch-settlement` too. Kaspa at internet speed is why exact should be the default for normal per-request payments. The reason I still see warrant for batch is less about speed and more about prepaid usage. A user can fund once, make many small x402 requests over time via vouchers, and the merchant claims later. That may be useful for API credits, sessions, or very small requests where the operator wants a committed balance instead of a fresh payment every time. Still open to being wrong on that, but it feels worth keeping as an option while this is alpha.\n\nAlso, correction to my earlier comment about Kaspa being the first UTXO x402 binding. My mistake, Cardano was first. Hopefully Kaspa can still be the first internet-speed, decentralised PoW on x402! :grin:",
-    "url": "https://kas-smiths.org/t/-/15/9"
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/9"
   },
   {
     "post_id": 23,
@@ -558,7 +547,7 @@
     "created_at": "2026-07-03T12:07:56Z",
     "updated_at": "2026-07-03T12:17:22Z",
     "raw": "I think it’s time to take it to the next level and start focusing on useful things like equipping Kaspa and its ecosystem with privacy and user-friendly features built into wallets and extended to the rest of the ecosystem and applications, along with a Layer 1 stablecoin alternative like DAI so we don’t have to rely on other companies like Tether or Circle. We could even equip that DAO and privacy-focused currency with shielded pools where users can collateralize KAS or other coins.\n\nA major part of the problem inherited from other ecosystems and markets is this: no one wants a transparent ledger where they can be completely tracked by anyone with an internet connection. Even in a hypothetical future where Kaspa is used as a currency to pay for services, employees, or payroll, no one not even companies wants this, which is why business projects like Canton have emerged.\n\nETH, Solana, and BSC are working on this, so it’s best to take the initiative, especially if the goal is to create prediction markets, perpetual DEXs, or something similar to Raydium. Because if this step is skipped, these products will continue to suffer from a lack of privacy. It’s better to build on this foundation so that the products will be much more comprehensive down the line, and we won’t have to spend another three or four years waiting for updates to catch up with other networks that are already working to implement it.\n\nKeep this in mind when deciding where to devote your time building, because NFTs, memes, and all that even though they can occasionally generate some volume are already way too overhyped and oversaturated, not to mention that the market is completely dominated by cliques, scammers, and a lack of real purpose to keep it afloat and attract quality builders and users on a sustained basis.\n\nOnce you’ve met the basic requirements for 1) privacy and ease of use, and 2) a stable, censorship-resistant currency\n\nyou can do whatever you want and you’ll be ahead of 99.9% of other networks and ecosystems.\n\nand start building:\n\n* Prediction markets\n* Raydium-style DEXs / Hyperliquid-style perpetuals / integration with Thorchain DEX\n* Partnerships with digital product marketplaces and stores, Mullvad- or IVPN-style VPNs, wallets (Trezor, Cake Wallet, Unstoppable), etc.",
-    "url": "https://kas-smiths.org/t/-/16/1"
+    "url": "https://kas-smiths.org/t/user-friendly-privacy-features-and-censorship-resistant-stablecoins-like-dai/16/1"
   },
   {
     "post_id": 25,
@@ -569,7 +558,7 @@
     "created_at": "2026-07-03T12:17:11Z",
     "updated_at": "2026-07-03T12:17:11Z",
     "raw": "Moved to the Applications topic",
-    "url": "https://kas-smiths.org/t/-/16/2"
+    "url": "https://kas-smiths.org/t/user-friendly-privacy-features-and-censorship-resistant-stablecoins-like-dai/16/2"
   },
   {
     "post_id": 40,
@@ -580,7 +569,7 @@
     "created_at": "2026-07-03T22:06:18Z",
     "updated_at": "2026-07-09T08:30:33Z",
     "raw": "I've been working on a couple projects in the Kaspa post-toccata environment. Here is a functioning-ish  kcc20 token waiting on silverscript v1: https://github.com/kyle4nia/BitPhoque",
-    "url": "https://kas-smiths.org/t/-/24/1"
+    "url": "https://kas-smiths.org/t/hello-all-i-am-karrrl/24/1"
   },
   {
     "post_id": 58,
@@ -591,7 +580,7 @@
     "created_at": "2026-07-05T08:07:36Z",
     "updated_at": "2026-07-05T08:09:56Z",
     "raw": "I am taking Kaspa as part of a project for a cryptographic anchor of document has a lot. The idea is not to store documents in the chain, but only their hash so that they can demonstrate their integrity and the existence of a particular version at a given time. I think Kaspa's speed and performance could make it a very interesting use case. Is anyone else exploring something similar? \n\nI am convinced that I will have this wonderful community in the future and bring a lot of use to our network.",
-    "url": "https://kas-smiths.org/t/-/31/1"
+    "url": "https://kas-smiths.org/t/kaspa-as-an-immutable-seal/31/1"
   },
   {
     "post_id": 79,
@@ -602,7 +591,7 @@
     "created_at": "2026-07-07T14:19:04Z",
     "updated_at": "2026-07-07T14:21:49Z",
     "raw": "## Goal and motivations\n\nThe goal of this thread is to start engaging builders, wallet software and more generally the ecosystem to think practically on covenant usability.\n\nCurrently, the most rational choice is either shipping your own covenant-specific compatible wallet software or to push current wallet to adopt your covenant-specific SDK. I believe there are more universal paths that should be considered.\n\nI will try to assume minimal prior knowledge and provide optional deeper accordions where I think it deserves special attention for the most curious readers.\n\n## Wallet implementation challenges\n\nTLDR; As a builder using covenant or SilverScript (or any other abstraction layer above), I currently need to tell my users (or my wallet partners) to implement my covenant comprehension so they can (i) track covenant state across executions and (ii) build compatible transactions / transition executions.\n\nLet's walk through this simplified example so we understand better what's going on under the hood (do not use this example in production, it has flaws):\n\n```\ncontract ThresholdVault(\n    pubkey initAgent, /* agent public key */\n    pubkey initOwner, /* human public key */\n    int initThreshold, /* threshold Kas value agent is allowed to spend in autonomy */\n) {\n    pubkey agent = initAgent;\n    pubkey owner = initOwner;\n    int threshold = initThreshold;\n\n    /* agent can invoke this in autonomy if spent Kas value is below threshold */\n    entrypoint function auto(sig agentSig) {\n        require(tx.outputs.length == 2);\n        require(tx.outputs[0].value <= threshold);\n        require(checkSig(agentSig, agent));\n\n        validateOutputState(1, {\n            agent: agent,\n            owner: owner,\n            threshold: threshold,\n        });\n    }\n\n    /* human and agent can together decide to spend more than threshold if\n       they both sign */\n    entrypoint function manual(sig agentSig, sig ownerSig) {\n        require(checkSig(ownerSig, owner));\n        require(checkSig(agentSig, agent));\n    }\n}\n```\n\nIt compiles to a `redeem_script` and hence has a dedicated P2SH address: `address = P2SH(BLAKE2B(redeem_script))`.\n\nFirst time you hear about P2SH? [read 1. and 2. here now](https://gist.github.com/IzioDev/c7c5ebeb8817fed20a203f724e656703#1-standard-p2pk-spend)\n\n[details=\"note: deploy a covenant\"]\nWhen I will send the first UTXO to this address, we effectively say I will 'deploy' the covenant, and this UTXO will be part of the UTXO set like any others, only difference is the Script Public Key (SPK) that is a P2SH instead of a 'standard' or classic P2PK address.\n[/details]\n\nThe `redeem_script` can be summarized as:\n\n```\ntemplate_prefix + encoded_state + template_suffix\n```\n\nWhich means that any state changes will produce a new P2SH address. If we take a look at our Vault, since the state never changes, the address will remain stable across execution.\n\n[details=\"note: system should rely on CovenantID to fetch related P2SH\"]\nIf we imagine a more complex script, usually it will have state changes (e.g. a token balance). For these covenants, you most certainly want to bind it to a stable identity, for this you'll make sure the script enforces CovenantID continuation.\n\nHere are two ways of doing it with our example above:\n\n1. programmatically\n   ```\n   /* there is exactly one covenant continuation */\n   require(OpAuthOutputCount(this.activeInputIndex) == 1);\n   /* the first (and only because of previous check) output index continuing the covenant lineage */\n   int next_idx = OpAuthOutputIdx(this.activeInputIndex, 0);\n\n   validateOutputState(next_idx, {\n       agent: agent,\n       owner: owner,\n       threshold: threshold,\n   });\n   ```\n2. with annotations\n   ```\n   /* here, the annotation does the same for us automatically */\n   #[covenant(binding = auth, from = 1, to = 1, mode = transition)]\n   function auto(State prev_state, sig agentSig) : (State) {\n\n       /* [...] */\n\n       return({\n           agent: prev_state.agent,\n           owner: prev_state.owner,\n           threshold: prev_state.threshold,\n       });\n   }\n   ```\n\nA wallet later will use this stable identity to identify P2SH(s) tied to this CovenantID(s), in this example case there is only one Vault instance (/covenant) living at a time, so only one P2SH address at a time for this CovenantID.\n[/details]\n\nUnless a wallet specifically knows this Vault code:\n\n- and that wallet user somehow hints he has deployed his own Vault covenant (with provided parameters), the wallet is unable to read the current state, or know it's even deployed.\n- wallet doesn't know how to construct valid transition execution (invoke `auto` or `manual` function)\n\n## So what now?\n\nConceptually, what existing or not yet existing network actor should have the responsibility (note: multiple actors can be involved) to:\n\n- track covenant states, and expose them\n- verify source code (vs. what's deployed)\n- understand how to build a \"covenant-valid\" transaction\n\nI also want you to think by yourself and express more questions / challenges, share your views. I already have a biased opinion on these topics that I'll share later.",
-    "url": "https://kas-smiths.org/t/-/41/1"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/1"
   },
   {
     "post_id": 80,
@@ -613,7 +602,7 @@
     "created_at": "2026-07-07T15:02:06Z",
     "updated_at": "2026-07-07T15:02:06Z",
     "raw": "**Cardano solved similar interface challenges with several independent standards rather than one universal one — that could be an interesting reference point here.**\n\nExamples:\n\n• **CIP-57 (Contract Blueprint)** for machine-readable contract metadata\n\n• **CIP-31 (Reference Inputs)** for read-only contract state access\n\n• **CIP-30 / CIP-95** for wallet–dApp interaction\n\nOne lesson from Cardano is that separating concerns (metadata, state discovery, transaction construction) helped avoid a monolithic specification.\n\n**Question:** Does KIP-10 introspection already provide enough for generic wallet state discovery, or might Kaspa eventually benefit from something analogous to reference inputs?\n\nKaspa has the opportunity to sequence these pieces more deliberately than Cardano did.",
-    "url": "https://kas-smiths.org/t/-/41/2"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/2"
   },
   {
     "post_id": 82,
@@ -624,7 +613,7 @@
     "created_at": "2026-07-07T16:45:42Z",
     "updated_at": "2026-07-07T16:47:05Z",
     "raw": "Just a thought but can AI be useful as a sort of middleware/translator between human and machine, satisfying both machine and human needs ? A human needs a buttom, so show the human a button and the machine doesnt care so no button. Lots of caveats but perhaps we need to rethink what a wallet is and does :slight_smile:",
-    "url": "https://kas-smiths.org/t/-/41/3"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/3"
   },
   {
     "post_id": 83,
@@ -635,7 +624,7 @@
     "created_at": "2026-07-07T17:16:54Z",
     "updated_at": "2026-07-07T17:16:54Z",
     "raw": "[quote=\"Andreas, post:2, topic:41\"]\nDoes KIP-10 introspection already provide enough for generic wallet state discovery, or might Kaspa eventually benefit from something analogous to reference inputs?\n[/quote]\n\nIf the redeem has been crafted by SilverScript, by getting the source code, you know where the state is located (`state_layout` := start, length), and you also know the state fields which tell you how to read/cast the bytes.\nIf this is a manually crafted bytecode, you'd need similar hints by the creator (provided you trust the hints).",
-    "url": "https://kas-smiths.org/t/-/41/4"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/4"
   },
   {
     "post_id": 84,
@@ -646,7 +635,7 @@
     "created_at": "2026-07-07T17:18:55Z",
     "updated_at": "2026-07-07T17:18:55Z",
     "raw": "[quote=\"Moxy, post:3, topic:41\"]\nAI be useful as a sort of middleware/translator between human and machine\n[/quote]\n\nI won't stand behind a solution that relies on non-deterministic systems to take actions on behalf of users.",
-    "url": "https://kas-smiths.org/t/-/41/5"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/5"
   },
   {
     "post_id": 85,
@@ -657,7 +646,7 @@
     "created_at": "2026-07-07T17:49:20Z",
     "updated_at": "2026-07-07T17:49:20Z",
     "raw": "Agreed,  nothing that can't be trusted should ever move a users money. But what if the AI doesnt hold a key, never signs, and never creates the thing the user approves. It only suggests what to do, picking from a fixed list of allowed actions.  Everything after that is fixed and predictable: The user approves the real thing, and the covenant blocks anything outside its rules no matter what.\nNot proposing claude, chatgpt, but rather open source which runs in your own environment",
-    "url": "https://kas-smiths.org/t/-/41/6"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/6"
   },
   {
     "post_id": 86,
@@ -668,7 +657,7 @@
     "created_at": "2026-07-07T19:56:31Z",
     "updated_at": "2026-07-07T19:56:31Z",
     "raw": "We've been building on covenants since Toccata landed, and this is a question we had to answer in production rather than in theory — so here's what we learned shipping two covenant apps to mainnet: a non-custodial vault (Kaspa Safe) and a P2P escrow with an AI-mediated dispute flow (Kaspa Escrow). Both are pure covenant + Silverscript, non-custodial, open beta.\n\nOn \"which actor should track state and build valid txs\": our answer so far is the app is the actor, and deliberately so. We didn't wait for wallets to integrate a per-covenant SDK — we shipped the wallet-equivalent inside the app:\n\n* tx-building runs client-side (our Silverscript covenant compiled to a WASM core in the browser), so the covenant-valid spend is assembled where the keys are, and the keys never leave the browser;\n* a thin server (\"watcher\") only follows the covenant's on-chain state and relays events — it holds no keys and cannot move funds;\n* the browser re-derives the covenant's P2SH address from the deal params and refuses to act if the server's address differs — so \"verify the covenant\" is done by reconstruction, not by trusting our server.\n\nThat gets one app to production. It does not generalize — which is exactly the gap this thread is pointing at.\n\nThe gap, concretely, isn't a missing network actor — it's a missing standard interface. Two pieces:\n\n1. A machine-readable covenant descriptor. For any third party (wallet, explorer, indexer) to build a valid spend it needs the exact param layout, the entrypoints, and the Silverscript source (or its hash) to re-derive P2SH(BLAKE2B(redeem_script)) and reconstruct the witness. Today only our own builder knows that layout. If a covenant could publish a descriptor — params + entrypoints + source hash — in a standard format, a generic wallet could serve it without a bespoke SDK, and verify it by reconstruction the same way our client does.\n2. CovenantID continuation (the OpAuthOutputCount/OpAuthOutputIdx direction you mention) — this is the single biggest one for us. A state transition changes the script, so it changes the address. Our escrow moves ACTIVE → DISPUTED, which lands on a new P2SH address. We handle it today by pre-deriving both addresses from the same params at deal creation and having our watcher follow the hop — but to any third-party wallet or explorer that transition looks like \"funds left to an unrelated address.\" The lineage is invisible. A covenant-id that survives the transition is the precondition for wallets and explorers to follow covenant state generically. Strong +1 to pushing that.\n\nA few field notes:\n\n* The state-transition-changes-address issue is more of an indexing/UX wall than a protocol one — users and explorers see a \"mystery move.\" CovenantID fixes the indexing story, not just the scripting.\n* Non-custodial key handling (recovery sheets, \"your key never leaves the browser\") is a real part of the wallet gap, but it's orthogonal to the covenant standard — worth keeping the two separate in any design.\n* Verify-by-reconstruction (client recomputes the address from params + source and refuses on mismatch) has been our anti-parameter-substitution defense and works well; a standard descriptor would make that portable across wallets.\n\nHappy to compare notes in depth — we've hit most of these in production and would gladly feed real-world constraints into whatever standard emerges. Both apps are open beta if useful as reference cases (safe.officeforge.co, escrow.officeforge.co); the covenants and the offline tools are open source.",
-    "url": "https://kas-smiths.org/t/-/41/7"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/7"
   },
   {
     "post_id": 88,
@@ -679,7 +668,7 @@
     "created_at": "2026-07-07T20:27:13Z",
     "updated_at": "2026-07-07T20:27:13Z",
     "raw": "Great summery my friend. \nWhat is easy to agree on-\nWe need a general purpose contract verifier- reveal a p2sh utxo into the full contract (logic and state). \n\nFrom there the progression would be a general purpose state decoder, which follow state transitions for contract covenant. \n\nLastly , the tricky part, the question of general purpose interaction surface. How can we escape the need to develop per-app-specific wallets? What can we create to allow ease of communication between covenants who has different state layout and entrypoint interfaces? \n\nSo the question is, can we create a utxo version of an “interface”? \n\nThis brings to mind the topic of a kcc20 protocol. \nIn my proposal, I offered a reader (which solves state tracking ) and a writer (which solve the interaction part). \nThis is arguably the closest thing to an “interface” that a utxo covenant to can offer. And the question is whether or not this can be generalized. \nIntuitively, I think that the only possibility for general purpose interaction is to define per protocol interface, what do you think?\n\n\nAnd ofc waiting to hear what you had in mind. \n\nThank you for the high quality post, it’s great having you here :slight_smile:",
-    "url": "https://kas-smiths.org/t/-/41/8"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/8"
   },
   {
     "post_id": 108,
@@ -690,7 +679,7 @@
     "created_at": "2026-07-09T19:03:51Z",
     "updated_at": "2026-07-09T19:03:51Z",
     "raw": "from my limited understanding, I think it would be nice to have a type of node that keeps track of all covenants (scripts, current state, etc), with nodes being able to talk to each other in case someone doesn't know how to decode a specific UTXO. Then wallets could query these nodes through APIs, with questions like \"do I own any KCC tokens? what are the relevant UTXOs\"? These API queries should be payable in KAS, so that the tracking work gets compensated.",
-    "url": "https://kas-smiths.org/t/-/41/9"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/9"
   },
   {
     "post_id": 152,
@@ -701,7 +690,7 @@
     "created_at": "2026-07-11T23:00:21Z",
     "updated_at": "2026-07-11T23:00:21Z",
     "raw": "\nWe've been working on exactly these problems for the last few weeks developing a covenant-based fungible token  on TN10. Non-custodial web wallet, all client-side tx building, live and working. Wanted to share our findings…\n\nSame conclusion as OfficeForge: the app is the actor right now, and has to be. We ship the wallet inside the app. Our JS stack hand-rolls the entire write path; sighash computation, schnorr signing, ABI-correct sigscript assembly, tx construction, JSON wRPC submit. That's four separate modules that exist only because there's no standard way to say \"here's how you build a valid spend for this covenant.\" It works, but it's entirely tailor-made. Nobody else's wallet can touch our token without reimplementing all of it.\n\nThe state-tracking problem: Our token has per-UTXO state (owner, amount, forSale flag, price). Every unique combination of state produces a different redeem script, which means a different P2SH address.\n\nOur workaround: a lightweight server-side registry. Wallets register output parcels on every tx confirm and query the registry on refresh. New wallet restored from seed phrase discovers its holdings automatically via the registry , no out-of-band descriptor exchange needed. We also built an offline descriptor codec (compact binary encoding of parcel state, base58check wrapped) as a fallback for peer-to-peer transfer without the registry. Both work, but both are entirely token-specific plumbing that every covenant builder would have to reinvent.\n\nTo the three-layer breakdown in the thread:\n\n1\\. Contract verifier = needed. Right now if you don't have the source, a P2SH address is opaque. We verify by reconstruction on the client (derive the expected P2SH from known params + compiled script, refuse to act if it doesn't match what's on chain). That pattern is solid but requires the client to already have the source.\n\n2\\. Re: State decoder / CovenantID tracking. We've drafted (not yet filed) a feature request for a getUtxosByCovenantId RPC on rusty-kaspa. Right now the only query surface is getUtxosByAddresses, which means we have to pre-derive every possible P2SH address or maintain our own registry. CovenantID already survives state transitions at the protocol level so the missing piece is an RPC that lets you query by it. That alone would eliminate our registry as a hard dependency and let any explorer or wallet follow token state generically.\n\n3\\. General-purpose interaction surface? A fungible token and an escrow have fundamentally different state layouts and entrypoints. Trying to unify them into one abstract interaction layer would produce something too generic to be useful. But standardizing the pattern, ie... every protocol type publishes a reader spec (how to find and decode state) and a writer spec (how to build valid transitions) while letting the content vary per protocol, that's tractable. For KCC20 specifically, the reader/writer split maps directly to what we built: reader = address derivation + UTXO query + state decode, writer = sigscript assembly + tx construction + signing.\n\nIn our specific case: the address-change-on-state-transition issue isn't just a wallet problem, it's a UX wall. When a token gets listed for sale, the UTXO moves to a new P2SH address (because forSale flipped from 0 to 1). To a user listing tokens for sale and watching an explorer, their funds \"disappeared\" to an unknown address. CovenantID indexing would fix the explorer story too, not just wallets. Running on testnet10 for now : [bitphoque.org](http://bitphoque.org)  https://github.com/kyle4nia/BitPhoque",
-    "url": "https://kas-smiths.org/t/-/41/10"
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/10"
   },
   {
     "post_id": 94,
@@ -712,7 +701,7 @@
     "created_at": "2026-07-08T12:53:49Z",
     "updated_at": "2026-07-09T08:19:46Z",
     "raw": "I want to clarify first that I am not a technical person. I am someone who is very interested in Kaspa’s technology, but I did not personally write or fully understand all the technical parts myself.\n\nTo be honest, I relied heavily on GPT-5.5 to help me build these sites. Because of that, I want to be careful and ask the community to check whether the information is actually correct and useful, or whether it is just AI-generated noise.\n\nI recently made two Kaspa-related websites:\n\n1. **Kaspa Dice ZK / Covenant Demo**\n\n    https://02163856.xyz/dice\n\n    This is an educational dice rolling demo using Groth16 ZK proof and covenant concepts, with TN10 and mainnet support.\n\n2. **Kaspa One Stop**\n\n    https://02163856.xyz\n\n    This one is still in progress. The idea was to create a simple information hub for Kaspa-related explanations, links, and educational content, but I am not technical enough to judge whether it is actually on the right track.\n\nI know both sites need a lot of improvement in design, structure, wording, accuracy, and explanation. What I really want to know is whether the second site has any real educational value, or whether it is fundamentally wrong, misleading, or not useful.",
-    "url": "https://kas-smiths.org/t/-/47/1"
+    "url": "https://kas-smiths.org/t/looking-for-honest-feedback-from-the-kaspa-community/47/1"
   },
   {
     "post_id": 114,
@@ -723,7 +712,7 @@
     "created_at": "2026-07-10T16:00:53Z",
     "updated_at": "2026-07-10T16:00:53Z",
     "raw": "This is probably premature and extremely high-level, but hey a man can dream :slight_smile:\n\nI was thinking that it would be cool to come up with a standard for a permissionless covenant-based prediction market.\n\n* Anyone should be able to post a new market specifying a question (e.g. “will France win the World Cup”) and an expiry date. This should be contained in a covenant state, and possibly replicated in plain text in the payload field so that all participants are immediately aware of the new market.\n* Anyone should be able to mint new tokens against any existing market. The minting operation enforces that one always mints an equal number of YES and NO tokens, paying half the winning payout for each pair, ensuring the market solvability.\n* The tokens would follow the KCC standard and be immediately tradeable on the DEXes that support the standard.\n* The market is then resolved by voting. After the defined maturity, all token holders vote for the true outcome during a given time window, after which the holders of the winning side can claim the full payout.\n* Since there’s always an equal number of YES and NO tokens in circulation, if at least one token holder on the losing side votes honestly (while everyone else votes opportunistically), then the market resolves to its “true” outcome. This is not perfect, but no system is after all, and the resolution risk is simply part of the game.\n\nThat's it, of course that requires finalized KCC and DEX standards and maybe some extra covenant magic, I just wanted to throw it out there to test the community interest!",
-    "url": "https://kas-smiths.org/t/-/57/1"
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/1"
   },
   {
     "post_id": 136,
@@ -734,7 +723,7 @@
     "created_at": "2026-07-11T11:30:04Z",
     "updated_at": "2026-07-11T11:30:04Z",
     "raw": "[quote=\"bitcat, post:1, topic:57\"]\n* Since there’s always an equal number of YES and NO tokens in circulation, if at least one token holder on the losing side votes honestly (while everyone else votes opportunistically), then the market resolves to its “true” outcome. This is not perfect, but no system is after all, and the resolution risk is simply part of the game.\n[/quote]\n\nI wonder if there could be a seperate reward/penatly stake for honest voting, in addition to the bet stakes. And then to slash if you provide an answer which is not the majority vote, or even when not providing an answer.\n\nThe problem ofc is the correlation between the stake you have in the bet and your voting power, I guess this is an inherit, unavoidable flaw(?).",
-    "url": "https://kas-smiths.org/t/-/57/2"
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/2"
   },
   {
     "post_id": 137,
@@ -745,7 +734,7 @@
     "created_at": "2026-07-11T12:20:43Z",
     "updated_at": "2026-07-11T12:20:43Z",
     "raw": "Yes, one can imagine several mechanisms. I tend to prefer rewards over penalties/slashing. For example, the losing tokens could enter a lottery where a random holder gets a big payout, but only if they voted honestly (=same as the majority). \n\nAlso, you can make it so that voting is necessary to get any payout (so you can expect that almost all the winning side votes, while some losers will vote too in order to participate in the lottery).\n\nOf course it's not completely immune to manipulation but I would expect that at least for liquid markets and noncontroversial bets, it would generally converge to the truth (sometimes much better than centralized solutions which have recently failed spectacularly in a few cases).",
-    "url": "https://kas-smiths.org/t/-/57/3"
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/3"
   },
   {
     "post_id": 129,
@@ -756,7 +745,7 @@
     "created_at": "2026-07-11T10:06:46Z",
     "updated_at": "2026-07-11T10:06:46Z",
     "raw": "I built a working shielded pool on Kaspa L1 using the Toccata verifyGroth16 opcode — live on testnet-10, full deposit → withdraw → private-payout cycle under real consensus. It works great, with one recurring wall: Groth16 needs a fresh per-circuit trusted setup. Every new privacy circuit means organizing another multi-party ceremony, which is a real barrier to permissionless ZK app development on Kaspa.\n\nProposal: expose a low-level BN254 pairing-check (+ MSM) opcode — the way Ethereum did with EIP-197 — rather than more packaged verifiers. One small, auditable primitive lets covenants verify KZG openings, PLONK, and Groth16 (and future schemes) in script. Critically, KZG/PLONK use a universal, updatable setup — so we could inherit Ethereum's existing KZG ceremony (140k+ contributors) instead of running a new ceremony per circuit.\n\nWhy not STARKs: proofs are tens–hundreds of KB and verification is heavy — rough for an L1 where every node verifies every tx at \\~10 BPS. Small-proof/cheap-verify is what L1 wants; this keeps that.\n\nWhy not Halo2-IPA: transparent, but runs over Pasta curves with recursive IPA — doesn't reduce to a BN254 pairing, so it doesn't fit the existing precompile. Halo2+KZG does fit, via the same primitive.\n\nIs a pairing/MSM primitive on anyone's roadmap? Would core devs entertain it post-Toccata?",
-    "url": "https://kas-smiths.org/t/-/64/1"
+    "url": "https://kas-smiths.org/t/idea-a-bn254-pairing-check-opcode-unlock-kzg-plonk-universal-trusted-setup/64/1"
   },
   {
     "post_id": 140,
@@ -767,7 +756,7 @@
     "created_at": "2026-07-11T13:44:46Z",
     "updated_at": "2026-07-11T13:44:46Z",
     "raw": "Since my earlier post (shielded pool on TN10 via `verifyGroth16` / `0x20`), we built out the other side too: a full post-quantum shielded pool **and** a proof-carrying KAS price oracle on **`0x21` (RISC0 succinct)** — both live on testnet-10, proven under real consensus. Having now used *both* Toccata ZK precompiles in anger, I can put real numbers on the gap that motivates this ask. (All prototype / unaudited / testnet.)\n\nSee it here..https://kaspa-app.vercel.app/\n\n## Two verifiers, one gap\n\nToccata gives us two ZK paths, and they sit at opposite corners. A third option (KZG/PLONK) would land exactly where an L1 wants:\n\n|  | `0x20` Groth16 | `0x21` RISC0 STARK | **KZG / PLONK (proposed primitive)** |\n|----|----|----|----|\n| proof size | \\~128–256 B | \\~217 KB (seal) | \\~hundreds of B |\n| verify cost | \\~140k grams | \\~250k grams | \\~a few pairings (≈ Groth16) |\n| tx mass | small | **\\~483k** (≈ half the 500k block limit) | small |\n| on-chain fee | \\~0.15 KAS | **\\~0.5 KAS** | \\~0.15 KAS |\n| trusted setup | **per-circuit ceremony** | none | **universal, updatable (once, reused)** |\n| post-quantum | no | yes | no |\n\nThe measured `0x21` figures are from the pool/oracle running now: a single succinct verify is \\~250k grams, the tx mass is **\\~483k** (near the 500k per-block compute limit — one verify ≈ **half a block**), the seal is **\\~217 KB**, and the on-chain fee is **\\~0.5 KAS**.\n\nSo the gap is precise: `0x20` is small and cheap but needs a **fresh multi-party ceremony per circuit** — the real barrier to permissionless ZK app dev. `0x21` needs no ceremony but is **too heavy for high-throughput or per-tx** use. **KZG/PLONK give you `0x20`'s cost profile *with* a universal, updatable setup** — you run one ceremony, ever, and reuse it across all circuits. That's the missing third option.\n\n## The ask: a low-level pairing-check + MSM primitive\n\nRather than more packaged verifiers, expose the primitive — a pairing check plus multi-scalar-multiplication, the way Ethereum did with EIP-196/197 (BN254) and EIP-2537 (BLS12-381). One small, auditable opcode-pair lets covenants verify **KZG openings, PLONK, Groth16, and future schemes** in script — and, critically, **inherit an existing universal ceremony** instead of organizing a new one per circuit.\n\n## Curve decision (this is the crux, so let me be explicit)\n\n* **BN254 / alt_bn128** (EIP-196/197): cheapest verify, the curve most tooling targets. Universal ceremonies already exist — **Perpetual Powers of Tau, Aztec Ignition**. Downside: security is now **\\~100–110-bit** after exTNFS, not 128.\n* **BLS12-381** (EIP-2537): the curve of Ethereum's **EIP-4844 KZG \"Summoning\" ceremony (\\~140k contributors)** and \\~**128-bit** security — at \\~**2–4× the op cost** of BN254.\n\nI'd lean **BN254** to keep verify cheap (the whole point on an L1 where every node verifies every tx at \\~10 BPS) and inherit Perpetual Powers of Tau. If the \\~100-bit floor is a concern for a base-layer primitive, **BLS12-381** buys the bigger ceremony and margin at a cost. Either fits the same primitive — I'd rather the debate be *which curve* than *packaged verifier vs primitive*.\n\n## Why not just lean on `0x21` (STARKs)\n\nWe do — it's the right tool for post-quantum and no-setup, and we've shipped on it. But at **\\~half a block and \\~0.5 KAS per verify**, it can't be the substrate for cheap, high-frequency, or per-tx ZK. A KZG/PLONK verify is a few hundred bytes and a handful of pairings. They're **complements, not substitutes**.\n\n## Why not Halo2-IPA\n\nTransparent (no setup), but it runs over Pasta with recursive IPA — it doesn't reduce to a BN254/BLS pairing, so it can't share this primitive. **Halo2+KZG** *does* fit, via the same opcode.\n\n## Question for core devs\n\nIs a pairing + MSM primitive anywhere on the roadmap post-Toccata? And if so, is the curve question (**BN254** for cost vs **BLS12-381** for the 4844 ceremony + security margin) open for input? Happy to bring the shielded-pool + oracle work as concrete driving use-cases.",
-    "url": "https://kas-smiths.org/t/-/64/2"
+    "url": "https://kas-smiths.org/t/idea-a-bn254-pairing-check-opcode-unlock-kzg-plonk-universal-trusted-setup/64/2"
   },
   {
     "post_id": 143,
@@ -778,7 +767,7 @@
     "created_at": "2026-07-11T18:04:43Z",
     "updated_at": "2026-07-11T18:05:04Z",
     "raw": "Discussions about Kas-Smiths itself: structure, moderation, branding, design, categories, and forum improvements.",
-    "url": "https://kas-smiths.org/t/-/68/1"
+    "url": "https://kas-smiths.org/t/about-the-meta-category/68/1"
   },
   {
     "post_id": 150,
@@ -789,7 +778,7 @@
     "created_at": "2026-07-11T20:44:55Z",
     "updated_at": "2026-07-11T20:44:55Z",
     "raw": "Thanks @Manyfest  I’ve been thinking about the branding for **Kaspa Smiths**, and wanted to share a concept for discussion.\n\nOne of my first suggestions was moving from **KAS Smiths** to **Kaspa Smiths**. Similar to how Ethereum uses **Ethereum Magicians**, I think using the full protocol name immediately communicates that this is about the entire Kaspa ecosystem and technology, not just the **KAS** asset. It also avoids the “KASMYTH” pronunciation that some people naturally fall into.\n\nObviously KAS smiths as a url still works  \n\nThe icon builds on the original anvil mark that launched the project, but evolves it by incorporating the official Kaspa **reverse K** directly into the anvil. The addition of the flame brings more life, energy, and symbolism. Smiths don’t just build. They forge. They refine. They shape raw materials into useful tools. That feels like a fitting metaphor for developers building standards, protocols, wallets, applications, and infrastructure across the Kaspa ecosystem.\n\nThe goal was to create something that feels:\n\n* Instantly recognizable.\n* Connected to Kaspa’s existing visual identity.\n* Strong as a standalone icon.\n* Flexible across websites, social media, merchandise, and developer events.\n* Rhubarb is known for creating iconic, simple, legacy brands. \n\nRather than replacing the project’s initial placeholder identity, the intent is to evolve what already exists into a more polished and memorable community brand.\n\nCurious to hear what everyone thinks. Suggestions and critiques are more than welcome.\n\nSee link to concept. \n\nhttps://rhubarbmedia.ca/project/kaspa-smiths/",
-    "url": "https://kas-smiths.org/t/-/68/2"
+    "url": "https://kas-smiths.org/t/about-the-meta-category/68/2"
   },
   {
     "post_id": 151,
@@ -800,6 +789,28 @@
     "created_at": "2026-07-11T21:52:43Z",
     "updated_at": "2026-07-11T21:52:43Z",
     "raw": "A \\`getUtxosByCovenantId\\` RPC method that returns all live UTXOs carrying a given \\`covenantId\\`. This would let covenant token projects discover their on-chain state without maintaining a separate indexer. look up all holders, all listed tokens, total circulating supply for any covenant token without a separate backend ; a wallet that knows its covenant ID can find all its UTXOs in one call instead of scanning addresses; watch a covenant's on-chain activity without subscribing to every block",
-    "url": "https://kas-smiths.org/t/-/74/1"
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/1"
+  },
+  {
+    "post_id": 154,
+    "topic_id": 76,
+    "post_number": 1,
+    "username": "Kaspa",
+    "display_name": "",
+    "created_at": "2026-07-12T14:58:06Z",
+    "updated_at": "2026-07-12T18:48:34Z",
+    "raw": "Finally, I'm no longer muted. Though honestly, I don't even know what to say anymore.\n\nPeople discuss the ecosystem everywhere except on KSocial — the decentralized network built by Kaspa itself — and then keep asking why the ecosystem isn't active.\n\nEvery opinion, every post, and every message shared there would be recorded on-chain, becoming visible proof of ecosystem activity and engagement.\n\nNow... well, here we are. 😅",
+    "url": "https://kas-smiths.org/t/how-to-understand-and-participate-in-the-kaspa-ecosystem/76/1"
+  },
+  {
+    "post_id": 155,
+    "topic_id": 76,
+    "post_number": 2,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-12T18:48:19Z",
+    "updated_at": "2026-07-12T18:48:19Z",
+    "raw": "We want to reach people and developers from outside the ecosystem, encourage anyone to join, and make the process of getting involved as easy as possible.\n\nUsing a Kaspa specific product is cool, but it misses the point. Discourse is built for exactly this kind of open discussion and collaboration.",
+    "url": "https://kas-smiths.org/t/how-to-understand-and-participate-in-the-kaspa-ecosystem/76/2"
   }
 ]
