@@ -341,6 +341,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/33"
   },
   {
+    "post_id": 161,
+    "topic_id": 8,
+    "post_number": 34,
+    "username": "Brociferous",
+    "display_name": null,
+    "created_at": "2026-07-12T23:52:49Z",
+    "updated_at": "2026-07-12T23:52:49Z",
+    "raw": "For the record, my kUSD references were not in relation to any real product or project.  I am not a business, I am simply a researcher.  The names of any tokens are generic names I used in my code repo to help understand the capabilities and limitations of the SilverScript process.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/34"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -693,6 +704,17 @@
     "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/10"
   },
   {
+    "post_id": 164,
+    "topic_id": 41,
+    "post_number": 11,
+    "username": "token-depot",
+    "display_name": "Todd Desiato",
+    "created_at": "2026-07-13T04:03:19Z",
+    "updated_at": "2026-07-13T04:03:19Z",
+    "raw": "The KCC20 v1.1 review draft has been expanded to incorporate the latest open-ICC interoperability work and the KCC20-Regulated architecture being developed in Compliance Wallet. The update adds a versioned common-state and opaque-extension model, defines policy registries, mirrors, and distributed Policy Proof Packets, and removes the need for one central policy server—or one globally consumed registry UTXO—to authorize every transfer. It also strengthens descriptor, Reader, Writer, regulated-control, and conformance requirements while leaving the final non-membership, sharding, and proof algorithms open for Testnet validation and community review.\n\n[KCC20_Specification_v1_1_Open_ICC_Regulated_Tracked_Changes.docx](https://www.dropbox.com/scl/fi/oq8m998ntywa79s2y9gkp/KCC20_Specification_v1_1_Open_ICC_Regulated_Tracked_Changes.docx?rlkey=eltwiwmkngjajalcr2adze0kd&dl=0)",
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/11"
+  },
+  {
     "post_id": 94,
     "topic_id": 47,
     "post_number": 1,
@@ -812,5 +834,60 @@
     "updated_at": "2026-07-12T18:48:19Z",
     "raw": "We want to reach people and developers from outside the ecosystem, encourage anyone to join, and make the process of getting involved as easy as possible.\n\nUsing a Kaspa specific product is cool, but it misses the point. Discourse is built for exactly this kind of open discussion and collaboration.",
     "url": "https://kas-smiths.org/t/how-to-understand-and-participate-in-the-kaspa-ecosystem/76/2"
+  },
+  {
+    "post_id": 158,
+    "topic_id": 76,
+    "post_number": 3,
+    "username": "Kaspa",
+    "display_name": "",
+    "created_at": "2026-07-12T19:31:46Z",
+    "updated_at": "2026-07-12T19:31:46Z",
+    "raw": "Looking back at the history of cryptocurrency, whether it was Satoshi Nakamoto or Vitalik Buterin, both created their own communication platforms to lead the development of their communities and ecosystems.\n\nThe essence of openness is to attract people to come in, not to build everything on other platforms, because this is also about brand identity and network effect.\n\nSatoshi Nakamoto’s most well-known platform was Bitcoin.org, while Vitalik Buterin was closely associated with Bitcoin Magazine, which he co-founded.\n\nWhat about Kaspa? Discord? Telegram?\n\nPeople will not learn about a decentralized network this way, especially when that network already has its own native posting platform.🧐",
+    "url": "https://kas-smiths.org/t/how-to-understand-and-participate-in-the-kaspa-ecosystem/76/3"
+  },
+  {
+    "post_id": 157,
+    "topic_id": 78,
+    "post_number": 1,
+    "username": "Rhubarbarian",
+    "display_name": null,
+    "created_at": "2026-07-12T19:23:14Z",
+    "updated_at": "2026-07-12T19:23:14Z",
+    "raw": "Thanks @Manyfest I’ve been thinking about the branding for **Kaspa Smiths**, and wanted to share a concept for discussion.\n\nOne of my first suggestions was moving from **KAS Smiths** to **Kaspa Smiths**. Similar to how Ethereum uses **Ethereum Magicians**, I think using the full protocol name immediately communicates that this is about the entire Kaspa ecosystem and technology, not just the **KAS** asset. It also avoids the “KASMYTH” pronunciation that some people naturally fall into.\n\nObviously KAS smiths as a url still works\n\nThe icon builds on the original anvil mark that launched the project, but evolves it by incorporating the official Kaspa **reverse K**directly into the anvil. The addition of the flame brings more life, energy, and symbolism. Smiths don’t just build. They forge. They refine. They shape raw materials into useful tools. That feels like a fitting metaphor for developers building standards, protocols, wallets, applications, and infrastructure across the Kaspa ecosystem.\n\nThe goal was to create something that feels:\n\n* Instantly recognizable.\n* Connected to Kaspa’s existing visual identity.\n* Strong as a standalone icon.\n* Flexible across websites, social media, merchandise, and developer events.\n* Rhubarb is known for creating iconic, simple, legacy brands.\n\nRather than replacing the project’s initial placeholder identity, the intent is to evolve what already exists into a more polished and memorable community brand.\n\nCurious to hear what everyone thinks. Suggestions and critiques are more than welcome.\n\n[Link to A Concept](https://rhubarbmedia.ca/project/kaspa-smiths/)",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/1"
+  },
+  {
+    "post_id": 159,
+    "topic_id": 78,
+    "post_number": 2,
+    "username": "Kaspa",
+    "display_name": "",
+    "created_at": "2026-07-12T19:52:24Z",
+    "updated_at": "2026-07-12T19:52:24Z",
+    "raw": "This design looks really good. It would be even better if we build it on the Kaspa network, requiring every post to spend KAS. On top of that, we need to create an account on X to promote it.🧐",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/2"
+  },
+  {
+    "post_id": 160,
+    "topic_id": 78,
+    "post_number": 3,
+    "username": "Brociferous",
+    "display_name": null,
+    "created_at": "2026-07-12T23:48:48Z",
+    "updated_at": "2026-07-13T03:30:51Z",
+    "raw": "I like KasSmith more than Kaspa Smith",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/3"
+  },
+  {
+    "post_id": 162,
+    "topic_id": 78,
+    "post_number": 4,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-13T00:25:55Z",
+    "updated_at": "2026-07-13T00:25:55Z",
+    "raw": "IMO I prefer the simplicity of what @Manyfest has created currently and see no reason to 'brand' this.\n\nTBH i would prefer if the page actually drops the turquoise themed colour all together in favour for something else and forge it's own path (excuse the pun).\n\nMy preference is for things to stand on their own and have their own distinct colours/ style.",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/4"
   }
 ]
