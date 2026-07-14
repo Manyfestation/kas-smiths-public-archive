@@ -550,6 +550,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/9"
   },
   {
+    "post_id": 176,
+    "topic_id": 15,
+    "post_number": 10,
+    "username": "Ross",
+    "display_name": null,
+    "created_at": "2026-07-14T03:37:21Z",
+    "updated_at": "2026-07-14T03:40:42Z",
+    "raw": " I'm the author of x402 PR #1729 (the Kaspa exact scheme based on standard native transfers). After discussing consolidation, I've closed it in favour of a single coordinated proposal — with one integration request below.\n\nThanks for reaching out. I fully agree that Kaspa should have one coordinated upstream proposal rather than competing specifications — that's why I've already closed #1729, and I support consolidating around your submission.\n\nThat said, I'd like to ask for one thing to be integrated: the substance of #1729 — an exact variant based on standard native transfers, with no KIP-10 reservation required — included in the consolidated spec as the baseline. My reasoning:\n\n1\\. Adoption cost. The reservation-backed scheme requires merchants to operate borrow-UTXO inventory and a reservation provider. A standard-transfer variant works with nothing more than a receiving address in a config. Most x402 adopters (API operators, AI-agent platforms) won't be Kaspa specialists, and this is where the entry barrier gets decided.\n\n2\\. Client compatibility. Standard transfers can be signed today by any existing wallet or the WASM SDK. Agent-side tooling will support the simplest form first.\n\n3\\. Audit surface. Standard transfers ride entirely on rusty-kaspa's standard validation path, so the audit scope shrinks to server logic. That gives the spec a production-usable entry point on mainnet without waiting for the covenant paths to be audited.\n\n4\\. Risk surface. The baseline avoids the reservation-specific issues — the verify-to-broadcast race on shared inventory and the top-up griefing vector that the spec itself mitigates only by operator convention. This isn't a proposal to replace the reservation scheme. Having both variants — standard transfer as the baseline, reservation-backed as an optimization for UTXO efficiency — seems like the best outcome for both adoption and safety.\n\nI can contribute the spec text and schemas from #1729 as-is and do the integration work myself. I'd also be glad to review the implementation, and I'll take you up on the walk-through offer.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/10"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
@@ -658,17 +669,6 @@
     "updated_at": "2026-07-07T17:49:20Z",
     "raw": "Agreed,  nothing that can't be trusted should ever move a users money. But what if the AI doesnt hold a key, never signs, and never creates the thing the user approves. It only suggests what to do, picking from a fixed list of allowed actions.  Everything after that is fixed and predictable: The user approves the real thing, and the covenant blocks anything outside its rules no matter what.\nNot proposing claude, chatgpt, but rather open source which runs in your own environment",
     "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/6"
-  },
-  {
-    "post_id": 86,
-    "topic_id": 41,
-    "post_number": 7,
-    "username": "KaspaHolderOG",
-    "display_name": "Mi𐤊e Anderson",
-    "created_at": "2026-07-07T19:56:31Z",
-    "updated_at": "2026-07-07T19:56:31Z",
-    "raw": "We've been building on covenants since Toccata landed, and this is a question we had to answer in production rather than in theory — so here's what we learned shipping two covenant apps to mainnet: a non-custodial vault (Kaspa Safe) and a P2P escrow with an AI-mediated dispute flow (Kaspa Escrow). Both are pure covenant + Silverscript, non-custodial, open beta.\n\nOn \"which actor should track state and build valid txs\": our answer so far is the app is the actor, and deliberately so. We didn't wait for wallets to integrate a per-covenant SDK — we shipped the wallet-equivalent inside the app:\n\n* tx-building runs client-side (our Silverscript covenant compiled to a WASM core in the browser), so the covenant-valid spend is assembled where the keys are, and the keys never leave the browser;\n* a thin server (\"watcher\") only follows the covenant's on-chain state and relays events — it holds no keys and cannot move funds;\n* the browser re-derives the covenant's P2SH address from the deal params and refuses to act if the server's address differs — so \"verify the covenant\" is done by reconstruction, not by trusting our server.\n\nThat gets one app to production. It does not generalize — which is exactly the gap this thread is pointing at.\n\nThe gap, concretely, isn't a missing network actor — it's a missing standard interface. Two pieces:\n\n1. A machine-readable covenant descriptor. For any third party (wallet, explorer, indexer) to build a valid spend it needs the exact param layout, the entrypoints, and the Silverscript source (or its hash) to re-derive P2SH(BLAKE2B(redeem_script)) and reconstruct the witness. Today only our own builder knows that layout. If a covenant could publish a descriptor — params + entrypoints + source hash — in a standard format, a generic wallet could serve it without a bespoke SDK, and verify it by reconstruction the same way our client does.\n2. CovenantID continuation (the OpAuthOutputCount/OpAuthOutputIdx direction you mention) — this is the single biggest one for us. A state transition changes the script, so it changes the address. Our escrow moves ACTIVE → DISPUTED, which lands on a new P2SH address. We handle it today by pre-deriving both addresses from the same params at deal creation and having our watcher follow the hop — but to any third-party wallet or explorer that transition looks like \"funds left to an unrelated address.\" The lineage is invisible. A covenant-id that survives the transition is the precondition for wallets and explorers to follow covenant state generically. Strong +1 to pushing that.\n\nA few field notes:\n\n* The state-transition-changes-address issue is more of an indexing/UX wall than a protocol one — users and explorers see a \"mystery move.\" CovenantID fixes the indexing story, not just the scripting.\n* Non-custodial key handling (recovery sheets, \"your key never leaves the browser\") is a real part of the wallet gap, but it's orthogonal to the covenant standard — worth keeping the two separate in any design.\n* Verify-by-reconstruction (client recomputes the address from params + source and refuses on mismatch) has been our anti-parameter-substitution defense and works well; a standard descriptor would make that portable across wallets.\n\nHappy to compare notes in depth — we've hit most of these in production and would gladly feed real-world constraints into whatever standard emerges. Both apps are open beta if useful as reference cases (safe.officeforge.co, escrow.officeforge.co); the covenants and the offline tools are open source.",
-    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/7"
   },
   {
     "post_id": 88,
@@ -889,5 +889,104 @@
     "updated_at": "2026-07-13T00:25:55Z",
     "raw": "IMO I prefer the simplicity of what @Manyfest has created currently and see no reason to 'brand' this.\n\nTBH i would prefer if the page actually drops the turquoise themed colour all together in favour for something else and forge it's own path (excuse the pun).\n\nMy preference is for things to stand on their own and have their own distinct colours/ style.",
     "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/4"
+  },
+  {
+    "post_id": 165,
+    "topic_id": 78,
+    "post_number": 5,
+    "username": "michaelsutton",
+    "display_name": "Michael Sutton",
+    "created_at": "2026-07-13T08:08:15Z",
+    "updated_at": "2026-07-13T08:11:13Z",
+    "raw": "\n[quote=\"elldeeone, post:4, topic:78\"]\nIMO I prefer the simplicity of what @Manyfest has created currently and see no reason to ‘brand’ this.\n\n[/quote]\n\n+100. I think the same. The current icon is beautiful and in general this shall ideally remain a raw and unpolished builder forum",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/5"
+  },
+  {
+    "post_id": 166,
+    "topic_id": 78,
+    "post_number": 6,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-13T08:22:25Z",
+    "updated_at": "2026-07-13T08:22:25Z",
+    "raw": "Interesting suggestion, I just \"went with the default\" of going turquoise. It worth reconsidering.",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/6"
+  },
+  {
+    "post_id": 169,
+    "topic_id": 78,
+    "post_number": 7,
+    "username": "Rhubarbarian",
+    "display_name": null,
+    "created_at": "2026-07-13T14:13:36Z",
+    "updated_at": "2026-07-13T15:57:15Z",
+    "raw": "Thanks for the feedback.\n\nI took it back to the oringal. :slight_smile:\nKAS-SMITHS\nchanged it to the Kaspa \"K\"\nSame font as Many started with\n\nSome comments on your comments\n\nBack story: I approached Manyfest and he was (his words) \"excited\" to see what we could offer.\n@michaelsutton- We're not looking to \"polish\" anything.  Thats not what visual artists do, nor what brand building is about.  We are just offering a mark to help give it some legs/wings for when/if folks want to identify with it.  Branding is not about making things pretty it's a strategic, creative process to allow something to be expressed visually and simply over time.\n\n@elldeeone No matter what mark you give it - it's \"branded.\" :slight_smile:\nI just wanted injecting some human creative to it, plus Kaspa \"K\" vs AI generated.\nManyfest  - the mark can be expressed in B/W, reverse or kas colour - all up to you. What I've shown here is what we'd call the foundational brand family -all the same mark  - in horizontal format.  We can create the other formats if people want to take it and run.\nIf it is in a colour - I say it could be a dull red, cherry red, orange or bright Yellow (progression of colours when forging steal)  + silver (grey). all would be great!\n\nI can't code, but I can create marks that people embrace and can identify with. This is my talent and skills.  My gift to the project and to you. But like any gift given - it can be rejected.\nCheering you all on either way! Peace!\n\n![Kas-Smiths-3|333x500](upload://mp1e5FWDre33RGjZfHN8EE5Ew0x.png)",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/7"
+  },
+  {
+    "post_id": 170,
+    "topic_id": 78,
+    "post_number": 8,
+    "username": "bitcat",
+    "display_name": null,
+    "created_at": "2026-07-13T15:13:47Z",
+    "updated_at": "2026-07-13T15:13:47Z",
+    "raw": "It's pretty cool with the actual Kaspa logo.",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/8"
+  },
+  {
+    "post_id": 172,
+    "topic_id": 78,
+    "post_number": 9,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-14T00:31:44Z",
+    "updated_at": "2026-07-14T00:31:44Z",
+    "raw": "IMO i see no real need to change anything visually with the site.\n\nBTW the Kaspa K has been imagined in many different ways throughout the life of Kaspa. The first time was literally a backwards K so i don't see any reason to get hung up on what version is being displayed here.\n\nAnyway, just my opinion - do as you please.",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/9"
+  },
+  {
+    "post_id": 175,
+    "topic_id": 78,
+    "post_number": 10,
+    "username": "Karrrl",
+    "display_name": null,
+    "created_at": "2026-07-14T00:54:10Z",
+    "updated_at": "2026-07-14T00:54:10Z",
+    "raw": "For what it's worth **[Rhubarbarian](https://kas-smiths.org/u/rhubarbarian), I was ready to plaster my life with that flaming anvil design. For this sort of forum an official \"brand\" maybe isn't the right wording... but cool is cool and I would love to have some shwag with that flaming anvil design. You want to set up a fourthwall shop for it? You could earn a bit for the effort and I could proudly wear that design. Why can't we have options? Anyhoo... I really appreciate the work.**",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/10"
+  },
+  {
+    "post_id": 168,
+    "topic_id": 81,
+    "post_number": 1,
+    "username": "Kaspa",
+    "display_name": "",
+    "created_at": "2026-07-13T13:42:00Z",
+    "updated_at": "2026-07-13T13:42:00Z",
+    "raw": "I’ve been thinking about a question: what would happen if there were a fast, decentralized network built on Kaspa that also had strong privacy features?",
+    "url": "https://kas-smiths.org/t/a-privacy-coin-built-on-kaspa/81/1"
+  },
+  {
+    "post_id": 173,
+    "topic_id": 81,
+    "post_number": 2,
+    "username": "token-depot",
+    "display_name": "Todd Desiato",
+    "created_at": "2026-07-14T00:34:36Z",
+    "updated_at": "2026-07-14T00:34:36Z",
+    "raw": "KAS requires a public key. What did you have in mind for privacy?",
+    "url": "https://kas-smiths.org/t/a-privacy-coin-built-on-kaspa/81/2"
+  },
+  {
+    "post_id": 174,
+    "topic_id": 83,
+    "post_number": 1,
+    "username": "Karrrl",
+    "display_name": null,
+    "created_at": "2026-07-14T00:41:51Z",
+    "updated_at": "2026-07-14T00:41:51Z",
+    "raw": "The issue: a bunch of folks have been building from various  perspectives, backgrounds, and experiences. There could be potential discoveries and concepts that are in the blind spot of the core team. \n\nA possible solution: A jury pool that includes at least 1 high level dev and other volunteers could audit projects and then...; 1. point out design flaws 2. share knowledge like planned upgrades that will affect a project/ecosystem 3. help builders who are stuck 4. develop a community of knowledgeable builders... Plus (I think most important) learn of any novel ideas/tools/workflows that should shape the standards being discussed currently. Concurrently, the non-high level devs on the jury would learn in the intimate setting of a project audit. Rising seas raise all ships and in this case it's vital IMO as more knowledgeable ambassadors = more onboarding = more ambassadors = more onboarding...",
+    "url": "https://kas-smiths.org/t/would-a-project-audit-jury-be-a-good-implementation-for-kas-smiths-at-this-time/83/1"
   }
 ]
