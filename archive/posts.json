@@ -352,6 +352,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/34"
   },
   {
+    "post_id": 177,
+    "topic_id": 8,
+    "post_number": 35,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-14T13:34:16Z",
+    "updated_at": "2026-07-14T13:34:16Z",
+    "raw": "\nMost of the concerns and comments raised here were regarding specific KCC20 SilverScript implementations, which are not part of this discussion. \n\nI want to reiterate the goal of this proposal: Get feedback about what I argue to be the minimal abstract shape of a fungible-token-covenant-standard.\n\n\nAs we gather more clarity about covenant interaction, I become more assured in the proposal, and I intend to finalize and publish it next week under a relevant convention repo.\n\nBelow is a short summery of the proposal-\n\n#### A KCC20 covenant is a covenant which-\n\n1- Carries a state layout which begins with -\n```\n    byte[32] ownerIdentifier\n    byte identifierType\n    int amount\n```\n2- Includes a transfer entrypoint which expects these arguments-\n```\n    State[] newStates,\n    sig[] sigs,\n    byte[] witnesses\n```\n\nA token should publish a descriptor artifact which includes at minimum- \n- The contract's redeem script (prefix and suffix)\n- The transfer entrypoints indexes.\n\nIf the covenant extends the KCC20 state, it should also provide the state layout.\n\n3- A token can declare in its descriptor that he supports some known token extensions, which would inform about specific features it implements.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/35"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -957,6 +968,50 @@
     "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/10"
   },
   {
+    "post_id": 179,
+    "topic_id": 78,
+    "post_number": 11,
+    "username": "Rhubarbarian",
+    "display_name": null,
+    "created_at": "2026-07-14T16:40:55Z",
+    "updated_at": "2026-07-14T16:40:55Z",
+    "raw": "I think we could do various versions for this for sure.  Once a standard is set, we'll play and offer some options for those that want to proudly wear it.  I think this is where I see the need.  The platform is one thing, the movement of Kaspa Devs around the world offering ideas, code,is another.  Why not tie the 2 together around this.  Kaspa devs is Coll.  Kaspa Smiths or Kas Smiths is a story.",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/11"
+  },
+  {
+    "post_id": 180,
+    "topic_id": 78,
+    "post_number": 12,
+    "username": "Rhubarbarian",
+    "display_name": null,
+    "created_at": "2026-07-14T17:12:59Z",
+    "updated_at": "2026-07-14T17:12:59Z",
+    "raw": "Working with @Manyfest on it still... here's another simpler vibe, but back to a tru-er anvil and how it could be imaged for creative.\n\nHey @elldeeone  No one is \"hung up.\" At least, I'm not. :slight_smile:   You offer your gifts, we offers ours.  I respect your opinions and have always praised your offerings, so no need to make this idea and presentation out to be something it's not.  This is passion work.  We bring it here to present.  But we also see the benefit of a visual identity that people can use.  I'm thinking strategy, not just art here. \n\nAnd in the end - people will do what they like!  Maybe people will express Kas-Smiths in 100 ways - great!  (yes to flames, Karrrl!)  We just thought kicking it off would be of value.\n\nSide rant: Having served in blockchain projects since 2017, it's weird how the Devs and  process is revered and the creatives process and outputs are, at times, by some, downplayed or deemed not important.  ironically, when a project seems to struggle, it's often the different forms of creative \"teams\" that go under the bus! :slight_smile:\nI think we should see the skills and leadership offered in both camps as valuable.\nLong Live the Developers! Long Live the Story Tellers!\n\nPeace!\n\n![kasmiths-4|388x500](upload://gUh8777hpiNJO705icphsRPEgNT.jpeg)",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/12"
+  },
+  {
+    "post_id": 181,
+    "topic_id": 78,
+    "post_number": 13,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-14T17:41:13Z",
+    "updated_at": "2026-07-14T17:41:13Z",
+    "raw": "I appreciate your willingness to take part and contribute, it's nice to see other people wanting to get involved in this platfrom.\n\nI like the \"stronger\" anvil shape. I'll update it later tonight =]\n\nThank you!",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/13"
+  },
+  {
+    "post_id": 182,
+    "topic_id": 78,
+    "post_number": 14,
+    "username": "Rhubarbarian",
+    "display_name": null,
+    "created_at": "2026-07-15T00:41:10Z",
+    "updated_at": "2026-07-15T00:41:10Z",
+    "raw": "You are very welcome! Anything to bring more attention to the development efforts!",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/14"
+  },
+  {
     "post_id": 168,
     "topic_id": 81,
     "post_number": 1,
@@ -977,6 +1032,17 @@
     "updated_at": "2026-07-14T00:34:36Z",
     "raw": "KAS requires a public key. What did you have in mind for privacy?",
     "url": "https://kas-smiths.org/t/a-privacy-coin-built-on-kaspa/81/2"
+  },
+  {
+    "post_id": 178,
+    "topic_id": 81,
+    "post_number": 3,
+    "username": "Kaspa",
+    "display_name": "",
+    "created_at": "2026-07-14T15:24:32Z",
+    "updated_at": "2026-07-14T15:24:32Z",
+    "raw": "There’s a new thing called Zkas.",
+    "url": "https://kas-smiths.org/t/a-privacy-coin-built-on-kaspa/81/3"
   },
   {
     "post_id": 174,
