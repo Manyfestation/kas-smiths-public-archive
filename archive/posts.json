@@ -572,6 +572,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/10"
   },
   {
+    "post_id": 184,
+    "topic_id": 15,
+    "post_number": 11,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-15T14:56:50Z",
+    "updated_at": "2026-07-15T14:56:50Z",
+    "raw": "Thanks @Ross.\n\nI dug into how other x402 bindings support different ways of settling the same `exact` scheme. The [EVM binding](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_evm.md) supports EIP-3009, Permit2 and ERC-7710 through `extra.assetTransferMethod`, while [XRPL](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_xrpl.md) uses a similar approach for sequence and ticket-based payments. That led me to try a similar structure for Kaspa in alpha.8.\n\nKaspa now has one `exact` binding with an explicit profile.\n\n```\nprofile = \"standard-native\"  // default\nprofile = \"additive\"         // optional KIP-10\n```\n\n`standard-native` is the baseline you described. The on-chain payment is an ordinary native KAS transaction and requires no KIP-10 head inventory. It uses transaction primitives available through the WASM SDK, while the x402 layer provides the request authorisation and facilitator verification.\n\nThe more I’ve thought about the overall path forward, the more I think supporting both options may be the most useful approach. Some operators will want the simplest possible route, while others will benefit from KIP-10. Giving them that flexibility feels better than forcing everyone into one model, especially when other x402 bindings already support multiple transfer methods.\n\nThis does not make the KIP-10 audit surface disappear from the combined reference implementation, but operators who do not need it can use the standard path without operating head inventory. This is where I have landed for alpha.8, but I am interested in whether you see any problems with the profile split or how I have drawn the boundary between them.\n\nThe `additive` profile rolls payments into a reusable KIP-10 head instead of accumulating separate merchant UTXOs. Settlement recreates the same-script successor with exactly the advertised amount added. Issuing its 402 includes a challenge but does not exclusively reserve, spend or retire the head.\n\nThe transaction-level economic distinction is straightforward.\n\n```\nstandard-native  merchant output pays exactly the advertised amount\nadditive         same-script successor increases by exactly that amount\n```\n\nBoth profiles share the outer x402 flow, with separate transaction and state checks where their designs differ.\n\nThe repo is still changing heavily as I work through the design and contains substantially more implementation and test scaffolding than an upstream integration will need.\n\nJust for context, `kaspa-exact-v2` reflects the iteration history in this alpha repo. I do not think upstream needs to inherit that naming or all of the surrounding scaffolding. My current thought is to distil it into one clean Kaspa `exact` proposal using x402’s conventions, with `batch-settlement` remaining separate, but I am open to how that should ultimately be structured.\n\nThe [alpha.8 exact specification](https://kaspa-x402.org/v0.1.0-alpha.8/spec/kaspa-exact-v2.md) reflects where the design currently stands. I’d really value feedback or anything I may have missed. :folded_hands:",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/11"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
@@ -1054,5 +1065,16 @@
     "updated_at": "2026-07-14T00:41:51Z",
     "raw": "The issue: a bunch of folks have been building from various  perspectives, backgrounds, and experiences. There could be potential discoveries and concepts that are in the blind spot of the core team. \n\nA possible solution: A jury pool that includes at least 1 high level dev and other volunteers could audit projects and then...; 1. point out design flaws 2. share knowledge like planned upgrades that will affect a project/ecosystem 3. help builders who are stuck 4. develop a community of knowledgeable builders... Plus (I think most important) learn of any novel ideas/tools/workflows that should shape the standards being discussed currently. Concurrently, the non-high level devs on the jury would learn in the intimate setting of a project audit. Rising seas raise all ships and in this case it's vital IMO as more knowledgeable ambassadors = more onboarding = more ambassadors = more onboarding...",
     "url": "https://kas-smiths.org/t/would-a-project-audit-jury-be-a-good-implementation-for-kas-smiths-at-this-time/83/1"
+  },
+  {
+    "post_id": 183,
+    "topic_id": 84,
+    "post_number": 1,
+    "username": "michaelsutton",
+    "display_name": "Michael Sutton",
+    "created_at": "2026-07-15T14:29:21Z",
+    "updated_at": "2026-07-15T14:29:21Z",
+    "raw": "As a natural next step in the evolution of this forum, we created a kaspanet repo for converging on actual, formally defined specs and conventions:\n\nhttps://github.com/kaspanet/kccs\n\nEach **KCC** is meant to be a **Kaspa Call for a Convention**: a document specifying a convention around which independent ecosystem participants and implementations may converge. Topics may include covenant conventions, script ABIs, asset standards, wallet and indexer interoperability, based applications, and other areas where independent implementations benefit from convergence.\n\nUnlike KIPs, KCCs concern ecosystem agreement rather than changes to Kaspa core infrastructure -- for instance, the proposed KIP-12 browser-extension wallet API, originally in [PR 21](https://github.com/kaspanet/kips/pull/21) and continued in [PR 44](https://github.com/kaspanet/kips/pull/44), would now fit more naturally as a KCC.\n\n---\n\nThis is just the first step. The repo is meant to provide a home and coordination point for the effort, while leaving room for the process itself to be shaped by people willing to take serious initiative and responsibility.",
+    "url": "https://kas-smiths.org/t/kaspa-calls-for-conventions-new-kcc-repo/84/1"
   }
 ]
