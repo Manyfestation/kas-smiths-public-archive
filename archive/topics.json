@@ -138,7 +138,7 @@
     "category_id": 4,
     "category_name": "General",
     "created_at": "2026-07-07T14:19:04Z",
-    "last_posted_at": "2026-07-13T04:03:19Z",
+    "last_posted_at": "2026-07-16T16:27:16Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41"
   },
@@ -251,5 +251,27 @@
     "last_posted_at": "2026-07-15T14:29:21Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/kaspa-calls-for-conventions-new-kcc-repo/84"
+  },
+  {
+    "topic_id": 86,
+    "title": "Using Covenants for User verifications",
+    "slug": "using-covenants-for-user-verifications",
+    "category_id": 6,
+    "category_name": "Product Use Cases",
+    "created_at": "2026-07-16T13:35:34Z",
+    "last_posted_at": "2026-07-16T13:35:34Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/using-covenants-for-user-verifications/86"
+  },
+  {
+    "topic_id": 87,
+    "title": "A privacy-focused stablecoin",
+    "slug": "a-privacy-focused-stablecoin",
+    "category_id": 4,
+    "category_name": "General",
+    "created_at": "2026-07-16T15:15:36Z",
+    "last_posted_at": "2026-07-16T15:15:36Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/a-privacy-focused-stablecoin/87"
   }
 ]

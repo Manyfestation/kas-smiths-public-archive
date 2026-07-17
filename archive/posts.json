@@ -737,6 +737,17 @@
     "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/11"
   },
   {
+    "post_id": 188,
+    "topic_id": 41,
+    "post_number": 12,
+    "username": "IzioDev",
+    "display_name": "IzioDev",
+    "created_at": "2026-07-16T16:27:16Z",
+    "updated_at": "2026-07-16T16:27:56Z",
+    "raw": "[quote=\"bitcat, post:9, topic:41\"]\nit would be nice to have a type of node that keeps track of all covenants\n[/quote]\n\nWith my current maturity on the topic, me too I don't imagine the covenant ecosystem without an indexer (whether that's materialized as a node extension or a separate program doesn't really matter for our concern here) software that anyone can run.\n\n---\nI also take advantage of this reply to share an initial draft proposal of kcc-01 (covenant definition, concepts, bytes layout and abi): https://github.com/kaspanet/kccs/pull/3/changes",
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/12"
+  },
+  {
     "post_id": 94,
     "topic_id": 47,
     "post_number": 1,
@@ -1076,5 +1087,27 @@
     "updated_at": "2026-07-15T14:29:21Z",
     "raw": "As a natural next step in the evolution of this forum, we created a kaspanet repo for converging on actual, formally defined specs and conventions:\n\nhttps://github.com/kaspanet/kccs\n\nEach **KCC** is meant to be a **Kaspa Call for a Convention**: a document specifying a convention around which independent ecosystem participants and implementations may converge. Topics may include covenant conventions, script ABIs, asset standards, wallet and indexer interoperability, based applications, and other areas where independent implementations benefit from convergence.\n\nUnlike KIPs, KCCs concern ecosystem agreement rather than changes to Kaspa core infrastructure -- for instance, the proposed KIP-12 browser-extension wallet API, originally in [PR 21](https://github.com/kaspanet/kips/pull/21) and continued in [PR 44](https://github.com/kaspanet/kips/pull/44), would now fit more naturally as a KCC.\n\n---\n\nThis is just the first step. The repo is meant to provide a home and coordination point for the effort, while leaving room for the process itself to be shaped by people willing to take serious initiative and responsibility.",
     "url": "https://kas-smiths.org/t/kaspa-calls-for-conventions-new-kcc-repo/84/1"
+  },
+  {
+    "post_id": 186,
+    "topic_id": 86,
+    "post_number": 1,
+    "username": "dxthomas",
+    "display_name": null,
+    "created_at": "2026-07-16T13:35:34Z",
+    "updated_at": "2026-07-16T13:38:21Z",
+    "raw": "I am building a concept-driven educational app.  Can I interface with the Kaspa Network to validate a users security level before allowing them access to “need to access” content?  How? The mechanism?",
+    "url": "https://kas-smiths.org/t/using-covenants-for-user-verifications/86/1"
+  },
+  {
+    "post_id": 187,
+    "topic_id": 87,
+    "post_number": 1,
+    "username": "Kaspa",
+    "display_name": "",
+    "created_at": "2026-07-16T15:15:36Z",
+    "updated_at": "2026-07-16T15:15:36Z",
+    "raw": "Existing privacy coins are currently quite volatile. This leads to an interesting question: Would it be possible, and would it make sense, to create a privacy-focused stablecoin?",
+    "url": "https://kas-smiths.org/t/a-privacy-focused-stablecoin/87/1"
   }
 ]
