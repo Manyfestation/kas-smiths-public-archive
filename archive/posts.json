@@ -583,6 +583,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/11"
   },
   {
+    "post_id": 189,
+    "topic_id": 15,
+    "post_number": 12,
+    "username": "Ross",
+    "display_name": null,
+    "created_at": "2026-07-17T09:44:30Z",
+    "updated_at": "2026-07-17T09:45:33Z",
+    "raw": "Thanks. I really appreciate how quickly and thoroughly you turned this around.\n\nI've been working on a Rust implementation of the v2 binding (server/facilitator side — very much in progress), deliberately from the spec text alone rather than the TypeScript packages, since that seemed like the most useful way to test the spec as a spec. A few places where I got stuck or wasn't sure I was reading things correctly. Quite possibly these are my misreadings, so please correct me where I'm wrong:\n\n1\\. Recomputing the transaction id and authorization digest. This is the one place my implementation is currently stuck at a structural check rather than full cryptographic verification. I couldn't find a normative definition of kaspa-sdk-safe-json-v2.0.0 beyond the name (the schema types transaction as an opaque string), and the exact-profile vectors pin the expected transactionIds — a great end-to-end check — but don't carry a serialized hash-preimage the way the tx-v1 batch vectors do. The request-authorization digest is the same: the fixture ships the final digest and signature but no preimage, and the general digest conventions in  kaspa-x402-v1.md (UTF-8 strings, \\_le64 concatenation) appear not to apply here — as far as I can tell from exact-authorization.ts, the actual construction is SHA-256 over key-sorted canonical JSON. Is that reading correct? For now my verifier enforces the authorization structurally (version, digest/signature shapes, expiry) because I can't recompute the digest independently. If preimage fixtures or a short digest-layout section (like the batch profile already has) were ever added, I'd wire them in the same day — and I'd gladly draft that text for your review if it would save you time.\n\n2\\. Expiry relationships. I wasn't sure what I should enforce among maxTimeoutSeconds, challengeExpiresAt, and authorization.expiresAt — each has a per-field constraint, but I couldn't find ordering rules between them or which side (server vs facilitator vs adapter) is meant to check which. I ended up inventing local rules (e.g. authorization.expiresAt ≤ challengeExpiresAt, both within the offer window) and I'm not confident they match your intent. Is there an intended relationship, or is this deliberately left open?\n\n3\\. Finality numbers. Is there a confirmation depth you'd recommend coding an adapter against for accepted/confirmed, or is that intentionally left to adapter policy for now? Completely understandable at alpha stage — I'm mostly asking so my adapter doesn't bake in a wrong assumption before mainnet-readiness discussions happen.\n\n4\\. Additive external-advance and retry policy. One scenario I couldn't convince myself was harmless — though I may well be missing a mitigation you already have in mind. Since anyone can advance a head by its threshold (0.1 KAS at the spec's example and the reference deployment's value, paid to the merchant), it looks to me like a third party could repeatedly stale the expected head transition for every in-flight payer, and with maxPaymentRetries: 0 each affected payer would need a fresh explicit wallet authorization each round. Is the intended answer per-client or auth-gated additive offers, or is standard-native-as-fallback considered sufficient here? If it's the former, it might be worth a line in the threat model.\n\nI'll file interop reports through the templates as the Rust implementation progresses.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/12"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
@@ -616,6 +627,17 @@
     "url": "https://kas-smiths.org/t/hello-all-i-am-karrrl/24/1"
   },
   {
+    "post_id": 194,
+    "topic_id": 24,
+    "post_number": 2,
+    "username": "0x_arthurZ",
+    "display_name": "Arthur Zhang",
+    "created_at": "2026-07-18T04:36:08Z",
+    "updated_at": "2026-07-18T04:36:08Z",
+    "raw": "lol the 'phoque' voice's cute",
+    "url": "https://kas-smiths.org/t/hello-all-i-am-karrrl/24/2"
+  },
+  {
     "post_id": 58,
     "topic_id": 31,
     "post_number": 1,
@@ -625,6 +647,17 @@
     "updated_at": "2026-07-05T08:09:56Z",
     "raw": "I am taking Kaspa as part of a project for a cryptographic anchor of document has a lot. The idea is not to store documents in the chain, but only their hash so that they can demonstrate their integrity and the existence of a particular version at a given time. I think Kaspa's speed and performance could make it a very interesting use case. Is anyone else exploring something similar? \n\nI am convinced that I will have this wonderful community in the future and bring a lot of use to our network.",
     "url": "https://kas-smiths.org/t/kaspa-as-an-immutable-seal/31/1"
+  },
+  {
+    "post_id": 196,
+    "topic_id": 31,
+    "post_number": 2,
+    "username": "0x_arthurZ",
+    "display_name": "Arthur Zhang",
+    "created_at": "2026-07-18T04:41:48Z",
+    "updated_at": "2026-07-18T04:41:48Z",
+    "raw": "I like this idea a lot. Just hash the document locally, put that hash or a Merkle root into a Kaspa transaction, and later anyone can verify:\n\nfile -> hash -> proof -> Kaspa txid\n\nWhere it gets more interesting is when this stops being a one-off timestamp and becomes a real registry.\n\nFor example:\n\n- the same document has multiple versions\n- an issuer needs to sign or control the seal\n- a seal can be superseded or revoked\n- many documents are batched together, but each user only reveals their own proof\n- a verifier wants a standard proof package instead of manually checking raw tx data\n- private documents should stay private, while the public chain only sees commitments",
+    "url": "https://kas-smiths.org/t/kaspa-as-an-immutable-seal/31/2"
   },
   {
     "post_id": 79,
@@ -746,6 +779,28 @@
     "updated_at": "2026-07-16T16:27:56Z",
     "raw": "[quote=\"bitcat, post:9, topic:41\"]\nit would be nice to have a type of node that keeps track of all covenants\n[/quote]\n\nWith my current maturity on the topic, me too I don't imagine the covenant ecosystem without an indexer (whether that's materialized as a node extension or a separate program doesn't really matter for our concern here) software that anyone can run.\n\n---\nI also take advantage of this reply to share an initial draft proposal of kcc-01 (covenant definition, concepts, bytes layout and abi): https://github.com/kaspanet/kccs/pull/3/changes",
     "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/12"
+  },
+  {
+    "post_id": 191,
+    "topic_id": 41,
+    "post_number": 13,
+    "username": "bitcat",
+    "display_name": null,
+    "created_at": "2026-07-17T13:25:51Z",
+    "updated_at": "2026-07-17T13:25:51Z",
+    "raw": "Yeah doesn't need to be a kaspa node extension, I still called it node cause to me it conveys the idea that anyone can run it, it exchanges information with other nodes, and can independently verify that information. Users can both send data to a node (for example, the preimage of a new covenant), or query data from it (like \"how many kcc20 tokens do I own\").\n\nIndexer feels like something more standalone which could run on its own, but yeah doesn't really matter how it's called.",
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/13"
+  },
+  {
+    "post_id": 198,
+    "topic_id": 41,
+    "post_number": 14,
+    "username": "0x_arthurZ",
+    "display_name": "Arthur Zhang",
+    "created_at": "2026-07-18T04:57:20Z",
+    "updated_at": "2026-07-18T04:57:20Z",
+    "raw": "what abt something like this:\n\n\n1. Covenant descriptor\n\na small, versioned description of the covenant:\n\n- protocol name / version\n- covenant id or script fingerprint\n- state encoding\n- entrypoints\n- expected UTXO shape\n- links to test vectors or source\n\n2. Reader spec\n\nhow a wallet, explorer, or indexer can find and decode the covenant state.\n\n3. Writer spec\n\nhow a wallet builds a valid spend for that covenant. not one universal writer for everything, but a standard way for each protocol to publish its own writer rules.\n\n4. Proof packet\n\na portable bundle that says:\n\nhere is the UTXO,\nhere is the decoded state,\nhere is the covenant descriptor,\nhere is the chain evidence,\nhere is why this transition is valid.",
+    "url": "https://kas-smiths.org/t/a-path-towards-universal-covenant/41/14"
   },
   {
     "post_id": 94,
@@ -1100,6 +1155,17 @@
     "url": "https://kas-smiths.org/t/using-covenants-for-user-verifications/86/1"
   },
   {
+    "post_id": 190,
+    "topic_id": 86,
+    "post_number": 2,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-17T09:58:44Z",
+    "updated_at": "2026-07-17T09:58:44Z",
+    "raw": "Kaspa is a money layer, not an authentication solution.\nYou can challenge some public address owner to sign over some data to proof ownership, but I don't see how this related to security.",
+    "url": "https://kas-smiths.org/t/using-covenants-for-user-verifications/86/2"
+  },
+  {
     "post_id": 187,
     "topic_id": 87,
     "post_number": 1,
@@ -1109,5 +1175,27 @@
     "updated_at": "2026-07-16T15:15:36Z",
     "raw": "Existing privacy coins are currently quite volatile. This leads to an interesting question: Would it be possible, and would it make sense, to create a privacy-focused stablecoin?",
     "url": "https://kas-smiths.org/t/a-privacy-focused-stablecoin/87/1"
+  },
+  {
+    "post_id": 197,
+    "topic_id": 87,
+    "post_number": 2,
+    "username": "0x_arthurZ",
+    "display_name": "Arthur Zhang",
+    "created_at": "2026-07-18T04:48:12Z",
+    "updated_at": "2026-07-18T04:48:12Z",
+    "raw": "I reckon Tether moving USDT toward Bitcoin-native rails is worth watching. Their RGB direction is especially relevant because RGB uses client-side validation: the asset state is not fully reconstructed from public chain data, and Bitcoin is used more as a commitment/settlement layer.\n\nThis is the part I think Kaspa people should pay attention to.\n\nA privacy-focused stablecoin probably should not look like “ERC20 but on Kaspa”.\n\nIt probably needs a few layers:\n\n- issuer / reserve layer\n- mint and burn rules\n- private transfer state\n- selective disclosure for audits or compliance\n- public supply commitments\n- fast settlement anchor\n- wallet UX that normal people can actually use",
+    "url": "https://kas-smiths.org/t/a-privacy-focused-stablecoin/87/2"
+  },
+  {
+    "post_id": 193,
+    "topic_id": 88,
+    "post_number": 1,
+    "username": "thinker",
+    "display_name": null,
+    "created_at": "2026-07-17T20:26:45Z",
+    "updated_at": "2026-07-17T20:26:45Z",
+    "raw": "**🕸️ The Immune Web — An Early Sketch**\n\n> *This isn’t a whitepaper. It’s not a finished design. It’s just an early, raw idea that started forming while looking at Kaspa’s evolving architecture.*\n\n---\n\n**💡 The Core Thought**\n\nWhat if a BlockDAG could act less like a passive ledger, and more like a reactive ecosystem?\n\nNot a protocol, not a rigid standard—just a direction.\n\n**🧱 Why Kaspa? (The Native Building Blocks)**\n\nKaspa developers are introducing core primitives that, when viewed together, feel like the foundation for something adaptive:\n\n* **RFC:** Allows the network to evolve dynamically through collective proposals.\n* **ICC:** Enables atomic, deterministic communication between isolated components.\n* **COV:** Introduces structured, programmable conditions inside the DAG.\n* **DOMAIN:** Creates independent, sandboxed environments.\n* **CONTRACT:** Defines the strict logic and rules of engagement inside a domain.\n* **Stateless VM:** Ensures execution remains lightweight, predictable, and highly scalable.\n\nWhen you stack these pieces, you start seeing the outline of a network that could—someday—observe, adapt, and respond.\n\n**🧬 The \"Immune Web\" Concept**\n\nImagine a network where:\n\n* **DOMAINS** host small, autonomous behaviors.\n* **CONTRACT** logic defines how they react to unusual network patterns.\n* **ICC** allows these behaviors to communicate instantly and safely.\n* **Stateless VMs** execute these reactions with near-zero overhead.\n\nIt’s a conceptual loop: the network doesn't just store data; it maintains its own health.\n\n**🛠️ What Exists Today?**\n\nAlmost nothing. Just the absolute baseline:\n\n* Tiny, isolated pieces.\n* Early architectural experiments.\n* Small, primitive agent-like behaviors.\n\nThe building blocks are there, and that’s enough to start imagining.\n\n**🔍 What’s Missing? (The Reality Check)**\n\nBefore this is even remotely viable, massive questions remain:\n\n* **UX:** How do users easily interact with these behaviors?\n* **Incentives:** What is the economic model driving this?\n* **Dev-Tools:** Where is the developer-friendly interface?\n* **Resource Management:** How are resources allocated inside domains?\n* **Scale:** Can a reactive DAG scale without creating bottlenecks?\n\nThis is all future work.\n\n**🤖 Where the Agent Fits**\n\nRight now, the agent we are discussing isn't a complex \"immune cell.\"\n\nIt is simply the **first tiny prototype** of what autonomous DOMAIN behavior could look like inside the Kaspa BlockDAG. It observes, evaluates, and reacts.\n\nIt’s not a system. It’s not a protocol. It’s just a sketch of what's possible.\n\n---",
+    "url": "https://kas-smiths.org/t/the-immune-web-an-early-sketch/88/1"
   }
 ]
