@@ -374,6 +374,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/36"
   },
   {
+    "post_id": 206,
+    "topic_id": 8,
+    "post_number": 37,
+    "username": "token-depot",
+    "display_name": "Todd Desiato",
+    "created_at": "2026-07-19T21:04:59Z",
+    "updated_at": "2026-07-19T21:04:59Z",
+    "raw": "The https://github.com/token-depot has been updated. New wallet core includes regulated kcc20 flow apps, and the current token depot kcc20-specification discussion.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/37"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -616,6 +627,72 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/13"
   },
   {
+    "post_id": 203,
+    "topic_id": 15,
+    "post_number": 14,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-19T07:55:52Z",
+    "updated_at": "2026-07-19T07:55:52Z",
+    "raw": "Thanks for sharing. I had a look through both repos. k402 appears to be a separate protocol built around HTTP 402 rather than an implementation of x402-foundation/x402. It seems to use its own wire format, headers, schemes and payment lifecycle, so it is not compatible with existing x402 clients or facilitators.\n\nMy work is specifically focused on creating a Kaspa binding for the existing x402 v2 standard, so I do not think combining the projects would make sense. Best of luck with the marketplace.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/14"
+  },
+  {
+    "post_id": 204,
+    "topic_id": 15,
+    "post_number": 15,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-19T14:29:48Z",
+    "updated_at": "2026-07-19T14:29:48Z",
+    "raw": "Hello…\n\nWe're building **Vida** — an agentic wallet for Kaspa that handles session-gated spending, SilverScript covenants, and MCP-compatible agent tools. x402 is exactly the payment protocol this stack needs.\n\n**On the identifier convention:** kaspa:mainnet and kaspa:testnet-10 are the right choices. They match what RK, explorers, and wallets already use. No objections here.\n\n**On the address prefix:** Worth making explicit in the spec text that the address is included without its kaspa:/kaspatest: prefix, since the identifier already names the network. A clear example would prevent a common bug class.\n\n**Offer to test:** We'd like to be an early external implementer. We have a working agent loop, session-gated policy enforcement, and a SilverScript module. The exactscheme maps naturally to session caps. We'll test against the live gateway and report what breaks.\n\n**On the facilitator model:** For agents that don't manage their own Kaspa wallets, could a third party run as an x402 facilitator — handling session-gated signing and broadcast on their behalf? Our MCP server already exposes agent tools to Claude Desktop, Cursor, and Grok Build. Extending that to x402 facilitation seems like a natural path for agent adoption.\n\nOriginal thread: https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/15"
+  },
+  {
+    "post_id": 208,
+    "topic_id": 15,
+    "post_number": 16,
+    "username": "Brociferous",
+    "display_name": null,
+    "created_at": "2026-07-20T01:36:28Z",
+    "updated_at": "2026-07-20T01:36:28Z",
+    "raw": "Thanks for checking it out.  And you're right, k402 was built with covenants in mind (Kaspa native) which will not be possible within constraints of the x402 model and schemes.  Moving forward I plan to add the x402 compatibility layer on top of the existing k402 protocol.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/16"
+  },
+  {
+    "post_id": 209,
+    "topic_id": 15,
+    "post_number": 17,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-20T01:49:02Z",
+    "updated_at": "2026-07-20T01:49:02Z",
+    "raw": "This is factually incorrect. Nothing in x402 prevents the use of covenants. x402 is the protocol and lifecycle that a network binding aligns with. The settlement mechanism itself can be network-specific.\n\nThe proof is already in my implementation. It uses a SilverScript covenant for batch settlement and optionally uses KIP-10 for exact payments, all within the x402 v2 model.\n\nI would suggest doing more research into what x402 actually defines. Creating different headers, wire formats, schemes and payment lifecycles does not extend x402. It creates another incompatible protocol.\n\nWithout a clear requirement that x402 cannot support, that simply adds fragmentation and confusion, with no interoperability with existing x402 clients or facilitators and no direct path into the emerging standard.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/17"
+  },
+  {
+    "post_id": 210,
+    "topic_id": 15,
+    "post_number": 18,
+    "username": "Brociferous",
+    "display_name": null,
+    "created_at": "2026-07-20T02:02:20Z",
+    "updated_at": "2026-07-20T02:02:20Z",
+    "raw": "Hmm clear path into the emerging standard sounds like shaky ground to me.  But I agree, no reason to reinvent the wheel here.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/18"
+  },
+  {
+    "post_id": 211,
+    "topic_id": 15,
+    "post_number": 19,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-20T02:06:46Z",
+    "updated_at": "2026-07-20T02:08:30Z",
+    "raw": "Thanks again @Ross . I dug into the points you raised over the weekend and you're right - there were quite a few gaps in my doco. I've gone back through the exact binding in particular and updated the spec (and batch too) so they should stand independently from TS.\n\n`kaspa-sdk-safe-json-v2.0.0` is only the interchange envelope. Transaction IDs are calculated from the normalised Kaspa consensus fields, not the JSON bytes or key order. The authorisation digest is SHA-256 over recursively key-sorted canonical JSON.\n\nThe new [exact interop vector](https://kaspa-x402.org/v0.1.0-alpha.9/vectors/exact/interop-v1.json) includes both transaction profiles, canonical UTF-8 preimages, digests, public key, signature and expected transaction IDs.\n\nOn expiry, I overlooked this. I was checking the individual timestamps, but I had not fully accounted for an authorisation expiring while tx verification was still running.\n\nI have now made the ordering explicit. The authorisation must still be valid, must not exceed `now + maxTimeoutSeconds`, and for additive it must not outlive the challenge. The implementation now checks this before protected work and again after any awaited verification.\n\n`accepted` is the alpha interoperability baseline and means accepted chain state under the configured trusted-node policy, not mempool presence. `confirmed` remains adapter policy for now. An adapter offering it must document and consistently enforce its stronger depth, time or virtual-chain rule.\n\nOn additive, you are right. Anyone being able to advance the head is a known property of KIP-10’s public borrower branch, but I had not properly documented what that means for an in-flight x402 payment. Alpha.9 now calls this out and covers the mitigations, including multiple head shards, sensible thresholds, reconciliation and standard-native fallback. Additive remains optional, and a stale replacement still requires fresh wallet approval.\n\nThe updated [alpha.9 exact specification](https://kaspa-x402.org/v0.1.0-alpha.9/spec/kaspa-exact-v2.md) now documents all of this.\n\nI would really appreciate it if you could point the Rust implementation at alpha.9 and let me know whether anything still requires reading the TypeScript. LMK how you go!",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/19"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
@@ -680,6 +757,17 @@
     "updated_at": "2026-07-18T04:41:48Z",
     "raw": "I like this idea a lot. Just hash the document locally, put that hash or a Merkle root into a Kaspa transaction, and later anyone can verify:\n\nfile -> hash -> proof -> Kaspa txid\n\nWhere it gets more interesting is when this stops being a one-off timestamp and becomes a real registry.\n\nFor example:\n\n- the same document has multiple versions\n- an issuer needs to sign or control the seal\n- a seal can be superseded or revoked\n- many documents are batched together, but each user only reveals their own proof\n- a verifier wants a standard proof package instead of manually checking raw tx data\n- private documents should stay private, while the public chain only sees commitments",
     "url": "https://kas-smiths.org/t/kaspa-as-an-immutable-seal/31/2"
+  },
+  {
+    "post_id": 205,
+    "topic_id": 31,
+    "post_number": 3,
+    "username": "Joticaespinoza",
+    "display_name": "KitFull - 𐤊",
+    "created_at": "2026-07-19T18:39:51Z",
+    "updated_at": "2026-07-19T18:39:51Z",
+    "raw": "Many simple and complex things can be done using low costs and on a sovereign consensus that will soon be confirming the speed of the Internet, work on it",
+    "url": "https://kas-smiths.org/t/kaspa-as-an-immutable-seal/31/3"
   },
   {
     "post_id": 79,
@@ -1219,5 +1307,16 @@
     "updated_at": "2026-07-18T04:48:12Z",
     "raw": "I reckon Tether moving USDT toward Bitcoin-native rails is worth watching. Their RGB direction is especially relevant because RGB uses client-side validation: the asset state is not fully reconstructed from public chain data, and Bitcoin is used more as a commitment/settlement layer.\n\nThis is the part I think Kaspa people should pay attention to.\n\nA privacy-focused stablecoin probably should not look like “ERC20 but on Kaspa”.\n\nIt probably needs a few layers:\n\n- issuer / reserve layer\n- mint and burn rules\n- private transfer state\n- selective disclosure for audits or compliance\n- public supply commitments\n- fast settlement anchor\n- wallet UX that normal people can actually use",
     "url": "https://kas-smiths.org/t/a-privacy-focused-stablecoin/87/2"
+  },
+  {
+    "post_id": 207,
+    "topic_id": 90,
+    "post_number": 1,
+    "username": "token-depot",
+    "display_name": "Todd Desiato",
+    "created_at": "2026-07-19T21:08:24Z",
+    "updated_at": "2026-07-19T21:08:24Z",
+    "raw": "The https://github.com/token-depot has been updated. New wallet core includes regulated kcc20 flow apps, and the kcc20-specification discussion. Sign up for a free account to check out OMA and test all of the apps at www.token-depot.co. I'm looking for feedback and help to promote it.",
+    "url": "https://kas-smiths.org/t/looking-for-testers-and-feedback-on-the-oma-wallet/90/1"
   }
 ]
