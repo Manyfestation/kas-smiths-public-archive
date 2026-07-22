@@ -682,6 +682,50 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/19"
   },
   {
+    "post_id": 226,
+    "topic_id": 15,
+    "post_number": 20,
+    "username": "Ross",
+    "display_name": null,
+    "created_at": "2026-07-21T13:35:48Z",
+    "updated_at": "2026-07-21T13:40:44Z",
+    "raw": "Thanks @elldeeone\n\nand that was fast. I pointed a Rust implementation at alpha.9 over the weekend.\n\nTo your question: for exact I didn't have to fall back to the TypeScript at all — the vector was enough to reproduce everything I needed (both transaction-id constructions, the v1 computeBudget handling, the string-encoded uint64s, storageMass). That was the piece I'd been missing, so thank you.\n\nOne thing I want to make sure I'm reading right: is successor-delta-only locked for additive in alpha.9, or still in flux? Just don't want to build against a shape that'll move.\n\nSeparately — and I'm probably getting ahead of the roadmap — I've been putting the same flow through a full stablecoin (covenant token) on the side, and two of the native model's assumptions didn't carry over. First, reaching accepted doesn't mean the recipient has unconditional custody once the issuer keeps freeze/seize authority — a different axis from chain finality. Second, the authorization digest assumes a single P2PK signer at inputIndex; when a script authorizes the transfer, there may not be one. Tokens are out of scope for alpha.9, so nothing needed here — just flagging in case it's useful when the covenant binding comes around.\n\nThanks again !",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/20"
+  },
+  {
+    "post_id": 227,
+    "topic_id": 15,
+    "post_number": 21,
+    "username": "Brociferous",
+    "display_name": null,
+    "created_at": "2026-07-21T17:27:02Z",
+    "updated_at": "2026-07-21T17:27:02Z",
+    "raw": "One thing worth separating first: interop here doesn't mean a Base or Solana client settles a payment on Kaspa — it can't, it holds no KAS. Interoperability means everyone speaks the same wire format: the 402 response shape, the accepts\\[ \\] array, the header names and the request → 402 → pay → retry lifecycle, and the discovery format. A generic x402 v2 client, facilitator or indexer can then parse and route a Kaspa offer even though the signing happens through a Kaspa-aware signer.\n\nOur gateway already sits inside that envelope — it's built on the @kaspa-x402 binding and emits a standard x402 v2 offer. A decoded PAYMENT-REQUIRED from it:\n\n{\"x402Version\":2,\"accepts\":\\[{\"scheme\":\"exact\",\"network\":\"kaspa:mainnet\",\"asset\":\"KAS\",\"payTo\":\"kaspa:qzws…\",\"maxTimeoutSeconds\":300,\"extra\":{\"binding\":\"kaspa-exact-v2\",\"profile\":\"standard-native\",\"finality\":\"accepted\",\"transactionEncoding\":\"kaspa-sdk-safe-json-v2.0.0\"}}\\]}\n\nAny x402 v2 parser reads that today. From there, interop is concrete:\n\n* A resource can advertise multiple accepts\\[ \\] entries in one 402 — Base-USDC, Solana-USDC, Kaspa-KAS — and each client picks the rail it can settle. One endpoint, every chain.\n* x402 discovery/indexers can list the Kaspa offer alongside the rest.\n* For agents that don't hold a KAS wallet, a third party can run as an x402 facilitator that verifies/settles KAS (covenants, session-gated signing) on their behalf — the standard facilitator model, and the natural home for Kaspa-specific settlement. @VidaWallet — that's a direct yes to your question: session-gated signing + broadcast behind a facilitator is exactly the pattern, and an agentic wallet like Vida is a natural fit to run one.\n\nThe true gap is that no mainstream client settles KAS yet, so today that's @kaspa-x402/client or KAS support added upstream. The way we close it is the network-binding path — getting Kaspa recognized as an x402 network — not a parallel protocol. We're conforming, not extending. If anyone hits a concrete requirement x402 genuinely can't express, that's the thing to surface specifically, and I'd like to hear about it.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/21"
+  },
+  {
+    "post_id": 228,
+    "topic_id": 15,
+    "post_number": 22,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-21T18:17:23Z",
+    "updated_at": "2026-07-21T18:28:14Z",
+    "raw": "@Brociferous You have completely misunderstood what “interop” means here. The vector tests whether different CODING language implementations produce identical Kaspa results. It has nothing to do with multi-network offers, asset selection or cross-chain settlement.\n\nYour claim about agents without a KAS wallet is also incorrect. A standard x402 facilitator verifies client-provided payment authorisation and submits it for settlement on behalf of the resource server. It does NOT custody the buyer’s KAS or create the buyer’s signature. Session-gated signing requires a separate wallet or custody layer, even if one service chooses to perform both roles.\n\nIf you are relying on an LLM to interpret this work, I suggest using a more capable one. Something such as Sol 5.6 and giving it the actual specification and thread context, because this response has missed the subject entirely.\n\nAlso multi-network offers, VidaWallet and your gateway are separate topics. Please start another thread for them instead of inserting them into the technical review of this Kaspa binding.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/22"
+  },
+  {
+    "post_id": 229,
+    "topic_id": 15,
+    "post_number": 23,
+    "username": "Brociferous",
+    "display_name": null,
+    "created_at": "2026-07-21T20:04:32Z",
+    "updated_at": "2026-07-21T20:04:32Z",
+    "raw": "[quote=\"elldeeone, post:1, topic:15\"]\n## What I am asking\n\n1. **Objections to the `kaspa:` identifier convention** (the time-sensitive one, open until **24 July 2026**).\n2. Technical review of the specs, especially from anyone who has built on the WASM SDK.\n3. Anyone interested in being an early external implementer.\n4. Corrections: if anything published overstates what Kaspa or this implementation can do, I want to know first.\n\n[/quote]\n\nI'll keep this strictly on topic.\n\nIdentifier convention — no objections. I've been running kaspa:mainnet and kaspa:testnet-10 in production (a few gateways plus a payer client) and they match what wallets and explorers already use. Good to lock them in before the 24th.\n\nSpec review from the WASM SDK side — I've built on the 2.0.0 nodejs SDK, two things worth flagging. First, npm's kaspa-wasm is a different/older ABI and dies with \"memory access out of bounds\"; you need the official v2.0.0 SDK release asset, and that probably deserves an explicit line in the docs since it cost me a while to figure out. Second, an actual verification bug: on the already-accepted path the check rejects a valid v0 tx because api.kaspa.org reports compute_budget as null/absent while the SDK's safe-JSON serializes it as 0, so null !== 0 throws. Normalizing missing to 0 fixes it. I wrote it up with a patch in\nissue #6.\n\nEarly external implementer — yes, count me in. The payer I've been building (kx402) already settles real exact payments on mainnet against the binding, so I'm implementing it either way and happy to keep reporting back as I go.\n\nCorrections — one on the pricing examples: they predate Toccata, which bumped the min fee rate from 1 to 100 sompi/gram, so the exact fee math is worth a refresh. The \\~0.1 KAS storage-mass floor itself is a separate KIP-9 parameter and hasn't changed, so that part still holds.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/23"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
@@ -1318,5 +1362,16 @@
     "updated_at": "2026-07-20T18:13:34Z",
     "raw": "Thank you! I suggest each ABI declaration identify the principal’s role, state-field location, cardinality, and profile. Wallets should still verify the descriptor, template, and reconstructed on-chain state before claiming they recognize or control that principal.\n\n`covenant_id` and `program_hash` should remain distinct: one identifies a continuing lineage, while the other identifies executable code. I would also retain a script-hash profile for multisig, recovery, and escrow use cases.\n\nOverall, KCC-02 looks like a useful common foundation, provided unsupported profiles fail closed and recognition is never presented as authentication.",
     "url": "https://kas-smiths.org/t/kcc-02-control-principal-references-in-program-abis/95/2"
+  },
+  {
+    "post_id": 225,
+    "topic_id": 95,
+    "post_number": 3,
+    "username": "IzioDev",
+    "display_name": "IzioDev",
+    "created_at": "2026-07-21T10:14:55Z",
+    "updated_at": "2026-07-21T10:14:55Z",
+    "raw": "[quote=\"token-depot, post:2, topic:95\"]\nI would also retain a script-hash profile\n[/quote]\n\nIn the full proposal, there is a `program-hash/v1` profile.",
+    "url": "https://kas-smiths.org/t/kcc-02-control-principal-references-in-program-abis/95/3"
   }
 ]
