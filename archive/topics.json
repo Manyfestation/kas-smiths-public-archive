@@ -284,5 +284,27 @@
     "last_posted_at": "2026-07-21T10:14:55Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/kcc-02-control-principal-references-in-program-abis/95"
+  },
+  {
+    "topic_id": 98,
+    "title": "Covenant tokens are the only Kaspa token type still missing metadata",
+    "slug": "covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata",
+    "category_id": 5,
+    "category_name": "Asset Standards",
+    "created_at": "2026-07-22T11:01:06Z",
+    "last_posted_at": "2026-07-22T19:43:23Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98"
+  },
+  {
+    "topic_id": 99,
+    "title": "Sdk Development",
+    "slug": "sdk-development",
+    "category_id": 6,
+    "category_name": "Product Use Cases",
+    "created_at": "2026-07-22T15:26:04Z",
+    "last_posted_at": "2026-07-22T21:17:20Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/sdk-development/99"
   }
 ]

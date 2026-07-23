@@ -1373,5 +1373,71 @@
     "updated_at": "2026-07-21T10:14:55Z",
     "raw": "[quote=\"token-depot, post:2, topic:95\"]\nI would also retain a script-hash profile\n[/quote]\n\nIn the full proposal, there is a `program-hash/v1` profile.",
     "url": "https://kas-smiths.org/t/kcc-02-control-principal-references-in-program-abis/95/3"
+  },
+  {
+    "post_id": 231,
+    "topic_id": 98,
+    "post_number": 1,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-07-22T11:01:06Z",
+    "updated_at": "2026-07-22T11:01:06Z",
+    "raw": "KRC-20 and KRC-721 tokens have carried metadata for a year: KRC-20 has ticker and decimals, KRC-721 has the ERC-721 shape (name, description, image, attributes, with images pinned by ipfs). Covenant tokens are the one Kaspa token type with none of it. KCC20 keeps to accounting and transfer, which is right, and its Descriptor artifact carries template identity and state layout for tooling, but no human metadata: no name, ticker, decimals, or art. So an aggregator that already lists KRC and KCC tokens side by side can show a name and logo for the KRC ones and nothing for the covenant ones.\n\nWe have been running a convention in production at kascov to close that, read from the deploy (genesis) transaction payload:\n\n`{`\n`\"name\": \"My Token\",`\n`\"ticker\": \"MTK\",`\n`\"image\": \"https://.../art.png\",`\n`\"image_hash\": \"sha256 hex of the image bytes\"`\n`}`\n\nCommitted once in the genesis payload, plain or hex JSON, under 4KB. `symbol` aliases `ticker`. It borrows KRC-721's field shape (name, image) and adds the fungible fields KRC-20 has (ticker, decimals). The one twist: instead of requiring ipfs like KRC-721, it allows a normal URL plus an `image_hash` (sha256 of the bytes), so a launchpad can keep hosting on its own CDN and the art is still pinned. kascov fetches the image once, checks the hash, then serves it immutably, so art cannot be swapped after launch. ipfs images work too. Names are claims, not unique.\n\nLive, not theoretical: KaspaRocket adopted it the same day, so tokens launched there show a verified name and art in any tool that reads the convention.\n\nOpen questions, genuinely before anyone writes a spec:\n\n* In 0020 or beside it: KRC-20 and ERC-20 carry ticker and decimals inside the token standard, so metadata could fold into 0020, or stay a sibling convention reusable by a future covenant NFT. Either way, since covenant tokens are UTXO based with no contract storage for a name, it has to anchor to the genesis payload or the Descriptor. Which shape do the authors prefer?\n* Fields: name, ticker, decimals, image, image_hash. Align exactly with KRC-721 field names, or diverge where covenant reality differs?\n* Image pinning: require ipfs like KRC-721, allow url plus hash, or both?\n* Encoding: plain JSON, hex JSON, or something more compact?\n\nIf there is appetite I am happy to write it up. I mostly want covenant tokens readable by any tool the way KRC tokens already are, not reinvented per app.",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/1"
+  },
+  {
+    "post_id": 234,
+    "topic_id": 98,
+    "post_number": 2,
+    "username": "Andreas",
+    "display_name": null,
+    "created_at": "2026-07-22T19:43:23Z",
+    "updated_at": "2026-07-22T19:43:23Z",
+    "raw": "I’d lean toward a sibling KCC rather than folding this into KCC-0020. That keeps accounting and transfer minimal, while allowing the metadata convention to be reused by future covenant NFTs and other asset classes.\n\nThe covenant ID should remain the canonical asset identity, with names and tickers treated as non-unique display claims.\n\nFor tooling reuse, I’d align field names with KRC-721 wherever the semantics match, adding fungible-specific fields such as `ticker` and `decimals`. For images, supporting both content-addressed URIs and HTTPS + hash seems pragmatic.\n\nOn encoding, one canonical UTF-8 JSON representation would be cleanest; it can still be hex-encoded at the transport layer where required.\n\nKCC-0020 defines asset behavior; this convention would define asset identity, discovery, and provenance.",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/2"
+  },
+  {
+    "post_id": 232,
+    "topic_id": 99,
+    "post_number": 1,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-22T15:26:05Z",
+    "updated_at": "2026-07-22T15:26:05Z",
+    "raw": "Hey @smartgoo 👋\n\nWe deployed a SilverScript AMM covenant to testnet-10 (transition-pattern like the Counter example). Deploy worked — covenant is live with 4.9 KAS locked.\n\nThe blocker: We can't call entrypoints (swap/addLiquidity). The \\`kaspa.experimental.silverscript\\` module (\\`compile()\\`, \\`build_sig_script_for_covenant_decl()\\`) isn't in the PyPI release of the Kaspa SDK. Building from source fails with maturin/Rust issues.\n\nThe Counter example shows exactly what we need:\n\ncontract = silverscript.compile(SOURCE, \\[constructor_args\\])\n\ncall = contract.build_sig_script_for_covenant_decl(\"add\", \\[5\\])\n\ncovenant_input.signature_script = call + redeem_script\n\nQuestion: Is the silverscript module available somewhere? Or a workaround for building entrypoint sighashes from Python today?\n\nThanks! 🙏",
+    "url": "https://kas-smiths.org/t/sdk-development/99/1"
+  },
+  {
+    "post_id": 233,
+    "topic_id": 99,
+    "post_number": 2,
+    "username": "smartgoo",
+    "display_name": null,
+    "created_at": "2026-07-22T16:06:27Z",
+    "updated_at": "2026-07-22T16:06:27Z",
+    "raw": "I’ll get a version including SilverScript bindings on PyPi later today. Probably will be an RC version until next RK release is out. \n\nDo you mind opening an issue here https://github.com/kaspanet/kaspa-python-sdk for the build error? Would love to look at that",
+    "url": "https://kas-smiths.org/t/sdk-development/99/2"
+  },
+  {
+    "post_id": 235,
+    "topic_id": 99,
+    "post_number": 3,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-22T21:16:16Z",
+    "updated_at": "2026-07-22T21:16:16Z",
+    "raw": "Posted as requested. Thank you!!",
+    "url": "https://kas-smiths.org/t/sdk-development/99/3"
+  },
+  {
+    "post_id": 236,
+    "topic_id": 99,
+    "post_number": 4,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-22T21:17:20Z",
+    "updated_at": "2026-07-22T21:17:20Z",
+    "raw": "Sorry it is Issue #70",
+    "url": "https://kas-smiths.org/t/sdk-development/99/4"
   }
 ]
