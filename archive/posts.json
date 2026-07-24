@@ -726,6 +726,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/23"
   },
   {
+    "post_id": 238,
+    "topic_id": 15,
+    "post_number": 24,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-23T08:22:06Z",
+    "updated_at": "2026-07-23T08:22:06Z",
+    "raw": "Great to hear that helped @Ross .\n\nFor this version, additive is successor-delta-only, and alpha.9 itself won’t change underneath you. But I’m not presenting that as the final form of the Kaspa binding. It is still alpha and may evolve as more independent implementations and external reviews come in. Any breaking change would be made in a new version though.\n\nI haven’t really thought about tokens yet, but both points seem valid. Acceptance doesn’t override issuer controls, and exact’s P2PK model won’t cover every covenant-authorised token transfer. Batch is a specific KAS escrow, not a general token model.\n\nTokens remain out of scope for now, but both points should be revisited if that changes.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/24"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
@@ -1043,6 +1054,28 @@
     "updated_at": "2026-07-11T21:52:43Z",
     "raw": "A \\`getUtxosByCovenantId\\` RPC method that returns all live UTXOs carrying a given \\`covenantId\\`. This would let covenant token projects discover their on-chain state without maintaining a separate indexer. look up all holders, all listed tokens, total circulating supply for any covenant token without a separate backend ; a wallet that knows its covenant ID can find all its UTXOs in one call instead of scanning addresses; watch a covenant's on-chain activity without subscribing to every block",
     "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/1"
+  },
+  {
+    "post_id": 241,
+    "topic_id": 74,
+    "post_number": 2,
+    "username": "ingram_it",
+    "display_name": "ingram",
+    "created_at": "2026-07-23T14:23:11Z",
+    "updated_at": "2026-07-23T14:23:11Z",
+    "raw": "A fundamental question for the Core team: who is Kaspa being built for?\n\nFirst of all, I fully support the proposal to add getUtxosByCovenantId. However, I believe this discussion raises a much more fundamental question.\n\nWhen covenants and Covenant IDs were introduced, I assumed they were intended to enable applications that interact directly with the blockchain through a standard RPC node. In other words, a developer should only need to write a covenant and a client application, while users could interact with it through any Kaspa RPC node—without any intermediary services.\n\nToday, that isn't possible.\n\nEven when running a full node, developers still need to build and maintain their own indexer or rely on someone else's.\n\nTo me, this is not primarily about convenience—it's about architecture.\n\nIf an additional server is required between the user and the blockchain, then the user is no longer interacting directly with the blockchain, but with the developer's infrastructure. That dependency also significantly increases the cost of building and operating applications. Instead of just a covenant and client code, projects now require servers, DevOps, monitoring, redundancy, maintenance, and everything else that comes with operating backend infrastructure.\n\nThis inevitably raises the barrier to entry and makes many smaller projects economically impractical.\n\nSo my question to the Core team is simple:\n\nWhat is the intended architecture for applications built on Kaspa?\n\nShould a standard RPC node expose everything necessary to interact with covenants, allowing users to communicate directly with the blockchain?\n\nOr is the expectation that any serious application will always require its own indexing layer as a fundamental part of its architecture?\n\nTo me, getUtxosByCovenantId is not just another RPC method. It's a reflection of a much broader design philosophy.\n\nIs Kaspa intended to become a platform where applications can exist with little or no backend infrastructure, communicating directly with the blockchain? Or is external indexing considered a permanent and necessary layer for building on Kaspa?\n\nI think the answer to that question will have a much greater impact on the future of the ecosystem than any single RPC method ever could.",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/2"
+  },
+  {
+    "post_id": 249,
+    "topic_id": 74,
+    "post_number": 3,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-23T18:12:23Z",
+    "updated_at": "2026-07-23T18:12:23Z",
+    "raw": "Hello and welcome. This is a good and relevant question.\nAs far as I know, this is a RPC that is planned to be develop.\n\nI would argue though that your concerns are exaggerated. You are correct to note that there is a need for a per-app indexer, this does not mean though that the d-app FE must trust it blindly. A frontend of a dapp could easily validate the truthfulness of the information provided by the indexer.",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/3"
   },
   {
     "post_id": 154,
@@ -1397,6 +1430,28 @@
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/2"
   },
   {
+    "post_id": 237,
+    "topic_id": 98,
+    "post_number": 3,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-07-23T06:15:03Z",
+    "updated_at": "2026-07-23T06:15:03Z",
+    "raw": "Wrote it up: https://github.com/kaspanet/kccs/pull/6 . It is KCC-0021, a sibling to 0020, against kaspanet/kccs.\n\nIt follows what we landed on here: sibling rather than folded in, Covenant ID as canonical identity with name and ticker as non-unique claims, KRC-721 field names plus the fungible fields (ticker, decimals), one canonical UTF-8 JSON with hex as a transport encoding, and the genesis payload as the anchor. Andreas, your identity / behavior / provenance split ended up being the spine of it.\n\nTwo places I went a step past the thread and would want the authors' eyes on:\n\n* Images: https is location plus image_hash with full byte verification, and ipfs stays an accepted scheme but is scoped as a claim for v1 (the consumer must re-derive the CID, full gateway serving is deferred), since a CID is not sha256 of the gateway bytes.\n* decimals is bounded 0 to 255 (ERC-20's uint8), and the number and category (0021, Covenant vs Asset Standards) are maintainer calls, flagged in the PR body.\n\nTear it apart.",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/3"
+  },
+  {
+    "post_id": 240,
+    "topic_id": 98,
+    "post_number": 4,
+    "username": "Andreas",
+    "display_name": null,
+    "created_at": "2026-07-23T13:10:49Z",
+    "updated_at": "2026-07-23T13:10:49Z",
+    "raw": "Really glad the distinction was useful, and I appreciate you turning it into something concrete this quickly. The sibling KCC, canonical covenant identity, and genesis-anchored metadata model still feel like the right shape to me.\n\nOn the two open points:\n\n* The IPFS scoping makes sense. Since a CID commits to the underlying content-addressed structure rather than simply being a SHA-256 hash of the gateway response bytes, allowing `ipfs://` in v1 while treating it as a claimed content-addressed reference - unless the consumer can fully resolve and verify the CID - seems like the honest approach.\n\n\n* Bounding `decimals` to 0–255 also feels like a sensible interoperability choice and aligns well with the established `uint8` convention.\n\nI’ll go through the full PR carefully, especially the Descriptor relationship and canonicalization rules. Great work turning the discussion into something implementers can actually converge around...",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/4"
+  },
+  {
     "post_id": 232,
     "topic_id": 99,
     "post_number": 1,
@@ -1439,5 +1494,16 @@
     "updated_at": "2026-07-22T21:17:20Z",
     "raw": "Sorry it is Issue #70",
     "url": "https://kas-smiths.org/t/sdk-development/99/4"
+  },
+  {
+    "post_id": 250,
+    "topic_id": 105,
+    "post_number": 1,
+    "username": "kasbtc",
+    "display_name": "KasBTC | HUB21 ",
+    "created_at": "2026-07-24T00:09:11Z",
+    "updated_at": "2026-07-24T00:09:11Z",
+    "raw": "Although not a finalized standard we are already in deep exploration of a mobile Kaspa wallet fully capable of covenants and KCC20.\n\nAll of these KCC20 mainnet transfers were made with an Android wallet (open source code being available on GitHub soon): https://kascov.io/#/mainnet/token/14ec7542182a0408f78f8ea4ad7ac135e7f41305c61e0053a67a2828e585984d\n\n![13088|224x500](upload://2Sq5SCHAsaNazAbS0jaCh3JD4jC.png)\n\n![13093|224x500](upload://dH4GS5lsCw5DAob48UBxiBJt8yC.png)\n\n![13092|224x500](upload://y0nIBk4CLkwi0oLcRMu6mm1c3pS.png)\n\n![13091|224x500](upload://i64QU68ZBT7jvI5rER9gQSyxVFY.png)\n\n![13090|224x500](upload://blhx2JlUsWt8fNKeXceXoDBaMtD.png)",
+    "url": "https://kas-smiths.org/t/first-kcc20-ready-wallet/105/1"
   }
 ]
