@@ -1078,6 +1078,50 @@
     "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/3"
   },
   {
+    "post_id": 251,
+    "topic_id": 74,
+    "post_number": 4,
+    "username": "bitcat",
+    "display_name": null,
+    "created_at": "2026-07-24T06:17:10Z",
+    "updated_at": "2026-07-24T06:17:10Z",
+    "raw": "I think there's a point to be made about the simplicity of development and clarity of codebases and increased participation overall, if every app developer didn't need to run his own node and build his own custom indexer. Wallets could also better support those txs without chasing every new app developer, better ecosystem integration in general.\n\nCause it's true that users can always verify stuff by themselves, but the perception of decentralization that you get when you make an app without a database is still on another level imo.",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/4"
+  },
+  {
+    "post_id": 253,
+    "topic_id": 74,
+    "post_number": 5,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-24T11:13:42Z",
+    "updated_at": "2026-07-24T11:13:42Z",
+    "raw": "I agree that it should be clearer and simpler to develop and compose applications.\nThere are many layers to this stack- covenant standards, script compilers, indexers, covenant RPCs, there are efforts to solve them all.\n\nNo one thinks Toccata is enough on its own, there is still much work to do to make development approachable.",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/5"
+  },
+  {
+    "post_id": 255,
+    "topic_id": 74,
+    "post_number": 6,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-24T18:13:07Z",
+    "updated_at": "2026-07-24T18:14:56Z",
+    "raw": "(post deleted by author)",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/6"
+  },
+  {
+    "post_id": 257,
+    "topic_id": 74,
+    "post_number": 7,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-24T18:22:45Z",
+    "updated_at": "2026-07-24T18:22:45Z",
+    "raw": "**+1 on** getUtxosByCovenantId. **We need it for the same reason — querying covenant state without an external indexer. Without it, covenant state queries require an external indexer scanning chain history block by block. This is table stakes for any covenant that tracks mutable state (registries, token balances, membership lists).**\n\n**Three additional covenant primitives unlock everything built on top of it:**\n\n**---**\n\n**1. Multi-signature verification —** checkMultiSig()\n\n**Currently** checkSig **handles one signature. Any pattern requiring N-of-M attestation (quorum-based verification, multisig wallets, DAO votes) needs multiple signatures verified in one spend.**\n\npub fn check_multi_sig(\n\n    &self,\n\n    pubkeys: &\\[PublicKey\\],\n\n    signatures: &\\[Signature\\],\n\n    message: &\\[u8\\],\n\n    threshold: usize,\n\n) -> bool;\n\n**SilverScript:**\n\nfunction verify_quorum(State s, pubkey\\[5\\] ops, sig\\[5\\] sigs) : (State) {\n\n    require(checkMultiSig(ops, sigs, s.payload, 3));\n\n}\n\n**---**\n\n**2. Block height / timestamp —** ctx.block_height() **and** ctx.timestamp()\n\n**Covenants can't enforce recency without knowing what block they're executing in. Stale data, expired timeouts, attestation windows — all require temporal context.**\n\nimpl CovenantContext {\n\n    pub fn block_height(&self) -> u64;\n\n    pub fn block_timestamp(&self) -> u64;  // milliseconds\n\n}\n\n**SilverScript:**\n\nfunction release(State s, int attested_block) : (State) {\n\n    require(ctx.block_height() - attested_block <= 10);\n\n}\n\n**---**\n\n**3. Covenant event emission**\n\n**Covenants that mutate state (registries, membership changes) need to notify off-chain services. Currently the only way to detect changes is polling blocks.**\n\npub struct CovenantEvent {\n\n    pub covenant_address: Address,\n\n    pub entrypoint: String,\n\n    pub data: HashMap<String, Vec<u8>>,\n\n}\n\n**---**\n\n**4. Cross-covenant state reads**\n\n**One covenant reading another's state removes the off-chain bridge trust assumption. Without it, covenant composition requires a trusted relayer.**\n\n**---**\n\n**These five (UTXO-by-covenant lookup + the four above) are the complete set of covenant primitives needed for trustless verification, quorum-based security, and covenant composability on Kaspa. Happy to contribute reference implementations if there's a branch to PR against.**",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/7"
+  },
+  {
     "post_id": 154,
     "topic_id": 76,
     "post_number": 1,
@@ -1452,6 +1496,17 @@
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/4"
   },
   {
+    "post_id": 252,
+    "topic_id": 98,
+    "post_number": 5,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-24T11:03:38Z",
+    "updated_at": "2026-07-24T11:03:38Z",
+    "raw": "I can imagine situations in which a developer wishes to create a composable token covenant and not care about giving it a specific ticker on an image. IMO, the KCC20 spec should not enforce an off-chain identity.\nA token (or any covenant for that matter) has a unique cov-id which is its true identifier (much like a contract address on Ethereum). \n\nSo yeah, I'd go with a different standard.",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/5"
+  },
+  {
     "post_id": 232,
     "topic_id": 99,
     "post_number": 1,
@@ -1496,6 +1551,17 @@
     "url": "https://kas-smiths.org/t/sdk-development/99/4"
   },
   {
+    "post_id": 258,
+    "topic_id": 99,
+    "post_number": 5,
+    "username": "VidaWallet",
+    "display_name": null,
+    "created_at": "2026-07-24T18:31:27Z",
+    "updated_at": "2026-07-24T18:31:27Z",
+    "raw": "Hi Smartgoo… I have posted some additional requests/ suggestions in a reply to issue 74. Thx.",
+    "url": "https://kas-smiths.org/t/sdk-development/99/5"
+  },
+  {
     "post_id": 250,
     "topic_id": 105,
     "post_number": 1,
@@ -1505,5 +1571,16 @@
     "updated_at": "2026-07-24T00:09:11Z",
     "raw": "Although not a finalized standard we are already in deep exploration of a mobile Kaspa wallet fully capable of covenants and KCC20.\n\nAll of these KCC20 mainnet transfers were made with an Android wallet (open source code being available on GitHub soon): https://kascov.io/#/mainnet/token/14ec7542182a0408f78f8ea4ad7ac135e7f41305c61e0053a67a2828e585984d\n\n![13088|224x500](upload://2Sq5SCHAsaNazAbS0jaCh3JD4jC.png)\n\n![13093|224x500](upload://dH4GS5lsCw5DAob48UBxiBJt8yC.png)\n\n![13092|224x500](upload://y0nIBk4CLkwi0oLcRMu6mm1c3pS.png)\n\n![13091|224x500](upload://i64QU68ZBT7jvI5rER9gQSyxVFY.png)\n\n![13090|224x500](upload://blhx2JlUsWt8fNKeXceXoDBaMtD.png)",
     "url": "https://kas-smiths.org/t/first-kcc20-ready-wallet/105/1"
+  },
+  {
+    "post_id": 259,
+    "topic_id": 108,
+    "post_number": 1,
+    "username": "daniel",
+    "display_name": null,
+    "created_at": "2026-07-24T23:08:04Z",
+    "updated_at": "2026-07-24T23:08:04Z",
+    "raw": "Hey everyone - we are building using Silverscript covenants (KCC20 tokens) on testnet-10. The covenant compiles and the transaction builds/signs correctly with WASM SDK v2.0.1, but we hit a blocker at submission.\n\nWe send a v1 transaction with sigOpCount: 0 and compute_budget: 10 (tried many values) through the REST API, but the node responds with:\n\n\"script units exceeded the amount committed in the input: used=100000, limit=9999\"\n\nThe limit=9999 corresponds to ComputeBudget(0). The compute_budget field is silently dropped in the REST to RPC mapping - the same tx works when bypassing the REST API.\n\nWe noticed VidaWallet deployed a Silverscript AMM covenant to testnet-10 successfully.\n\nQuestions:\n\n\\- Are you submitting through the community REST API or directly to a kaspad node?\n\n\\- Is there a known workaround or API version that passes compute_budget through?\n\n\\- Could the REST API at api-tn10.kaspa.org be updated to forward compute_budget?\n\nAny help would be hugely appreciated!",
+    "url": "https://kas-smiths.org/t/rest-api-drops-compute-budget-for-v1-transactions-on-testnet-10/108/1"
   }
 ]

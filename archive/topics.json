@@ -193,7 +193,7 @@
     "category_id": 4,
     "category_name": "General",
     "created_at": "2026-07-11T21:52:43Z",
-    "last_posted_at": "2026-07-23T18:12:23Z",
+    "last_posted_at": "2026-07-24T18:22:45Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74"
   },
@@ -292,7 +292,7 @@
     "category_id": 5,
     "category_name": "Asset Standards",
     "created_at": "2026-07-22T11:01:06Z",
-    "last_posted_at": "2026-07-23T13:10:49Z",
+    "last_posted_at": "2026-07-24T11:03:38Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98"
   },
@@ -303,7 +303,7 @@
     "category_id": 6,
     "category_name": "Product Use Cases",
     "created_at": "2026-07-22T15:26:04Z",
-    "last_posted_at": "2026-07-22T21:17:20Z",
+    "last_posted_at": "2026-07-24T18:31:27Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/sdk-development/99"
   },
@@ -317,5 +317,16 @@
     "last_posted_at": "2026-07-24T00:09:11Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/first-kcc20-ready-wallet/105"
+  },
+  {
+    "topic_id": 108,
+    "title": "REST API drops compute_budget for v1 transactions on testnet-10",
+    "slug": "rest-api-drops-compute-budget-for-v1-transactions-on-testnet-10",
+    "category_id": 4,
+    "category_name": "General",
+    "created_at": "2026-07-24T23:08:04Z",
+    "last_posted_at": "2026-07-24T23:08:04Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/rest-api-drops-compute-budget-for-v1-transactions-on-testnet-10/108"
   }
 ]
