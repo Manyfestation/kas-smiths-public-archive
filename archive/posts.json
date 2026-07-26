@@ -1001,6 +1001,17 @@
     "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/3"
   },
   {
+    "post_id": 260,
+    "topic_id": 57,
+    "post_number": 4,
+    "username": "Moxy",
+    "display_name": null,
+    "created_at": "2026-07-25T08:54:32Z",
+    "updated_at": "2026-07-25T08:54:32Z",
+    "raw": "Thats a brilliant idea.",
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/4"
+  },
+  {
     "post_id": 129,
     "topic_id": 64,
     "post_number": 1,
@@ -1098,17 +1109,6 @@
     "updated_at": "2026-07-24T11:13:42Z",
     "raw": "I agree that it should be clearer and simpler to develop and compose applications.\nThere are many layers to this stack- covenant standards, script compilers, indexers, covenant RPCs, there are efforts to solve them all.\n\nNo one thinks Toccata is enough on its own, there is still much work to do to make development approachable.",
     "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/5"
-  },
-  {
-    "post_id": 255,
-    "topic_id": 74,
-    "post_number": 6,
-    "username": "VidaWallet",
-    "display_name": null,
-    "created_at": "2026-07-24T18:13:07Z",
-    "updated_at": "2026-07-24T18:14:56Z",
-    "raw": "(post deleted by author)",
-    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/6"
   },
   {
     "post_id": 257,
@@ -1582,5 +1582,16 @@
     "updated_at": "2026-07-24T23:08:04Z",
     "raw": "Hey everyone - we are building using Silverscript covenants (KCC20 tokens) on testnet-10. The covenant compiles and the transaction builds/signs correctly with WASM SDK v2.0.1, but we hit a blocker at submission.\n\nWe send a v1 transaction with sigOpCount: 0 and compute_budget: 10 (tried many values) through the REST API, but the node responds with:\n\n\"script units exceeded the amount committed in the input: used=100000, limit=9999\"\n\nThe limit=9999 corresponds to ComputeBudget(0). The compute_budget field is silently dropped in the REST to RPC mapping - the same tx works when bypassing the REST API.\n\nWe noticed VidaWallet deployed a Silverscript AMM covenant to testnet-10 successfully.\n\nQuestions:\n\n\\- Are you submitting through the community REST API or directly to a kaspad node?\n\n\\- Is there a known workaround or API version that passes compute_budget through?\n\n\\- Could the REST API at api-tn10.kaspa.org be updated to forward compute_budget?\n\nAny help would be hugely appreciated!",
     "url": "https://kas-smiths.org/t/rest-api-drops-compute-budget-for-v1-transactions-on-testnet-10/108/1"
+  },
+  {
+    "post_id": 261,
+    "topic_id": 109,
+    "post_number": 1,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-25T10:23:49Z",
+    "updated_at": "2026-07-25T17:30:31Z",
+    "raw": "As the maintainer of this forum, I feel responsible for protecting and preserving the content created here.\n\nThis GitHub repository is updated automatically every day with the public content of Kas-Smiths, including topics and comments:\n\nhttps://github.com/Manyfestation/kas-smiths-public-archive\n\nI hope we can keep progressing Kaspa while keeping its technical history open and preserved.",
+    "url": "https://kas-smiths.org/t/public-archive-of-kas-smiths/109/1"
   }
 ]
