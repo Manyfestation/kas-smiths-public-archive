@@ -737,6 +737,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/24"
   },
   {
+    "post_id": 266,
+    "topic_id": 15,
+    "post_number": 25,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-07-27T04:40:16Z",
+    "updated_at": "2026-07-27T04:40:16Z",
+    "raw": "Update: I’ve opened a CASA pull request proposing registration of the `kaspa` namespace, including CAIP-2 profiles for `kaspa:mainnet` and `kaspa:testnet-10` and a CAIP-10 profile for Kaspa addresses:\n\nhttps://github.com/ChainAgnostic/namespaces/pull/193",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/25"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
