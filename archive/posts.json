@@ -374,6 +374,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/36"
   },
   {
+    "post_id": 268,
+    "topic_id": 8,
+    "post_number": 40,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-07-27T11:46:18Z",
+    "updated_at": "2026-07-27T11:46:18Z",
+    "raw": "I've been working on adapting KCC20 to build upon @IzioDev's KCC1 & KCC2. This raises a few challenges.\n\nAuthenticating different principal types requires variable-length parameters. KCC20 currently defines the leader `transfer` entrypoint as the one responsible for authenticating every input. This raises a technical issue: the entrypoint needs to receive an array of bytes which might have a different length for each input.\n\nA possible solution is to move the authentication responsibility to each of the delegating inputs, and away from the leader.\n\nThis results in another issue with borrowing. The borrowed input needs to validate the borrow itself, or make sure that the leader will validate it on its behalf.\n\nI propose a solution which restricts borrowing to only the leading input, possibly as a new entrypoint. This would result in 3 entrypoints for each token:\n\n```\n// Delegation entrypoint receives a variable-length owner pk preimage\n// and validates its own authentication\ntransfer_delegator(sig signature, byte[] owner_opening)\n\n// Borrow entrypoint, which expects the first output in the state transition to be\n// the borrow-continuation with an increased amount, and validates the state\n// transition and amount preservation\nborrow(State[] next_states)\n\n// A transfer entrypoint which both validates the leader input authentication\n// and validates the state transition and amount preservation\ntransfer(State[] next_states, sig signature, byte[] owner_opening)\n\n```\n\ncc: @michaelsutton @IzioDev",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/40"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -1571,17 +1582,6 @@
     "updated_at": "2026-07-24T18:31:27Z",
     "raw": "Hi Smartgoo… I have posted some additional requests/ suggestions in a reply to issue 74. Thx.",
     "url": "https://kas-smiths.org/t/sdk-development/99/5"
-  },
-  {
-    "post_id": 250,
-    "topic_id": 105,
-    "post_number": 1,
-    "username": "kasbtc",
-    "display_name": "KasBTC | HUB21 ",
-    "created_at": "2026-07-24T00:09:11Z",
-    "updated_at": "2026-07-24T00:09:11Z",
-    "raw": "Although not a finalized standard we are already in deep exploration of a mobile Kaspa wallet fully capable of covenants and KCC20.\n\nAll of these KCC20 mainnet transfers were made with an Android wallet (open source code being available on GitHub soon): https://kascov.io/#/mainnet/token/14ec7542182a0408f78f8ea4ad7ac135e7f41305c61e0053a67a2828e585984d\n\n![13088|224x500](upload://2Sq5SCHAsaNazAbS0jaCh3JD4jC.png)\n\n![13093|224x500](upload://dH4GS5lsCw5DAob48UBxiBJt8yC.png)\n\n![13092|224x500](upload://y0nIBk4CLkwi0oLcRMu6mm1c3pS.png)\n\n![13091|224x500](upload://i64QU68ZBT7jvI5rER9gQSyxVFY.png)\n\n![13090|224x500](upload://blhx2JlUsWt8fNKeXceXoDBaMtD.png)",
-    "url": "https://kas-smiths.org/t/first-kcc20-ready-wallet/105/1"
   },
   {
     "post_id": 259,
