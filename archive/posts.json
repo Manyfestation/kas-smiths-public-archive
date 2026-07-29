@@ -385,6 +385,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/40"
   },
   {
+    "post_id": 271,
+    "topic_id": 8,
+    "post_number": 41,
+    "username": "cryptosione",
+    "display_name": "sione.kas𐤊 ⚡️",
+    "created_at": "2026-07-28T14:07:56Z",
+    "updated_at": "2026-07-28T14:07:56Z",
+    "raw": "Hey all, Sione from KaspaCom.\nWe are from KaspaCom, and we are aligning our existing KCC20V2 implementation with the draft KCC conventions. We want to clarify a\nfew compatibility points before deciding whether a future standard-native artifact is required.\n\nKaspaCom context:\n\n* KaspaCom has an existing KCC20V2 implementation already used across our covenant tooling, backend builders, wallet flows, and\n  indexer/projection stack.\n* The deployed KCC20V2 artifact is not being changed for this alignment pass.\n* We are currently adding descriptor/metadata compatibility around the existing artifact, not claiming full byte-for-byte\n  conformance.\n\nExisting KCC20V2 state fields:\n\n* `ownerIdentifier`\n* `identifierType`\n* `amount`\n\nDraft references:\n\n* KCC-0001: [KCC-0001: covenant definition, concepts, bytes layout and abi #3](https://github.com/kaspanet/kccs/pull/3)\n* KCC-0002: [kcc-0002: control principal references in program abi #5](https://github.com/kaspanet/kccs/pull/5)\n* KCC-0020: [KCC-0020 fungible token covenant specification #2](https://github.com/kaspanet/kccs/pull/2)\n* KCC-0021: [KCC-0021: Covenant Token Metadata Specification #6](https://github.com/kaspanet/kccs/pull/6)\n\nOpen questions:\n\n1. KCC-0002 `p2pk-schnorr/v1`\n\nCan a `byte[32]` field containing an x-only Schnorr public key conform to `p2pk-schnorr/v1`, or must the selected field use the\nlogical `pubkey` type?\n\n2. KCC-0002 P2SH ownership\n\nShould existing Kaspa P2SH ownership using `Blake2b-256(redeemScript)` receive its own principal profile?\n\nThe current draft `program-hash/v1` appears to use the KCC-0001 BLAKE3 template hash, which is not the same identity as a normal\nKaspa P2SH redeem-script hash.\n\n3. KCC-0020 transfer compatibility\n\nMay a contract retain specialized transfer entrypoints while also adding generic `transfer` and `transfer_delegator` entrypoints?\n\nFor example, KCC20V2 currently uses specialized flows like `transferByOwnerSig` and `transferByWitness`.\n\nIf generic entrypoints are added later, must they use KCC-0001 dispatch tags, or can a descriptor map legacy selectors to the draft\ntransfer model?\n\n4. KCC-0021 metadata binding\n\nWhen one deploy transaction creates both a minter output and a premint holder output, does one metadata object identify the shared\ntoken lineage, or only the lowest-indexed covenant output?\n\nThis matters for deploy transactions where the token identity is shared across the minter and initial holder state.\n\nOur current position:\n\n* The existing KCC20V2 artifact should be described as partially aligned, not fully conforming.\n* Descriptor metadata should not upgrade claimed templates into verified classification.\n* A future standard-native artifact can be separately named/versioned once the identity, transfer, and metadata-binding rules are\n  clear.\n\n@IzioDev @Manyfest",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/41"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -1524,8 +1535,8 @@
     "username": "Manyfest",
     "display_name": null,
     "created_at": "2026-07-24T11:03:38Z",
-    "updated_at": "2026-07-24T11:03:38Z",
-    "raw": "I can imagine situations in which a developer wishes to create a composable token covenant and not care about giving it a specific ticker on an image. IMO, the KCC20 spec should not enforce an off-chain identity.\nA token (or any covenant for that matter) has a unique cov-id which is its true identifier (much like a contract address on Ethereum). \n\nSo yeah, I'd go with a different standard.",
+    "updated_at": "2026-07-28T10:10:25Z",
+    "raw": "I can imagine situations in which a developer wishes to create a composable token covenant and not care about giving it a specific ticker or an image. \nIMO, the KCC20 spec should not enforce an on-chain identity.\nA token (or any covenant for that matter) has a unique cov-id which is its true identifier (much like a contract address on Ethereum). \n\nSo yeah, I'd go with a different standard.",
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/5"
   },
   {
@@ -1604,5 +1615,16 @@
     "updated_at": "2026-07-25T17:30:31Z",
     "raw": "As the maintainer of this forum, I feel responsible for protecting and preserving the content created here.\n\nThis GitHub repository is updated automatically every day with the public content of Kas-Smiths, including topics and comments:\n\nhttps://github.com/Manyfestation/kas-smiths-public-archive\n\nI hope we can keep progressing Kaspa while keeping its technical history open and preserved.",
     "url": "https://kas-smiths.org/t/public-archive-of-kas-smiths/109/1"
+  },
+  {
+    "post_id": 270,
+    "topic_id": 109,
+    "post_number": 2,
+    "username": "StppStp",
+    "display_name": "stp",
+    "created_at": "2026-07-28T05:55:11Z",
+    "updated_at": "2026-07-28T05:58:31Z",
+    "raw": "(post deleted by author)",
+    "url": "https://kas-smiths.org/t/public-archive-of-kas-smiths/109/2"
   }
 ]
