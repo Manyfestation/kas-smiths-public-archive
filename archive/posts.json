@@ -451,6 +451,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/47"
   },
   {
+    "post_id": 283,
+    "topic_id": 8,
+    "post_number": 48,
+    "username": "kasbtc",
+    "display_name": "KasBTC | HUB21 ",
+    "created_at": "2026-07-31T13:49:09Z",
+    "updated_at": "2026-07-31T13:54:03Z",
+    "raw": "(post deleted by author)",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/48"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -1593,6 +1604,17 @@
     "updated_at": "2026-07-28T10:10:25Z",
     "raw": "I can imagine situations in which a developer wishes to create a composable token covenant and not care about giving it a specific ticker or an image. \nIMO, the KCC20 spec should not enforce an on-chain identity.\nA token (or any covenant for that matter) has a unique cov-id which is its true identifier (much like a contract address on Ethereum). \n\nSo yeah, I'd go with a different standard.",
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/5"
+  },
+  {
+    "post_id": 284,
+    "topic_id": 98,
+    "post_number": 6,
+    "username": "kasbtc",
+    "display_name": "KasBTC | HUB21 ",
+    "created_at": "2026-07-31T13:59:05Z",
+    "updated_at": "2026-07-31T13:59:05Z",
+    "raw": "In regards to this genesis metadata convention proposal heres an updated convention proposal.\n\nThe following metadata remains permanently immutable:\n- name\n- ticker\n- supply\n- decimals\n- genesis tx ID\n- metadata authority public key\n\nOnly the image may be updated through subsequent txs:\n\n```\n{\n  \"protocol\": \"kcc20-metadata\",\n  \"version\": 1,\n  \"op\": \"update-image\",\n  \"genesis_txid\": \"...\",\n  \"covenant_id\": \"...\",\n  \"sequence\": 1,\n  \"previous_update_txid\": \"...\",\n  \"image\": \"https://example.com/new-logo.png\",\n  \"image_hash\": \"sha256...\",\n  \"signature\": \"...\"\n}\n```\n\n\nThe signature must be produced by the metadata authority key defined at genesis. Indexers should only accept an update when:\n- operation is \n\n```\nupdate-image\n```\n\n\n- signature is valid\n- genesis tx and covenant IDs match\n- sequence number is valid and strictly increasing\n- the SHA256 hash matches the referenced image\nAttempts to modify the ticker, name, supply or decimals must be marked invalid.Previous images and updates remain permanently visible in the on chain history.\n\n```\n\n```\n\nIndexers can resolve the latest valid image update without changing token balances, ownership states or transfer behavior. The genesis tx itself can never be modified. Instead a later authorized image-update tx would be linked to the original genesis tx.",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/6"
   },
   {
     "post_id": 232,
