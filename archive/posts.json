@@ -451,17 +451,6 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/47"
   },
   {
-    "post_id": 283,
-    "topic_id": 8,
-    "post_number": 48,
-    "username": "kasbtc",
-    "display_name": "KasBTC | HUB21 ",
-    "created_at": "2026-07-31T13:49:09Z",
-    "updated_at": "2026-07-31T13:54:03Z",
-    "raw": "(post deleted by author)",
-    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/48"
-  },
-  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -1692,6 +1681,17 @@
     "updated_at": "2026-07-29T12:01:34Z",
     "raw": "If you're using the WASM SDK, why don't you use the node RPC to submit the transaction directly?\n\nNote: similar frictions have been reported by SDK users, usually I point at this PR that fixes all of the issues: https://github.com/kaspanet/rusty-kaspa/pull/1074\n\nPlease use Github issues next time for similar technical difficulties, or Discord.",
     "url": "https://kas-smiths.org/t/rest-api-drops-compute-budget-for-v1-transactions-on-testnet-10/108/2"
+  },
+  {
+    "post_id": 286,
+    "topic_id": 108,
+    "post_number": 3,
+    "username": "daniel",
+    "display_name": null,
+    "created_at": "2026-08-01T20:24:18Z",
+    "updated_at": "2026-08-01T20:24:18Z",
+    "raw": "Thanks for your reply.\nCan you share with me kaspa discord url?",
+    "url": "https://kas-smiths.org/t/rest-api-drops-compute-budget-for-v1-transactions-on-testnet-10/108/3"
   },
   {
     "post_id": 261,
