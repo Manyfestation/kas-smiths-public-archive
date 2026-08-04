@@ -1606,6 +1606,17 @@
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/6"
   },
   {
+    "post_id": 290,
+    "topic_id": 98,
+    "post_number": 7,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-08-03T17:27:44Z",
+    "updated_at": "2026-08-03T17:27:44Z",
+    "raw": "I understand the need for token metadata management, this topic has been discussed here before and it’s a good topic to discuss. \nYour proposal though does not speak covenant language. What is this metadata artifact? Where is it published? What do you mean by image update protocol? How this relates to the kcc20 protocol?",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/7"
+  },
+  {
     "post_id": 232,
     "topic_id": 99,
     "post_number": 1,
@@ -1703,5 +1714,16 @@
     "updated_at": "2026-07-25T17:30:31Z",
     "raw": "As the maintainer of this forum, I feel responsible for protecting and preserving the content created here.\n\nThis GitHub repository is updated automatically every day with the public content of Kas-Smiths, including topics and comments:\n\nhttps://github.com/Manyfestation/kas-smiths-public-archive\n\nI hope we can keep progressing Kaspa while keeping its technical history open and preserved.",
     "url": "https://kas-smiths.org/t/public-archive-of-kas-smiths/109/1"
+  },
+  {
+    "post_id": 291,
+    "topic_id": 124,
+    "post_number": 1,
+    "username": "kasbtc",
+    "display_name": "KasBTC | HUB21 ",
+    "created_at": "2026-08-03T21:36:03Z",
+    "updated_at": "2026-08-03T21:36:03Z",
+    "raw": "We published an open draft for KCC721 on GitHub: https://github.com/KaspaHUB21/KCC721-A-Kaspa-NFT-Covenant-Proposal\n\nGoal is to create the same covenant value onto KRC721 NFTs. With KCC721, NFTs become utxo-native, enable covenant features for added utility, and also atomic batch transfers to include multiple NFTs into one tx. Limit seems to be around 22 NFTs until compute mass limit is reached.\n\nIt's an early draft but functional. The GitHub also contains a link to a test page on mainnet showing KCC721 in action. We hope to encourage further discussion and development as we believe KRC721 needs an enhancement the same as KRC20 does.",
+    "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/1"
   }
 ]

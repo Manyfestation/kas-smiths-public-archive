@@ -292,7 +292,7 @@
     "category_id": 5,
     "category_name": "Asset Standards",
     "created_at": "2026-07-22T11:01:06Z",
-    "last_posted_at": "2026-07-31T13:59:05Z",
+    "last_posted_at": "2026-08-03T17:27:44Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98"
   },
@@ -328,5 +328,16 @@
     "last_posted_at": "2026-07-25T10:23:49Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/public-archive-of-kas-smiths/109"
+  },
+  {
+    "topic_id": 124,
+    "title": "KCC721 proposal: Kaspa NFTs with covenant rules",
+    "slug": "kcc721-proposal-kaspa-nfts-with-covenant-rules",
+    "category_id": 4,
+    "category_name": "General",
+    "created_at": "2026-08-03T21:36:03Z",
+    "last_posted_at": "2026-08-03T21:36:03Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124"
   }
 ]
