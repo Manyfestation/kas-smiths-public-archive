@@ -1210,6 +1210,17 @@
     "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/7"
   },
   {
+    "post_id": 292,
+    "topic_id": 74,
+    "post_number": 8,
+    "username": "ingram_it",
+    "display_name": "ingram",
+    "created_at": "2026-08-04T08:26:49Z",
+    "updated_at": "2026-08-04T08:26:49Z",
+    "raw": "**Proposal: thin covenant-indexed UTXO lookup, backed by direct point-reads into the consensus virtual UTXO set**\n\nWith `covenant_id` now a native field on `UtxoEntry` post-Toccata, there's currently no way to enumerate all active UTXOs for a given covenant without running a custom external indexer that scans blocks and matches script patterns (see e.g. Covex, which already does exactly this via RPC WebSocket polling). Same gap applies more generally: there's no way to fetch a `UtxoEntry` by raw `(transaction_id, output_index)` at all — `getUtxosByAddresses` only resolves standard address templates, and non-standard/covenant scriptPublicKeys aren't addressable.\n\nProposed shape: a thin satellite index (analogous to `UtxoIndex`), keyed `covenant_id → daa_score → transaction_id → output_index`, populated from the same virtual-state diff stream. It stores *only* outpoint references, not `amount`/`scriptPublicKey` — no duplication of consensus data. Two new RPC methods: `getUtxosByCovenantId(covenant_id, cursor)` and a more general `getUtxosByOutpoints(outpoints[])`, both hard-capped at \\~300 items per call, both resolving actual UTXO data via sequential calls to the existing `UtxoSetStoreReader::get(outpoint)` — no batch/MultiGet added to the consensus store itself, just repeated single-item reads, one request = one worker, with a configurable concurrency limit (semaphore) so load on the live UTXO set stays bounded and low-priority relative to consensus-critical paths.\n\nMain advantages: (1) fully deterministic, bounded per-call cost via the fixed page size + cursor — no request can create unpredictable load; (2) works for *any* UTXO regardless of address-representability, closing a real gap, not just a covenant-specific one; (3) no duplicated/stale data — single source of truth is the live virtual UTXO set; (4) removes the practical requirement for covenant-based applications to depend on a trusted third-party indexer just to read their own on-chain state.\n\nQuestion for maintainers: is this architecturally acceptable — i.e., is calling into `UtxoSetStoreReader::get()` from the RPC layer (which already depends on `kaspa-consensusmanager`) considered a reasonable use of that path, or is there a principled objection to RPC-triggered reads against the live consensus store this way? Would something along these lines have a realistic chance of being accepted, or is there a preferred alternative approach already in mind?",
+    "url": "https://kas-smiths.org/t/has-there-been-any-discussion-of-adding-getutxosbycovenantid/74/8"
+  },
+  {
     "post_id": 154,
     "topic_id": 76,
     "post_number": 1,
