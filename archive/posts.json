@@ -1100,6 +1100,17 @@
     "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/4"
   },
   {
+    "post_id": 295,
+    "topic_id": 57,
+    "post_number": 5,
+    "username": "bitcat",
+    "display_name": null,
+    "created_at": "2026-08-06T18:30:18Z",
+    "updated_at": "2026-08-06T18:30:18Z",
+    "raw": "Hi, for those interested in diving a bit deeper, here's a detailed analysis of the protocol, explaining why it's reasonable to expect it to resolve to the truth under some mild conditions (and a few limitations).\n\nhttps://drive.google.com/file/d/1uUCj1pyTnNHTAO60u0vDWrBcFdjzYK1L/view?usp=drivesdk",
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/5"
+  },
+  {
     "post_id": 129,
     "topic_id": 64,
     "post_number": 1,
@@ -1736,5 +1747,16 @@
     "updated_at": "2026-08-03T21:36:03Z",
     "raw": "We published an open draft for KCC721 on GitHub: https://github.com/KaspaHUB21/KCC721-A-Kaspa-NFT-Covenant-Proposal\n\nGoal is to create the same covenant value onto KRC721 NFTs. With KCC721, NFTs become utxo-native, enable covenant features for added utility, and also atomic batch transfers to include multiple NFTs into one tx. Limit seems to be around 22 NFTs until compute mass limit is reached.\n\nIt's an early draft but functional. The GitHub also contains a link to a test page on mainnet showing KCC721 in action. We hope to encourage further discussion and development as we believe KRC721 needs an enhancement the same as KRC20 does.",
     "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/1"
+  },
+  {
+    "post_id": 294,
+    "topic_id": 126,
+    "post_number": 1,
+    "username": "Ma_tze_21",
+    "display_name": null,
+    "created_at": "2026-08-06T06:36:18Z",
+    "updated_at": "2026-08-06T06:36:18Z",
+    "raw": "### **Context**\n\nI am working on a possible bridge from an existing KRC-20 token to a native KCC-20 asset on Kaspa, represented through SilverScript covenants.\n\nThe core issue is that a regular KRC-20 transfer transaction contains the payload with token, amount, and recipient, but it does not directly prove on Kaspa L1 that the Kasplex indexer actually processed the transfer as valid. KRC-20 validity depends on prior indexer state, including token existence, the sender's balance, and possible blacklist rules.\n\nA covenant could hash the KRC-20 payload and a later API response, binding both sets of data to the same swap. That protects against later changes and replay attacks, but it does not prove that the API response genuinely came from Kasplex. A relayer signature would solve that, but it introduces trust assumptions and an availability risk.\n\n**Questions**\n\nIs there already a publicly usable, on-chain verifiable proof of KRC-20 state, such as state roots, checkpoints with Merkle proofs, or ZK proofs?\n\nIf so, can a SilverScript covenant verify such a proof in order to move a KRC-20 transfer into KCC-20 without a trusted relayer?\n\nIf not, is there another trust-minimized approach besides multiple relayers using threshold signatures?\n\nAre the checkpoint commitments mentioned in the RTD Rollup documentation already specified and available in a form that can be used for this purpose?\n\n#### **Goal**\n\n**My goal is a design where anyone can submit a proof, the covenant verifies validity on its own, and no individual API server or relayer controls the bridge.**",
+    "url": "https://kas-smiths.org/t/exploring-a-trust-minimized-krc-20-to-kcc-20-bridge-on-kaspa-without-relying-on-a-relayer/126/1"
   }
 ]
