@@ -451,6 +451,39 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/47"
   },
   {
+    "post_id": 298,
+    "topic_id": 8,
+    "post_number": 49,
+    "username": "Shawn",
+    "display_name": null,
+    "created_at": "2026-08-09T15:26:45Z",
+    "updated_at": "2026-08-09T15:26:45Z",
+    "raw": "This is probably where it ends up. Variable-length openings really do wreck leader validation, and splitting the delegated path out is the honest fix.\n\nSequencing is what I'd argue about, because everything I've deployed is immutable bytecode, and by the time this settles I won't be the only one who's shipped against the minimal shape you pinned down earlier in the thread - the standard state header plus a single verification-mode transfer. Deployed code can't follow a restructure. The only migration that exists is opt-in burn-and-reissue onto a new generation, and you never get 100% of holders to move, so the old shape stays live whatever the paper says. So keep that minimal single-entrypoint shape as a conforming baseline profile and let the descriptor declare the delegated model as a second one. The descriptor needs a versioning story sooner or later anyway - profiles can be its first customer.\n\nI compiled it. The delegator half is a clear win - non-leader inputs get way lighter once they stop carrying the full State columns, and the sig-less borrow ratchet seems genuinely safe. The three-entrypoint packaging has cost: transfer and borrow each carry a full copy of the state-transition validator, my compiler inlines everything, and the token redeem grew \\~1.8x. Standalone transfers don't care. Anything that bakes the token template into composing covenants multiplies it though, and every composed tx shape I run went over the byte cap. The fix keeps the semantics exactly: fold borrow into the leader as an sig-less branch, one shared validator, two entrypoints. That compiles smaller than my current production covenant and every composed shape fits with more headroom than I have today. I'm running my read past Manyfest before I post the full writeup with numbers.\n\nWherever borrow ends up - its own entrypoint or a branch of the leader - that's the place to finally fix the consent problem I raised earlier with borrowed receive. A stranger mutating your UTXO still invalidates your pre-signed txs no matter how safe the ratchet is, so per-UTXO opt-out belongs in the borrow rules themselves and I'd make it a v1 blocker. As an optional extension it'll never get implemented.\n\nOne more reason I care about a frozen baseline. We've commissioned an independent third-party audit of our full covenant set, scope frozen at a specific commit, and that code conforms to the minimal shape. If that shape survives as a profile, the spec gets a security review it didn't have to pay for. I'll post whatever comes back that's relevant here.\n\nAnd bumping my earlier question since it's still open - an empty byte string is ambiguous with a zero-length push, so for covenants compiled without_selector I'd have the descriptor carry an explicit empty-selector flag. It's what I ship today, round-trips indexers fine. Any objection to just specifying that?",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/49"
+  },
+  {
+    "post_id": 300,
+    "topic_id": 8,
+    "post_number": 50,
+    "username": "Shawn",
+    "display_name": null,
+    "created_at": "2026-08-09T23:16:16Z",
+    "updated_at": "2026-08-09T23:16:16Z",
+    "raw": "This is close to the exact list I hit before shipping, Ross. Including the 5.5/5.6 vs 5.3 array thing and we ended up resolving it the way 5.4 implies. A cross-reference there would've saved me some time.\n\nThe serialization gap is the one that bites. Until field order, length framing and the tagging of the ExtendedStateLayout/ExtensionId arrays are pinned at byte level, two implementations can both be \"conforming\" and still fail to read each other's descriptors. I can write up what we deployed as a numbered strawman people can diff against, descriptor encoding end to end, plus the SCRIPT_HASH vs COVENANT_ID question.\n\nThe edge case I think belongs in the spec rather than implementer folklore is the co-present-input check proves an input carrying the owner's identity exists in the tx. Not that it consented to this transfer. Co-presence is not authorization. For the signature-backed owner modes the spec should say the authorizing input must commit to the whole transaction, otherwise a signature the owner made for something unrelated can be replayed to wave a token move through. And script-hash mode has no signature at all so whoever can spend that P2SH for any unrelated reason also releases every balance keyed to it. Both are fine if the spec states them out loud.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/50"
+  },
+  {
+    "post_id": 301,
+    "topic_id": 8,
+    "post_number": 51,
+    "username": "Shawn",
+    "display_name": null,
+    "created_at": "2026-08-09T23:18:59Z",
+    "updated_at": "2026-08-09T23:18:59Z",
+    "raw": "Manyfest: Can I post it here?",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/51"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -823,6 +856,17 @@
     "updated_at": "2026-07-27T04:40:16Z",
     "raw": "Update: I’ve opened a CASA pull request proposing registration of the `kaspa` namespace, including CAIP-2 profiles for `kaspa:mainnet` and `kaspa:testnet-10` and a CAIP-10 profile for Kaspa addresses:\n\nhttps://github.com/ChainAgnostic/namespaces/pull/193",
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/25"
+  },
+  {
+    "post_id": 299,
+    "topic_id": 15,
+    "post_number": 26,
+    "username": "cryptosione",
+    "display_name": "sione.kas𐤊 ⚡️",
+    "created_at": "2026-08-09T19:03:04Z",
+    "updated_at": "2026-08-09T19:03:04Z",
+    "raw": "I did my own implementation of x402, but yours seems cleaner, is there already a working demo and sdk ? Can I start tests? we have a bunch of public apis that we need to add payments to, and I'm checking for x402 coinbase for now, any ETA so I don't do that :slight_smile: @elldeeone",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/26"
   },
   {
     "post_id": 23,
