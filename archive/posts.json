@@ -484,6 +484,28 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/51"
   },
   {
+    "post_id": 303,
+    "topic_id": 8,
+    "post_number": 52,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-08-10T11:24:32Z",
+    "updated_at": "2026-08-10T11:24:32Z",
+    "raw": "KCC20 is still a WIP draft and has not been finalized or versioned. At this stage, the goal is to converge on the best shape we can, not to preserve compatibility with earlier iterations of the draft. Asking the standard to retain an earlier shape as a conforming profile would effectively constrain the design before it is finished.\nBurn-and-reissue is a possible migration path for already deployed tokens, as you say it inevitably creates fragmentation when holders do not migrate. \n\nBorrowing remains the main unresolved issue. As noted, allowing arbitrary parties to spend and recreate another UTXO introduces a UX and availability problem: the owner must track a new outpoint, and pre-signed transactions become invalid.\n\nAn optout flag is a naive solution, a stronger model under consideration, inspired by this paper https://people.csail.mit.edu/rivest/pubs/RS96a.pdf. The goal is to preserve permissionless borrowing where intended without allowing unrestricted mutation of UTXOs.\n\nI don't see a good enough reason for a empty_selector in description . The right shape is to use a smarter and more efficient approach instead of validate in each input the entire state tranition. The spec tried to argue for the correct way to implement fungible tokens, and not tries to support all fungible token implantation possbile.\n\nKCC2 defines representation and discovery of control principals, but explicitly does not define full authorization semantics or entrypoint authentication. That layer belongs to conventions built on top of KCC2, not KCC20 itself.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/52"
+  },
+  {
+    "post_id": 307,
+    "topic_id": 8,
+    "post_number": 53,
+    "username": "Shawn",
+    "display_name": null,
+    "created_at": "2026-08-10T13:56:37Z",
+    "updated_at": "2026-08-10T13:56:37Z",
+    "raw": "The profile's off the table, that's fine - a WIP draft shouldn't freeze a shape before it's done, and my deployed bytes work regardless of what the standard calls them.\n\nNo raw pre-signed transaction survives a borrow. The v1 sighash folds the spent input's own outpoint into the signed message unconditionally. I read the node: it's the hash_outpoint call in calc_schnorr_signature_hash, and it sits outside every sighash-type branch, so no type or flag drops it. AnyoneCanPay only zeroes the other inputs' outpoints, never the signed input's own. A borrow recreates the UTXO under a new txid, so a pre-signed input both names an outpoint that no longer exists and carries a signature that wouldn't verify against the new one. Committing the continuation to a chain-position instead of an outpoint doesn't rescue it either - covenant state fields aren't in the sighash at all, consensus never looks at them when it resolves an input.\n\nAuthorization has to move off the transaction signature entirely, onto something outpoint-agnostic that a covenant checks against its own state. A hash chain alone doesn't get you there because it bounds the borrows without keeping the owner's pending spend alive across them. I've got a shape that does both. Rather than argue it in the abstract I'm building it against our KCC20 covenant and I'll bring real SU numbers.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/53"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -867,6 +889,50 @@
     "updated_at": "2026-08-09T19:03:04Z",
     "raw": "I did my own implementation of x402, but yours seems cleaner, is there already a working demo and sdk ? Can I start tests? we have a bunch of public apis that we need to add payments to, and I'm checking for x402 coinbase for now, any ETA so I don't do that :slight_smile: @elldeeone",
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/26"
+  },
+  {
+    "post_id": 304,
+    "topic_id": 15,
+    "post_number": 27,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-08-10T11:44:24Z",
+    "updated_at": "2026-08-10T11:44:24Z",
+    "raw": "Thanks mate! Yep, pls feel free to start testing now. Great timing too, because I just shipped the latest alpha version, alpha.10. \n\nI think this will likely be the last major alpha design change before a RC. There is still more testing and external review (hopefully from people like you :grin: )  to do before I call it stable, but I think the design is very close.\n\nFor your public APIs, I would start with `exact` using the default `standard-native` profile. It uses an ordinary KAS payment and requires no seller-side covenant or KIP-10 infrastructure.\n\n`exact` also has an optional `additive` profile that uses a reusable KIP-10 merchant head. Separately, `batch-settlement` is designed for repeated, very small, or metered requests using prepaid covenant funds and off-chain vouchers.\n\nDemo\n[https://demo.kaspa-x402.org](https://demo.kaspa-x402.org/)\n\nImplementer guide\n\n<https://kaspa-x402.org/docs/demo-implementer-guide/>\n\nAlpha.10 release\n\n<https://github.com/elldeeone/kaspa-x402/releases/tag/v0.1.0-alpha.10>\n\nSDK and source\n\n<https://github.com/elldeeone/kaspa-x402>\n\nBTW the naming has been versioned as the design evolved through alpha. For the release candidate and upstream submission, I intend to simplify it and use clean, consistent names that follow x402 conventions.\n\nFor now, testing is on TN10 while I finish the alpha work and prepare an release candidate. Once it has had enough testing and external review, my intention is to take the cleaned up proposal upstream to x402 (I don’t think we’re far off though).\n\nAppreciate any feedback that you have as this will help me arrive quicker at the release candidate. :folded_hands:",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/27"
+  },
+  {
+    "post_id": 305,
+    "topic_id": 15,
+    "post_number": 28,
+    "username": "cryptosione",
+    "display_name": "sione.kas𐤊 ⚡️",
+    "created_at": "2026-08-10T11:56:52Z",
+    "updated_at": "2026-08-10T11:56:52Z",
+    "raw": "Great will start testing.\n\nHow fast is the exact payment flow? I think opening a channel is more efficient?",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/28"
+  },
+  {
+    "post_id": 306,
+    "topic_id": 15,
+    "post_number": 29,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-08-10T12:18:25Z",
+    "updated_at": "2026-08-10T12:18:25Z",
+    "raw": "Default exact`standard-native flow`is just a native KAS tx (there is an optional `additive` profile though that uses a KIP-10 tx which should be the same speed).\n\nOpening a batch channel definitely would be more efficient for lots of small repeated (or metered) requests. There is a slight initial delay while the buyer opens and funds the channel and seller verifies but subsequent paid requests will rip.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/29"
+  },
+  {
+    "post_id": 308,
+    "topic_id": 15,
+    "post_number": 30,
+    "username": "cryptosione",
+    "display_name": "sione.kas𐤊 ⚡️",
+    "created_at": "2026-08-10T15:03:55Z",
+    "updated_at": "2026-08-10T15:03:55Z",
+    "raw": "[quote=\"elldeeone, post:27, topic:15, full:true\"]\nThanks mate! Yep, pls feel free to start testing now. Great timing too, because I just shipped the latest alpha version, alpha.10.\n\nI think this will likely be the last major alpha design change before a RC. There is still more testing and external review (hopefully from people like you :grin: ) to do before I call it stable, but I think the design is very close.\n\nFor your public APIs, I would start with `exact` using the default `standard-native` profile. It uses an ordinary KAS payment and requires no seller-side covenant or KIP-10 infrastructure.\n\n`exact` also has an optional `additive` profile that uses a reusable KIP-10 merchant head. Separately, `batch-settlement` is designed for repeated, very small, or metered requests using prepaid covenant funds and off-chain vouchers.\n\nDemo\n[https://demo.kaspa-x402.org](https://demo.kaspa-x402.org/)\n\nImplementer guide\n\nhttps://kaspa-x402.org/docs/demo-implementer-guide/\n\nAlpha.10 release\n\nhttps://github.com/elldeeone/kaspa-x402/releases/tag/v0.1.0-alpha.10\n\nSDK and source\n\nhttps://github.com/elldeeone/kaspa-x402\n\nBTW the naming has been versioned as the design evolved through alpha. For the release candidate and upstream submission, I intend to simplify it and use clean, consistent names that follow x402 conventions.\n\nFor now, testing is on TN10 while I finish the alpha work and prepare an release candidate. Once it has had enough testing and external review, my intention is to take the cleaned up proposal upstream to x402 (I don’t think we’re far off though).\n\nAppreciate any feedback that you have as this will help me arrive quicker at the release candidate. :folded_hands:\n\n[/quote]\n\nWill start today I will keep you posted",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/30"
   },
   {
     "post_id": 23,
@@ -1802,5 +1868,16 @@
     "updated_at": "2026-08-06T06:36:18Z",
     "raw": "### **Context**\n\nI am working on a possible bridge from an existing KRC-20 token to a native KCC-20 asset on Kaspa, represented through SilverScript covenants.\n\nThe core issue is that a regular KRC-20 transfer transaction contains the payload with token, amount, and recipient, but it does not directly prove on Kaspa L1 that the Kasplex indexer actually processed the transfer as valid. KRC-20 validity depends on prior indexer state, including token existence, the sender's balance, and possible blacklist rules.\n\nA covenant could hash the KRC-20 payload and a later API response, binding both sets of data to the same swap. That protects against later changes and replay attacks, but it does not prove that the API response genuinely came from Kasplex. A relayer signature would solve that, but it introduces trust assumptions and an availability risk.\n\n**Questions**\n\nIs there already a publicly usable, on-chain verifiable proof of KRC-20 state, such as state roots, checkpoints with Merkle proofs, or ZK proofs?\n\nIf so, can a SilverScript covenant verify such a proof in order to move a KRC-20 transfer into KCC-20 without a trusted relayer?\n\nIf not, is there another trust-minimized approach besides multiple relayers using threshold signatures?\n\nAre the checkpoint commitments mentioned in the RTD Rollup documentation already specified and available in a form that can be used for this purpose?\n\n#### **Goal**\n\n**My goal is a design where anyone can submit a proof, the covenant verifies validity on its own, and no individual API server or relayer controls the bridge.**",
     "url": "https://kas-smiths.org/t/exploring-a-trust-minimized-krc-20-to-kcc-20-bridge-on-kaspa-without-relying-on-a-relayer/126/1"
+  },
+  {
+    "post_id": 302,
+    "topic_id": 126,
+    "post_number": 2,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-08-10T10:43:24Z",
+    "updated_at": "2026-08-10T10:43:24Z",
+    "raw": "As far as I understand, the state of the indexer can not be reached from within Kaspa. The indexer simply tracks revealed txs scripts (and not their payload field, note that KRC20 protocol was created before the introduction of transaction payloads in the Crescendo upgrade.\n\n[quote=\"Ma_tze_21, post:1, topic:126\"]\nAre the checkpoint commitments mentioned in the RTD Rollup documentation already specified and available in a form that can be used for this purpose?\n[/quote]\n\nWhat is \"RTD Rollup\"?",
+    "url": "https://kas-smiths.org/t/exploring-a-trust-minimized-krc-20-to-kcc-20-bridge-on-kaspa-without-relying-on-a-relayer/126/2"
   }
 ]
