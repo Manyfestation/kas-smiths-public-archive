@@ -528,6 +528,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/55"
   },
   {
+    "post_id": 313,
+    "topic_id": 8,
+    "post_number": 56,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-08-15T09:44:19Z",
+    "updated_at": "2026-08-15T09:44:19Z",
+    "raw": "First post here in this topic, so brief context: I run kascov, a public Reader that decodes the live KCC20-style covenants directly from chain, without descriptor artifacts, by proving state against the revealed program bytes. A few field notes from the Reader side of the split:\n\nQuote from @Shawn \n\n> Until field order, length framing and the tagging of the ExtendedStateLayout/ExtensionId arrays are pinned at byte level, two implementations can both be \"conforming\" and still fail to read each other's descriptors.\n\nByte-level pinning fixes reading the artifact, and I would add one property on top: a descriptor should be verifiable against chain, not just parseable. Almost everything a TokenDescriptor carries is already implied by any accept reveal of the covenant. Splice the decoded state out of the revealed program and the prefix and suffix fall out, and hashing the spliced program gives a stable template identity. Even the entrypoint selectors can be witnessed from real spends once each path is exercised. A Reader that recomputes these from a reveal can check a published descriptor byte for byte befor trusting it, which turns descriptor distribution from a trust problem into a caching problem, a much better problem to have. If descriptors get a pinned encoding, I will contribute chain-derived test vectors for that check, and Shawn's numbered strawman sounds like the right table to diff them against.\n\n\nA measurement on how many descriptors there would actually be: in mid-July, 867,456 spent covenant sigscripts on TN10 reduced to under three thousand template reveals and exactly 3 distinct template programs. Descriptors naturally live at the template level with a per-token binding, not one artifact per covenant id. That also hands the versioning story its natural unit: a restructure like the three-entrypoint shape just shows up as a new template generation beside the old ones. Basically the fragmentation @Shawn  describes is already the observed steady state as of right now: one mainnet launchpad's 74 live tokens span four template generations today, and old shapes do not retire. A Reader is fine with any entrypoint shape the draft lands on, as long as each generation stays identifiable from the bytes it has.\n\nQuote from @Manyfest \n\n> Explorers should provide a service that lets users reveal token genesis transactions and expose the pre-compiled Silver logic.\n\nThis exists today: kascov reveals genesis transactions, matches deployed covenants against their compiled logic (for one launchpad the shipped source proved byte-for-byte identical to the chain bytes), and follows state transitions through replay. Happy to align its output shapes with whatever descriptor encoding this thread converges on!!\n\nWish you all the best.\n\n\nMichiel",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/56"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -1243,6 +1254,28 @@
     "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/5"
   },
   {
+    "post_id": 315,
+    "topic_id": 57,
+    "post_number": 6,
+    "username": "Moxy",
+    "display_name": null,
+    "created_at": "2026-08-15T12:24:06Z",
+    "updated_at": "2026-08-15T12:24:06Z",
+    "raw": "i think this is a PHENOMENAL IDEA!!! I am working on an app which juxtaposes official inflation data (free to use) with users ability to vote on their lived-inflation, so far more simple, but perhaps can be used as an MVP for your idea? :slight_smile:",
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/6"
+  },
+  {
+    "post_id": 317,
+    "topic_id": 57,
+    "post_number": 7,
+    "username": "bitcat",
+    "display_name": null,
+    "created_at": "2026-08-15T18:39:38Z",
+    "updated_at": "2026-08-15T18:39:38Z",
+    "raw": "Glad you liked it! However this is a mechanism for a binary prediction market, only yes/no questions are supported, not predictions on a market variable such as inflation (you can still use threshold questions though such as \"will the May CPI be higher than X\").\n\nKeep in mind that the voting here is not a way to aggregate opinions, but rather a means to bring onchain an objective truth, so the question should ideally be as little ambiguous as possible.",
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/7"
+  },
+  {
     "post_id": 129,
     "topic_id": 64,
     "post_number": 1,
@@ -1551,6 +1584,28 @@
     "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/14"
   },
   {
+    "post_id": 314,
+    "topic_id": 78,
+    "post_number": 15,
+    "username": "Moxy",
+    "display_name": null,
+    "created_at": "2026-08-15T11:06:49Z",
+    "updated_at": "2026-08-15T11:08:23Z",
+    "raw": "I kind of like the site the way it is, but perhaps we could work a bit with the SEO? - is there a way for you to add meta data and keywords? then \"Kaspa\", could be included so people know that Kas-Smiths is actually the developer hub for Kaspa, in case they are new to it. Would also be great to rank for keywords such as \"blockchain\"  - even though kaspa isnt a blockchain that is what people outside of crypto call it and search for :wink: rust is also a good keyword to use",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/15"
+  },
+  {
+    "post_id": 316,
+    "topic_id": 78,
+    "post_number": 16,
+    "username": "Moxy",
+    "display_name": null,
+    "created_at": "2026-08-15T12:29:04Z",
+    "updated_at": "2026-08-15T12:29:04Z",
+    "raw": "if \"kaspa development\" is included in the metdata then it will pop upp in search results regardless of what the site is called ;)",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/16"
+  },
+  {
     "post_id": 168,
     "topic_id": 81,
     "post_number": 1,
@@ -1769,6 +1824,17 @@
     "updated_at": "2026-08-03T17:27:44Z",
     "raw": "I understand the need for token metadata management, this topic has been discussed here before and it’s a good topic to discuss. \nYour proposal though does not speak covenant language. What is this metadata artifact? Where is it published? What do you mean by image update protocol? How this relates to the kcc20 protocol?",
     "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/7"
+  },
+  {
+    "post_id": 312,
+    "topic_id": 98,
+    "post_number": 8,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-08-15T09:21:35Z",
+    "updated_at": "2026-08-15T09:21:35Z",
+    "raw": "@kasbtc coming back to your update-image proposal, sorry for the slow reply. The problem you point at is real and I can now put numbers on it: on one live launchpad list we cross-checked, 5 of 19 published logo URLs were dead within days and 3 more served HTML instead of an image. Discord attachment links expire by design. Image hosting rots fast.\n\nWhere I land differently is the fix. The one thing this convention buys a wallet is that the genesis commitment can never change out from under it. An authority key that can re-point the image reopens exactly the swap that image_hash exists to close, and it inherits Manyfest's questions above: what is the update artifact, where is it published, who indexes it, and what happens when two indexers disagree on the latest sequence.\n\nWhat we shipped instead in kascov, and what I would offer for your use case, is layering rather than mutation. A reader carries two tiers side by side: claimed\\_\\* fields parsed from the immutable genesis payload, and listed\\_\\* fields from a launchpad's signed token list, which is mutable by re-signing and well suited to metadata that legitimately needs to evolve. The tiers are never merged, both are labeled claims, and the covenant id stays the only identity. That gives updatable presentation today with zero new on-chain protocol, while the genesis payload stays the anchor a wallet can trust forever. If you want on-chain updatability specifically, I think it belongs in a separate extension KCC with the genesis object as canonical fallback. KCC-0021's Mutability section deliberately reserves that space, and I would gladly help shape a draft.\n\nMeanwhile PR #6 got a revision reflecting a month of production:\n\n* The reference Reader closed two of its five divergences: the https/ipfs scheme rule is enforced at parse (a live payload with a javascript: URL made that case), and decimals is consumed end to end, integer or string, 0 to 255, out of range treated as undeclared rather than clamped.\n* New section on coexistence with signed token lists, the claimed/listed model above.\n* ipfs:// images can now be paired with an image_hash so readers without a CID pipeline verify and serve them through the same sha256 path as https.\n* Honest scoping on pruning: reading an old genesis payload needs an archival or tx-indexed node, but no trusted party.\n\nThe first wallet integration ask for exactly this data landed recently, a good reminder that wallets are the real consumers here. If you build a wallet and have opinions on the field set, now is the time. @Andreas if the descriptor-relationship review is still on your list, the PR is a stable target now.",
+    "url": "https://kas-smiths.org/t/covenant-tokens-are-the-only-kaspa-token-type-still-missing-metadata/98/8"
   },
   {
     "post_id": 232,
