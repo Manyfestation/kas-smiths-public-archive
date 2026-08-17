@@ -1276,6 +1276,17 @@
     "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/7"
   },
   {
+    "post_id": 318,
+    "topic_id": 57,
+    "post_number": 8,
+    "username": "Moxy",
+    "display_name": null,
+    "created_at": "2026-08-16T07:00:35Z",
+    "updated_at": "2026-08-16T10:22:01Z",
+    "raw": "Ok I see, thanks for clarifying :slight_smile: so exciting and so desperately needed because at present the line between fact and fiction is so severely blurred that I dont think anyone can tell the difference. For instance: there was a rapported drones spotted over CPH airport. Videos and images were released. A month later the news reported that that was wrong, it was planes. Videos and images released supporting that story too. So now, whats the right story and whats the wrong story? 🤷‍♂️",
+    "url": "https://kas-smiths.org/t/permissionless-covenant-based-prediction-markets-high-level-sketch/57/8"
+  },
+  {
     "post_id": 129,
     "topic_id": 64,
     "post_number": 1,
@@ -1604,6 +1615,28 @@
     "updated_at": "2026-08-15T12:29:04Z",
     "raw": "if \"kaspa development\" is included in the metdata then it will pop upp in search results regardless of what the site is called ;)",
     "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/16"
+  },
+  {
+    "post_id": 323,
+    "topic_id": 78,
+    "post_number": 17,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-08-16T18:05:08Z",
+    "updated_at": "2026-08-16T18:05:08Z",
+    "raw": "Hi, and thank you for the suggestion. I’ve updated the title and added a description. I think it improved the site appearance in Google search results.\n\nIf you have further suggestion you are welcomed to share =]",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/17"
+  },
+  {
+    "post_id": 324,
+    "topic_id": 78,
+    "post_number": 18,
+    "username": "Moxy",
+    "display_name": null,
+    "created_at": "2026-08-16T20:35:09Z",
+    "updated_at": "2026-08-16T20:49:45Z",
+    "raw": "Perfect :slight_smile:\n\nIf you give the title an h1 tag, that makes it perfect for ranking in search engines.\n\nAlso:\n\nkaspa.org is the #1 ranking domain for the keyword \"kaspa\" - basically because its oldest. So by making a nav link from kaspa.org to kas-smiths.org you are signalling that both sites are \" authorities\" on kaspa.That should make kas-smiths rank second in no time :slight_smile: \nMight wanna call the navlink on kaspa.org something like \"Developer forum\", just so newcomers make the connection :wink:",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/18"
   },
   {
     "post_id": 168,
@@ -1947,6 +1980,17 @@
     "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/1"
   },
   {
+    "post_id": 320,
+    "topic_id": 124,
+    "post_number": 2,
+    "username": "thinker",
+    "display_name": null,
+    "created_at": "2026-08-16T08:50:13Z",
+    "updated_at": "2026-08-16T08:50:13Z",
+    "raw": "what about kns? is it possible to add atomic batch transfer?",
+    "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/2"
+  },
+  {
     "post_id": 294,
     "topic_id": 126,
     "post_number": 1,
@@ -1978,5 +2022,27 @@
     "updated_at": "2026-08-14T17:15:48Z",
     "raw": "This may be old news or boring to some, but for me, it's a real moment. What this looks like in the explorer is super cool:\n\n C:\\\\kaspa-dev\\\\gen5\\\\deploy>cd /d C:\\\\kaspa-dev\\\\gen5\\\\deploy && cargo run --release --bin gen5_fusion_write_spend -- --go\nFinished `release` profile \\[optimized\\] target(s) in 0.69s\nRunning `target\\release\\gen5_fusion_write_spend.exe --go`\n\\[fusion-write\\] PASS: fuseAndContinue(0,1) reads the real probe7 @ input 0, writes+mints the A-family cell @ out1. in1 MUST verify.\n\\[fusion-write\\] A probe7 \\[0, 0, 0, 0, 0\\] P2SH: kaspatest:pquhwy2u5avhacw2ph7ewghc8emfz48vtncyaqjtlcmtltp5275ls7adhg8l0\n\\[fusion-write\\] A continuation \\[7, 0, 0, 0, 0\\] P2SH: kaspatest:pqt8u28pa22y0rmvquqypuhqelflaag54dwk79djxd8px70fpxf9ysa6j3mzx\n\\[fusion-write\\] B FusionProbe2 P2SH: kaspatest:prd8pcfs00s6hqmnmjlhte4gqrkma62mvtswrhazlvvs37qunljj2esfupk6y\n\\[fusion-write\\] B fusion cell (probe7 @ \\[0, 0, 0, 0, 0\\]) P2SH: kaspatest:pquhwy2u5avhacw2ph7ewghc8emfz48vtncyaqjtlcmtltp5275ls7adhg8l0  <- writer forces out1 spk to this\n\\[fusion-write\\] A utxo 481d27aeafd370258c44e504d3a20bc98f7ae0e2d2d8d1249de285b76eb1135f:0 value 100000000 cid 8614b79030c6024e61f1757a44ac803ba8c9fe314f5779c68709a672c10acdb7\n\\[fusion-write\\] B utxo 531fb2e6db814ca95fbe04850aa736f4b7032cfea3755d6fc3ae86040b32cfbc:0 value 100000000 cid 2a8a728d3629da290aa08762830ef09e45692ff775dc4bb2b3b5cb435c39bdd3\n\\[fusion-write\\] funding utxo 4a670958a3cb1f792b4fea5e472ab16e4f1b4a9d13689b3f79136514362023f2:1 value 100000000\n\\[fusion-write\\] out1 MINTED cid: Some(0fc9ff63bc367db7b8adfe463502904e0eb79b20c771156bae8f977b1d8d1f0e) (fresh lineage, auth_input 1)\n\\[fusion-write\\] tx id: 975dbb2ad064ef5b4339f98e464d5f64df6af84a43995465cb3c9927b24dcf35\n\\[fusion-write\\] out0 A-cont value 100000000 spk aa20167e28e1ea94478f6c070040f2e0cfd3fef514ab5d6f15b2334e1379e909925287\n\\[fusion-write\\] out1 B-fusion value 100000000 spk aa203977115ca7597ee1ca0dfd9722f83e769154ec5cf04e824bfe36bfac3457a9f887\n\\[fusion-write\\] out2 change value 97500000\n\\[fusion-write\\] input 0 (probe7 cast): PASS\n\\[fusion-write\\] input 1 (FusionProbe2 fuseAndContinue): PASS - paired read+write ENFORCED on-chain and out1 minted as a fresh A-family cell. Reader authenticated A; writer bound out1 spk to A's trusted geometry.\n\\[fusion-write\\] input 2 (fee): PASS\n\\[fusion-write\\] SUBMITTING...\n\\[fusion-write\\] ACCEPTED. tx 975dbb2ad064ef5b4339f98e464d5f64df6af84a43995465cb3c9927b24dcf35   --- \n\nhttps://tn10.kaspa.stream/transactions/975dbb2ad064ef5b4339f98e464d5f64df6af84a43995465cb3c9927b24dcf35",
     "url": "https://kas-smiths.org/t/this-is-magic-sharing-a-moment-that-brings-me-great-joy/129/1"
+  },
+  {
+    "post_id": 322,
+    "topic_id": 129,
+    "post_number": 2,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-08-16T17:59:49Z",
+    "updated_at": "2026-08-16T17:59:49Z",
+    "raw": "kaspa.stream is superb and I agree this view is really cool!\nWhat are you building?",
+    "url": "https://kas-smiths.org/t/this-is-magic-sharing-a-moment-that-brings-me-great-joy/129/2"
+  },
+  {
+    "post_id": 319,
+    "topic_id": 130,
+    "post_number": 1,
+    "username": "thinker",
+    "display_name": null,
+    "created_at": "2026-08-16T08:47:26Z",
+    "updated_at": "2026-08-16T09:26:34Z",
+    "raw": "(topic deleted by author)",
+    "url": "https://kas-smiths.org/t/universal-on-chain-marketplace-rental-store-on-kaspa/130/1"
   }
 ]
