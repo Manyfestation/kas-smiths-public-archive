@@ -1639,6 +1639,17 @@
     "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/18"
   },
   {
+    "post_id": 327,
+    "topic_id": 78,
+    "post_number": 19,
+    "username": "Manyfest",
+    "display_name": null,
+    "created_at": "2026-08-18T13:52:37Z",
+    "updated_at": "2026-08-18T13:52:37Z",
+    "raw": "I added a new header to the main page of kas-smiths.\nI guess and hope that as this platfrom proves its position and importance, it would gain more traction and would be linked by other websites.",
+    "url": "https://kas-smiths.org/t/create-a-kaspa-smiths-brand/78/19"
+  },
+  {
     "post_id": 168,
     "topic_id": 81,
     "post_number": 1,
@@ -2033,5 +2044,16 @@
     "updated_at": "2026-08-16T17:59:49Z",
     "raw": "kaspa.stream is superb and I agree this view is really cool!\nWhat are you building?",
     "url": "https://kas-smiths.org/t/this-is-magic-sharing-a-moment-that-brings-me-great-joy/129/2"
+  },
+  {
+    "post_id": 328,
+    "topic_id": 129,
+    "post_number": 3,
+    "username": "Karrrl",
+    "display_name": null,
+    "created_at": "2026-08-18T22:18:22Z",
+    "updated_at": "2026-08-18T22:18:22Z",
+    "raw": "It started as a decentralized 'reputation as a portable, encoded value' project, but it appears to be evolving into a full decentralized governance suite. Stated another way, encoding the concept of 'everyone is an oracle'.",
+    "url": "https://kas-smiths.org/t/this-is-magic-sharing-a-moment-that-brings-me-great-joy/129/3"
   }
 ]
