@@ -583,6 +583,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/60"
   },
   {
+    "post_id": 336,
+    "topic_id": 8,
+    "post_number": 61,
+    "username": "Shawn",
+    "display_name": null,
+    "created_at": "2026-08-24T15:45:49Z",
+    "updated_at": "2026-08-24T15:45:49Z",
+    "raw": "Good find, and the front-running is worse than a mempool race - it's structural, and it's the same root cause as the pre-signed-transaction problem earlier in this thread.\n\nGrounding it from the consensus side: the honest borrow and the griefing borrow are two spends of the same recipient UTXO. Once the preimage is public anyone can build the second one, and the v1 sighash commits the spent input's own outpoint, so the honest tx can't follow to the recreated UTXO after the griefer's confirms - it names an outpoint that no longer exists. The chain guard has also already advanced to the revealed step, so the honest depositor can't just rebuild against the new outpoint either; that step is spent and only the recipient can reveal the next one. That's exactly why it forces the offline wallet back online, which is the property the scheme was supposed to buy.\n\nSo the min-increase tier is a price, not a fix. It makes the griefer pay the floor instead of dust, which is a real improvement against spam, but a griefer willing to pay the floor still burns the step and still forces the recipient online. The race itself is untouched.\n\nThe thing the whole class comes down to: the attack needs the authorization to be one-time AND bearer AND gate-only - it checks a predicate over the increase rather than committing to the specific deposit. Break any one of those and it's gone, and your tiers already move along that axis. The floor prices it. A binding that ties the use to something the griefer can't reproduce - a one-time key, a committed depositor, a committed exact increase - takes it out entirely, at the cost of the recipient committing more up front. Schnorr on its own drops one-time and borrows forever, which is your OR footgun exactly. So the tier that keeps one-time and adds a binding is the one I'd expect to survive contact. I think it's worth the spec saying out loud that a gate-only borrow scheme is front-runnable and a binding one isn't, because that's the property that actually matters here and right now it's implicit.\n\nAgree on keeping the length fix separate from composition, and on the weakest-clause rule for OR. The \"passes its own minimal test case\" divergence is the kind of thing that ships, and positional-after-creation as a MUST is the right call.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/61"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
