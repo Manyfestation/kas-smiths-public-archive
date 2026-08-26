@@ -594,6 +594,39 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/61"
   },
   {
+    "post_id": 338,
+    "topic_id": 8,
+    "post_number": 63,
+    "username": "Petridish",
+    "display_name": "Petridish 𐤊",
+    "created_at": "2026-08-25T07:22:08Z",
+    "updated_at": "2026-08-25T07:22:08Z",
+    "raw": "I guess my question then is how does the functionality originally laid out in the twitter thread (as posted by @GoonBoyCrypto) bypass the fixed length records, I understand that it uses length decoding of the pre-image, so wouldn't this inherently run into the same wall regarding kcc1 specs? Just want to discern if this is something that my design inherently breaks, or an issue in the original twitter suggestion as well. \n\nthat being said we could layout borrow_guards into something like:\n\n```\nBorrowGuards {\n    threshold:        byte[8]\n    public_key:       byte[32]\n    hash_chain:       byte[32]\n}\n```\n\nwhich obviously comes at a higher cost regarding size, but allows us to have a state that is more explicitly defined.\n\nreading over the docs, is the original twitter idea based on an extended state, as this seems to not require a fixed array? Also, I suppose I don't understand how hashing the pk or threshold into the hash-chain actually achieves anything, at minimum, for me, it seems like it offers a false sense of security, if the threshold, or pk, is not also in the kcc-20 state? pks tend to be public (at minimum not using an unseen pk is a security issue), the threshold can probably be guessed as well, within some likely low bounds on a u64? besides this, knowing about a threshold doesn't commit to actually spending above the threshold as per the actual kcc-20 state (which cannot even be defined currently together with a HC)?\n\nI guess regarding these points I am more posting for educational enlightenment, and - maybe prematurely - arguing that more state for this kind of extended HC is unavoidable in any case.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/63"
+  },
+  {
+    "post_id": 341,
+    "topic_id": 8,
+    "post_number": 64,
+    "username": "Manyfest",
+    "display_name": "Sivan Helfer",
+    "created_at": "2026-08-25T12:58:08Z",
+    "updated_at": "2026-08-25T12:58:08Z",
+    "raw": "[quote=\"Petridish, post:63, topic:8\"]\nI suppose I don’t understand how hashing the pk or threshold into the hash-chain actually achieves anything, at minimum, for me, it seems like it offers a false sense of security, if the threshold, or pk, is not also in the kcc-20 state? pks tend to be public (at minimum not using an unseen pk is a security issue), the threshold can probably be guessed as well, within some likely low bounds on a u64? besides this, knowing about a threshold doesn’t commit to actually spending above the threshold as per the actual kcc-20 state (which cannot even be defined currently together with a HC)?\n[/quote]\n\nI'll try to add some context and hopefully shed more light and intuition. Borrowing is a feature of the standard token, and the standard transfer entry should be able to verify the borrow. Hence, the borrow-related field should be part of the standard token state. Extended state is meant to allow extending the state beyond the required standard fields, and the standard transfer entry should treat it as an opaque digest.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/64"
+  },
+  {
+    "post_id": 342,
+    "topic_id": 8,
+    "post_number": 65,
+    "username": "Manyfest",
+    "display_name": "Sivan Helfer",
+    "created_at": "2026-08-25T13:41:52Z",
+    "updated_at": "2026-08-25T14:29:50Z",
+    "raw": "I spent some time thinking about hardening the hash-chain borrowing scheme against mempool front-running and reviewing the suggestion above.\n\nSome of the solutions are creative and allow for customizability, but I want to remind  that the issue is simply front-running and spending the revealed OTP from the hash chain. Therefore, I don't see a reason to over-engineer a complicated or overly expressive schema.\n\nMy suggestion is to modify the scheme to bind each OTP to a one-time public key:\n\n```text\nx_1 = Hash(x_0 || pubkey_1)\nx_2 = Hash(x_1 || pubkey_2)\n...\nx_n = Hash(x_(n-1) || pubkey_n)\n```\n\nWhen providing an OTP to a sender, the recipient provides the corresponding one-time private key as well. The sender then signs its borrow transaction with that key and includes the preimage (which will become the next guard), the public key, and the signature as witnesses.\n\nAn observer seeing this tx in in the mempool cannot provide a valid sig for the current pubkey.\n\nMy intuition is that if I am authorizing someone to use my UTXO for a one-time borrow, the problem is solved. I don't see benefit in complicating the borrow logic further by adding further conditions. \n\nIMO this revision completes the set of guards needed against borrow spam:\n\n1. Forbid borrowing with`disabled`.\n2. Allow anyone to borrow with threshold = 0.\n3. Allow anyone to borrow above with a configured threshold.\n4. Allow a someone to borrow repeatedly with `pubkey` scheme. (Owner can always rotate/reset the pubkey or scheme through an owner-authorized transfer)\n5. Allow a sender a single-use borrow authorization with hash-chain OTP bound to a one-time signing key.\n\nEdit - I opened a corresponding PR \nhttps://github.com/kaspanet/kccs/pull/18/changes",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/65"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
