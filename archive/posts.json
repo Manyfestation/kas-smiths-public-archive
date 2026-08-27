@@ -627,6 +627,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/65"
   },
   {
+    "post_id": 343,
+    "topic_id": 8,
+    "post_number": 66,
+    "username": "cryptosione",
+    "display_name": "sione.kas𐤊 ⚡️",
+    "created_at": "2026-08-26T20:20:10Z",
+    "updated_at": "2026-08-26T20:20:10Z",
+    "raw": "I was speaking to @Manyfest about using decimals like is done in EVM and also KRC20 does it, and he said we can just use big integers and that works no need to use fractions, but after going back and fourth with AI one of the main reasons is done like this \n\n\"So yes, “big supply and whole units only” works technically. It’s just less familiar for token UX, price charts, orderbooks, CEX/DEX-style trading, and integrations that expect decimal-style assets.\"\nMaybe\n@Manyfest is not aware of how is used, but for simplicity is just like sompi/wei, the reason we use sompi in kas is to keep it big Int and do 0.15 kas -> 0.15 kas x 100,000,000 behind the scenes, I think if we should consider this, thoughts? @michaelsutton",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/66"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
