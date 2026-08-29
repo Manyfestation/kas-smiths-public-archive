@@ -50,7 +50,7 @@
     "category_id": 5,
     "category_name": "Asset Standards",
     "created_at": "2026-07-02T18:30:02Z",
-    "last_posted_at": "2026-08-28T04:31:25Z",
+    "last_posted_at": "2026-08-29T07:37:23Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8"
   },
@@ -336,7 +336,7 @@
     "category_id": 4,
     "category_name": "General",
     "created_at": "2026-08-03T21:36:03Z",
-    "last_posted_at": "2026-08-16T08:50:13Z",
+    "last_posted_at": "2026-08-28T14:25:25Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124"
   },
@@ -361,5 +361,27 @@
     "last_posted_at": "2026-08-18T22:18:22Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/this-is-magic-sharing-a-moment-that-brings-me-great-joy/129"
+  },
+  {
+    "topic_id": 140,
+    "title": "Proof-gated covenant ownership of KCC20 state: worked profile + TN10 receipts",
+    "slug": "proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts",
+    "category_id": 5,
+    "category_name": "Asset Standards",
+    "created_at": "2026-08-29T08:31:26Z",
+    "last_posted_at": "2026-08-29T08:31:26Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts/140"
+  },
+  {
+    "topic_id": 141,
+    "title": "KCC-01 Discussion Thread",
+    "slug": "kcc-01-discussion-thread",
+    "category_id": 4,
+    "category_name": "General",
+    "created_at": "2026-08-29T08:35:42Z",
+    "last_posted_at": "2026-08-29T08:35:42Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/kcc-01-discussion-thread/141"
   }
 ]
