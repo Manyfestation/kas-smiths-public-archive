@@ -638,17 +638,6 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/66"
   },
   {
-    "post_id": 345,
-    "topic_id": 8,
-    "post_number": 67,
-    "username": "michaelpearson",
-    "display_name": "",
-    "created_at": "2026-08-28T04:31:25Z",
-    "updated_at": "2026-08-29T08:39:11Z",
-    "raw": "Moved to its own topic — this thread is for the spec itself:\nhttps://kas-smiths.org/t/proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts/140",
-    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/67"
-  },
-  {
     "post_id": 348,
     "topic_id": 8,
     "post_number": 68,
@@ -680,6 +669,28 @@
     "updated_at": "2026-08-29T07:37:23Z",
     "raw": "It seems that EVM tokens use `uint256` for token amounts. Note though that decimals is only a notation, and the actual amount is still an integer.\n\nI agree that there is value in using 256-bit amounts for symmetry. The issue is that the script engine does not support 256bit arithmetic. \ni64 allows 9 quintillion token units which is plenty any use case . With 8 decimals, that still allows a supply of roughly 92 billion whole tokens.\n\nIMO we should stick with 64bit amounts. When we get to migrate existing tokens, we can reduce their resolution to fit this range.\n\nAlso worth noting that decimals is a metadata field and I don’t see a reason to store it in every token UTXO state. Ofc this could fit in extended state if anyone wishes to do so, but it should not be part of the standard.",
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/70"
+  },
+  {
+    "post_id": 356,
+    "topic_id": 8,
+    "post_number": 71,
+    "username": "OriNewman",
+    "display_name": "Ori Newman",
+    "created_at": "2026-08-29T09:33:53Z",
+    "updated_at": "2026-08-29T09:33:53Z",
+    "raw": "[quote=\"michaelsutton, post:16, topic:8\"]\nThe common KCC20 fields remain directly visible onchain, while controller logic, minting state, borrower policy or any other implementation-specific state lives behind the extension digest.\n\n[/quote]\n\nI'm not sure this is a good thing. We might want some state extensions to be available onchain for some indexers more sophisticated than kcc20 indexers.\n\nI would define the standard to have a known prefix (or some continuous view of the) state, so contracts will have freedom in defining what state they want to expose onchain.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/71"
+  },
+  {
+    "post_id": 357,
+    "topic_id": 8,
+    "post_number": 72,
+    "username": "michaelsutton",
+    "display_name": "Michael Sutton",
+    "created_at": "2026-08-29T20:46:53Z",
+    "updated_at": "2026-08-29T20:46:53Z",
+    "raw": "The standard supports the idea of a known prefix. The identity of a token should be its cov id + template hash (defined over any stable prefix+suffix). See template views in kcc1",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/72"
   },
   {
     "post_id": 11,
@@ -1945,6 +1956,17 @@
     "updated_at": "2026-07-21T10:14:55Z",
     "raw": "[quote=\"token-depot, post:2, topic:95\"]\nI would also retain a script-hash profile\n[/quote]\n\nIn the full proposal, there is a `program-hash/v1` profile.",
     "url": "https://kas-smiths.org/t/kcc-02-control-principal-references-in-program-abis/95/3"
+  },
+  {
+    "post_id": 355,
+    "topic_id": 95,
+    "post_number": 4,
+    "username": "OriNewman",
+    "display_name": "Ori Newman",
+    "created_at": "2026-08-29T09:05:46Z",
+    "updated_at": "2026-08-29T09:05:46Z",
+    "raw": "The proposal looks good, but personally I would avoid domain separation key for public key hashes. IMHO it doesn't contribute a lot and increase the script size without a good reason.",
+    "url": "https://kas-smiths.org/t/kcc-02-control-principal-references-in-program-abis/95/4"
   },
   {
     "post_id": 231,
