@@ -2266,6 +2266,17 @@
     "url": "https://kas-smiths.org/t/proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts/140/1"
   },
   {
+    "post_id": 358,
+    "topic_id": 140,
+    "post_number": 2,
+    "username": "michaelpearson",
+    "display_name": "",
+    "created_at": "2026-09-01T06:39:53Z",
+    "updated_at": "2026-09-01T06:39:53Z",
+    "raw": "SilverScript v1-rc1 shipped four days ago, so I tested whether it can carry\nthe proof-gated pattern this thread is built on. Short answer: yes, at\nproduction scale, with numbers.\n\nMethod: I re-authored my settlement gate in SilverScript — the same shape\nconsensus-settled three times in raw script (mass 474,095 byte-exact each\ntime). Compiled at the rc1 tag, deployed to TN10, spent with a real\nR0Succinct receipt (seal 222,668 B). Two contracts: a minimal verify+payout\ngate (17 lines, 197 B bytecode) and a replay-bound variant that derives the\njournal digest on-stack and requires the journal's funding-txid commitment\nto equal the outpoint being spent (21 lines, 225 B).\n\nThree consensus settlements resulted:\n\n| Contract | Mass | computeBudget | Txid |\n|----|----|----|----|\n| Minimal gate | 478,167 | 2,544 | `3b32c7bdcf22776c78bae81e4fd40fcfedeab994b94800997c60ddffc2cfde50` |\n| Replay-bound | 478,311 | 2,544 | `94ad2ff39603412127938b57528da04dfbf78ca24276c2e1006f033f49759f71` |\n| Minimal, toolchain-encoded sig script | 478,167 | 2,544 | `e409473c97d470d0b87ac909cb24e923bad707f3d704127a89d6fca2301764a3` |\n\nAgainst the hand-built baseline: +0.86% mass, +1.76% compute. Nobody needs\nraw script for this pattern anymore; the language costs almost nothing at\nreceipt scale.\n\nThe replay-bound variant is the part relevant to covenant ownership.\nAgainst a live gate I submitted a cryptographically valid receipt whose\njournal bound a different funding txid. Rejected:\n`script ran, but verification failed` — the covenant's own require, not the\nproof layer. A perfect proof aimed at the wrong instance is refused by 28\nbytes of compiled introspection. A tampered journal fails earlier and\ndifferently (`ZK Integrity: Verification failed`). Both layers, distinct\nerrors, on-chain. That is the instance-binding any proof-gated ownership\nprofile needs, expressible in the language today.\n\nDeterminism held everywhere it matters for a spec: compilation is\nbit-reproducible, the script-unit meter is payload-invariant (used =\n25,446,424 across two different receipts; 2,543 rejects, 2,544 accepts),\nand the +144 mass of the bound variant tracks its +144 sig-script bytes\nexactly.\n\nFour issues filed from the testing, all tooling/docs — the compiled path\nitself held up:\nhttps://github.com/kaspanet/silverscript/issues/240 (README/CLI docs) ·\nhttps://github.com/kaspanet/silverscript/issues/241 (constructor-args\nschema) · https://github.com/kaspanet/silverscript/issues/242 (error\nclassification) · https://github.com/kaspanet/silverscript/issues/243\n(compute-budget estimation).\n\nEverything above is verifiable from the chain via api-tn10.kaspa.org.\nFun to PR both contracts/fixtures as in-tree examples.\nWill explore shape and location next.",
+    "url": "https://kas-smiths.org/t/proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts/140/2"
+  },
+  {
     "post_id": 354,
     "topic_id": 141,
     "post_number": 1,
