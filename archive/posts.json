@@ -2286,5 +2286,16 @@
     "updated_at": "2026-08-29T08:35:42Z",
     "raw": "I opened this discussion thread because I have a few comments and questions about [KCC-01](https://github.com/kaspanet/kccs/blob/main/kcc-0001.md):\n\n1. The spec says that \"An `int` invocation argument uses `PushMinimal` over its minimal ScriptNum representation\". This is incompatible with script builder's `builder.add_i64`method. What's the rationale for that?\n\n2. The spec says \"`bool` - Exactly `00` for false or `01` for true\"\" - This is also incompatible with the script builder that by default represents `false` with `[]` (the empty vector).\n\n3. \"An array of records is permitted only when every recursively lowered leaf field has a positive fixed payload width.\n\n   When decoding an array of records, every grouped field payload MUST decode to the same element count. For a fixed-length record array, that count MUST equal its declared length.\n\n   This restriction applies only to arrays of records. A record outside an array MAY contain otherwise supported variable-width fields; recursive lowering gives each leaf field its own push.\" - I think it's unclear what \"This restriction\" refers to. If I understand correctly it refers to the first paragraph, but we might want to clarify it.\n\nAlso, a general comment about `PushMinimal`: I don't think `PushMinimal` should be part of the standard. Instead, we should focus on the places where `PushMinimal` is forbidden (invocations, states, etc).",
     "url": "https://kas-smiths.org/t/kcc-01-discussion-thread/141/1"
+  },
+  {
+    "post_id": 359,
+    "topic_id": 142,
+    "post_number": 1,
+    "username": "daniel",
+    "display_name": null,
+    "created_at": "2026-09-09T02:57:50Z",
+    "updated_at": "2026-09-09T02:57:50Z",
+    "raw": "Is there a lookup way to get (if exist) all the utxo of a specific covenant?\n\nCurrently I simply look on each tx of the a utxo to know of it's belong to my covenant or not",
+    "url": "https://kas-smiths.org/t/wallet-utxo-covenant-id-lookup/142/1"
   }
 ]
