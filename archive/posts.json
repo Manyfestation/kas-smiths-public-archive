@@ -2200,6 +2200,28 @@
     "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/3"
   },
   {
+    "post_id": 360,
+    "topic_id": 124,
+    "post_number": 4,
+    "username": "corncollectorr",
+    "display_name": "🌽",
+    "created_at": "2026-09-09T18:37:40Z",
+    "updated_at": "2026-09-09T18:37:40Z",
+    "raw": "I've been looking at KCC721 for an upcoming NFT project and wanted to raise a potential issue with globally unique tickers.\n\n\nA creator normally needs to publicly announce and market an NFT collection before minting begins. Under the current first-valid-genesis rule, doesn't revealing the collection name/ticker create an opportunity for somebody else to deploy that ticker before the creator?\n\n\nThis becomes particularly problematic for artists announcing future collections or a roadmap, because somebody could reserve those tickers simply to squat them.\n\n\nSince KCC721 collections already have a unique Covenant ID, could the Covenant ID instead be the canonical collection identity, with ticker/name treated as non-unique display metadata?\n\n\nI noticed the KCC-0021 metadata discussion arrived at this model for covenant assets — Covenant ID as canonical identity and names/tickers as non-unique claims.\n\n\nFor example, two collections could both display as GHOST while wallets and marketplaces distinguish the official collection by Covenant ID, creator and verification.\n\n\nIs there a technical reason KCC721 requires globally unique tickers rather than following that model?",
+    "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/4"
+  },
+  {
+    "post_id": 361,
+    "topic_id": 124,
+    "post_number": 5,
+    "username": "16bit.kas",
+    "display_name": null,
+    "created_at": "2026-09-10T05:37:19Z",
+    "updated_at": "2026-09-10T05:37:19Z",
+    "raw": "Im not a technical person, so I don't know if this is possible or compatible with the standard being developed here, but there a unique implementation which stores images on-dag rather than utilizing centralized ipfs platforms.  I think this is in line with the Kaspa ethos and should be considered.\n\nhttps://kasgenesiszero.com/\n\n\nhttps://github.com/KASRANKS/Kasgenesiszero",
+    "url": "https://kas-smiths.org/t/kcc721-proposal-kaspa-nfts-with-covenant-rules/124/5"
+  },
+  {
     "post_id": 294,
     "topic_id": 126,
     "post_number": 1,
@@ -2275,6 +2297,17 @@
     "updated_at": "2026-09-01T06:39:53Z",
     "raw": "SilverScript v1-rc1 shipped four days ago, so I tested whether it can carry\nthe proof-gated pattern this thread is built on. Short answer: yes, at\nproduction scale, with numbers.\n\nMethod: I re-authored my settlement gate in SilverScript — the same shape\nconsensus-settled three times in raw script (mass 474,095 byte-exact each\ntime). Compiled at the rc1 tag, deployed to TN10, spent with a real\nR0Succinct receipt (seal 222,668 B). Two contracts: a minimal verify+payout\ngate (17 lines, 197 B bytecode) and a replay-bound variant that derives the\njournal digest on-stack and requires the journal's funding-txid commitment\nto equal the outpoint being spent (21 lines, 225 B).\n\nThree consensus settlements resulted:\n\n| Contract | Mass | computeBudget | Txid |\n|----|----|----|----|\n| Minimal gate | 478,167 | 2,544 | `3b32c7bdcf22776c78bae81e4fd40fcfedeab994b94800997c60ddffc2cfde50` |\n| Replay-bound | 478,311 | 2,544 | `94ad2ff39603412127938b57528da04dfbf78ca24276c2e1006f033f49759f71` |\n| Minimal, toolchain-encoded sig script | 478,167 | 2,544 | `e409473c97d470d0b87ac909cb24e923bad707f3d704127a89d6fca2301764a3` |\n\nAgainst the hand-built baseline: +0.86% mass, +1.76% compute. Nobody needs\nraw script for this pattern anymore; the language costs almost nothing at\nreceipt scale.\n\nThe replay-bound variant is the part relevant to covenant ownership.\nAgainst a live gate I submitted a cryptographically valid receipt whose\njournal bound a different funding txid. Rejected:\n`script ran, but verification failed` — the covenant's own require, not the\nproof layer. A perfect proof aimed at the wrong instance is refused by 28\nbytes of compiled introspection. A tampered journal fails earlier and\ndifferently (`ZK Integrity: Verification failed`). Both layers, distinct\nerrors, on-chain. That is the instance-binding any proof-gated ownership\nprofile needs, expressible in the language today.\n\nDeterminism held everywhere it matters for a spec: compilation is\nbit-reproducible, the script-unit meter is payload-invariant (used =\n25,446,424 across two different receipts; 2,543 rejects, 2,544 accepts),\nand the +144 mass of the bound variant tracks its +144 sig-script bytes\nexactly.\n\nFour issues filed from the testing, all tooling/docs — the compiled path\nitself held up:\nhttps://github.com/kaspanet/silverscript/issues/240 (README/CLI docs) ·\nhttps://github.com/kaspanet/silverscript/issues/241 (constructor-args\nschema) · https://github.com/kaspanet/silverscript/issues/242 (error\nclassification) · https://github.com/kaspanet/silverscript/issues/243\n(compute-budget estimation).\n\nEverything above is verifiable from the chain via api-tn10.kaspa.org.\nFun to PR both contracts/fixtures as in-tree examples.\nWill explore shape and location next.",
     "url": "https://kas-smiths.org/t/proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts/140/2"
+  },
+  {
+    "post_id": 362,
+    "topic_id": 140,
+    "post_number": 3,
+    "username": "michaelpearson",
+    "display_name": "",
+    "created_at": "2026-09-10T05:37:21Z",
+    "updated_at": "2026-09-10T05:37:21Z",
+    "raw": "Follow-up with mainnet numbers.\n\nSilverScript v1.0.0 tagged (3ed9733). I recompiled both contracts at the tag\nagainst the rc1 build: no change on the ABI surface; the generic bytecode is\nbit-identical to the rc1 pins above. Only the constructor moved, and only the\npayee argument, so the deployed replay-bound contract is the same 225 bytes\nwith a different 32-byte key at offset 170.\n\nThen I settled it on mainnet. Same receipt shape as the TN10 rows (seal\n222,668 B, 147-byte journal committing to the funding txid), same\ncomputeBudget, same fee constant, new gate:\n\n| Step | Txid | Accepting block | Mass |\n|----|----|----|----|\n| Fund gate (1.0 KAS) | `3f6dd6cdfc0f058d40e080ba927ea8d92e9cfc967e19ddf4b8fd81a41af2160d` | `588680cd4929b055a7e473bd4ce227353489c230bfff108ee34ea5fa2f210d11` | 2,047 |\n| Claim, replay-bound, CB 2,544 | `fffc63594947e445c5b7c151fc397b868fa7183556ea20e09e49515e60d0564a` | `b82a409f650bcb47411c58a2baf648a5d5a6f16bb8bd9f1c67daace417553e68` | 478,311 |\n\nMass 478,311 on mainnet, 478,311 on TN10 for the same contract: the meter\ndid not move between networks. Signature script 223,351 bytes both places.\nAccepted about two seconds after submission.\n\nThe fee constant is still the 0.6 KAS the TN10 contracts bake. That is\n\\~125× the mass floor for this transaction; I kept it because changing it\nchanges the generic bytecode and I wanted the mainnet row to reuse the\nrc1-verified artifact unchanged. A real deployment would set it near the\nfloor.\n\nVerifiable from api.kaspa.org by txid.",
+    "url": "https://kas-smiths.org/t/proof-gated-covenant-ownership-of-kcc20-state-worked-profile-tn10-receipts/140/3"
   },
   {
     "post_id": 354,
