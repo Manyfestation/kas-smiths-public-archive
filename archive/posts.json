@@ -693,6 +693,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/72"
   },
   {
+    "post_id": 364,
+    "topic_id": 8,
+    "post_number": 73,
+    "username": "Manyfest",
+    "display_name": "Sivan Helfer",
+    "created_at": "2026-09-11T10:50:15Z",
+    "updated_at": "2026-09-11T11:11:04Z",
+    "raw": "The KCC20 spec is maturing and reaching finalization. I am working on the final reference implementation, which would mark this effort as complete.\n\nOne subtle subject that I am discussing nowadays with Michael and IzioDev is if and how to allow tokens to declare metadata information, such as decimal notation, symbol, name, etc., on-chain.\n\nI started by claiming that this kind of information should not live on-chain. A token should represent its own local state, and it's redundant to force each local UTXO to carry global, read-only information about itself.\n\nOn the other hand, I do feel there is a benefit in allowing this information to be declared on-chain and tied directly to the token covenant. This can make it clearer and more definite what the covenant itself is claiming, while the meaning and correctness of that metadata still ultimately rely on off-chain social consensus and verification.\n\nAfter a few iterations, I think that a solution could take shape as a new convention that allows covenant deployers to declare social-consensus metadata related to their token in the genesis deployment transaction.\n\nA possible solution could have been to utilize the transaction payload field. Instead, I prefer a solution that inscribes this information into the covenant ID itself by creating a new actor/UTXO that holds this state. Such a metadata actor would be constrained so that it cannot interfere with the normal operation of the other covenant actors. It could be unspendable, or its internal logic could allow it to be consumed, so its KAS value could eventually be returned to the creator while revealing the metadata it holds.\n\nEither way, the covenant ID itself is forever left as a verifiable commitment, with a matching preimage proving that this metadata was part of the original deployment.\n\nNote that this is not an integral part of KCC20. Its only purpose is to optionally allow token deployers to declare token-related information on-chain. KCC20 remains the standard for the actual token shape and interaction interface.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/73"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
