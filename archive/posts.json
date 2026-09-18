@@ -803,6 +803,17 @@
     "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/6"
   },
   {
+    "post_id": 375,
+    "topic_id": 13,
+    "post_number": 7,
+    "username": "Andreas",
+    "display_name": null,
+    "created_at": "2026-09-17T18:53:38Z",
+    "updated_at": "2026-09-17T18:53:38Z",
+    "raw": "**Small update since the original post:**\nI’ve built a small working reference prototype for one part of the Axiom idea:\n\n**TypeSafe / Jev → Axiom → Argent → Silverscript**\n\nJev produces a structured decision, Axiom deterministically checks policy + conditions and returns an `ExecutionPlan`, and the Argent/Silverscript boundary prepares the constrained execution layer.\n\nIt includes both an approved and a rejected case, with an auditable trail.\n\n**No real funds. No on-chain transactions.**\n\nGitHub: https://github.com/axiomarchitecture/axiom-agent-runtime\n\nCurious whether this kind of boundary — **probabilistic decision → deterministic authorization → constrained execution** — can become useful for agent-controlled workflows on Kaspa.",
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/7"
+  },
+  {
     "post_id": 19,
     "topic_id": 14,
     "post_number": 1,
