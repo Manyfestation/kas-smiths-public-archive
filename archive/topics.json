@@ -449,5 +449,16 @@
     "last_posted_at": "2026-09-22T20:39:01Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/three-covenant-kccs-for-reputation-bonds-and-identity-live-on-testnet-10/148"
+  },
+  {
+    "topic_id": 150,
+    "title": "KCC-23: Convention for Binding Covenant Metadata to a Covenant ID",
+    "slug": "kcc-23-convention-for-binding-covenant-metadata-to-a-covenant-id",
+    "category_id": 4,
+    "category_name": "General",
+    "created_at": "2026-09-24T11:33:21Z",
+    "last_posted_at": "2026-09-24T19:18:42Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/kcc-23-convention-for-binding-covenant-metadata-to-a-covenant-id/150"
   }
 ]
