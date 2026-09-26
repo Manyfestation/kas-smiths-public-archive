@@ -814,6 +814,28 @@
     "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/7"
   },
   {
+    "post_id": 395,
+    "topic_id": 13,
+    "post_number": 8,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-09-25T13:29:28Z",
+    "updated_at": "2026-09-25T13:29:28Z",
+    "raw": "Thanks for the shout-out back in July @Andreas, and sorry for the slow reply!\n\nOn your question: yes, I think that boundary fits Kaspa really well. The key is where each step lives. The AI decision and the policy check run off-chain, but the last step is a covenant, and the chain itself enforces it. So even if the agent gets something wrong or its key leaks, funds can only move within the rules the covenant enforces.\n\nYou could even link the two steps: the covenant could require a signature from the policy step (with `OpCheckSigFromStack`, which @Manyfest raised earlier in this thread), so nothing executes without its approval.\n\nTwo newer standards that fit Axiom well:\n\n* **Agent treasuries (KCC-20 + KCC-2):** a token can be owned by a covenant instead of a key (the `covenant-id/v1` owner scheme). An agent's treasury covenant can hold KCC-20 tokens, and they only move when the treasury covenant itself is spent, under its own rules.\n* **Declaring the policy (KCC-23, proposed in** https://github.com/kaspanet/kccs/pull/26 **):** at deploy, you can bind a small JSON to the agent covenant's ID, for example its name and a hash of the Axiom policy it runs. The chain doesn't enforce it, but anyone can check which policy the agent committed to at launch. That fits your auditable trail nicely.\n\nWhen you take the prototype on-chain, testnet-10 is a good start. KasCov indexes it: you can submit your argentc `artifact.json` so each Axiom covenant shows up decoded, and follow any covenant live at `https://kascov.io/data/testnet-10/stream?covenant=``<id>`.",
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/8"
+  },
+  {
+    "post_id": 396,
+    "topic_id": 13,
+    "post_number": 9,
+    "username": "Andreas",
+    "display_name": null,
+    "created_at": "2026-09-25T19:13:22Z",
+    "updated_at": "2026-09-25T19:13:22Z",
+    "raw": "@0xKnitser Thanks for the detailed reply, and no worries about the timing...\n\nThe off-chain/on-chain split makes sense to me. `OpCheckSigFromStack` is especially interesting. That's basically what I was trying to get at when I asked Manyfest about it back in July.\n\nThe KCC-20 & KCC-2 part is probably the most interesting one for me. If I understand the `covenant-id/v1` owner scheme correctly, an agent treasury could hold the tokens and only move them when the treasury covenant is spent according to its rules.\n\nOne thing I'm still wondering about: can you do partial/conditional spends here? Let\\`s say I want to release 10 KAS for a settlement while the rest stays locked... is that possible, or does the whole covenant have to move each time?\n\nKCC-23 fits the identity/governance side too. The policy hash gives you something that can be checked against the covenant later, without making the metadata itself part of the enforcement.\n\nI'm going to try this out on testnet10 and get KasCov indexing it. Would be useful to see how the whole intent → auth → escrow → pay → settle flow looks once it's actually running.\n\nI'll post an update when I have something working. Have a great weekend!",
+    "url": "https://kas-smiths.org/t/a-covenant-native-framework-for-agentic-commerce-on-kaspa/13/9"
+  },
+  {
     "post_id": 19,
     "topic_id": 14,
     "post_number": 1,
@@ -2442,6 +2464,17 @@
     "url": "https://kas-smiths.org/t/wallet-utxo-covenant-id-lookup/142/6"
   },
   {
+    "post_id": 391,
+    "topic_id": 142,
+    "post_number": 7,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-09-25T13:19:57Z",
+    "updated_at": "2026-09-25T13:19:57Z",
+    "raw": "Hey @daniel , KasCov can do both of these today with its free public API. No key needed, and it works on mainnet and testnet-10. I run it, so ping me if anything's unclear.\n\n**1. What a wallet holds**\n`https://kascov.io/data/mainnet/addr/<kaspa address>.json`\nThis lists every token the address owns, with balances. As @IzioDev explained, ownership is read from inside the covenant state (the KCC-2 model), not from who holds the UTXO.\nTo see the actual UTXOs, `https://kascov.io/data/mainnet/token/<covenant id>/cells` lists every live cell of a token with its owner.\n\n**2. Every UTXO a covenant ever created**\n`https://kascov.io/data/mainnet/c/<covenant id>.json`\nThis works for any covenant, not just tokens. It gives the full story from genesis: every output with its outpoint, whether it's still unspent, and every transaction. Very large covenants are cut off at 500 entries per response.\nExample: https://kascov.io/data/mainnet/c/bed3c81787e07988c6d5792fb02324bfd11b980a123f87a28eb177eeec6084a0.json\n\nThere's also a live feed per covenant: `https://kascov.io/data/mainnet/stream?covenant=<covenant id>`\n\nYou don't have to take our word for it. Token cells come with their program bytes, and those bytes have to hash to the UTXO's script, so you can check them against your own node. Once the node gets its own covenant ID lookup, you can pull the UTXOs yourself and use KasCov just to decode the state.\n\nAll endpoints: https://kascov.io/openapi.json",
+    "url": "https://kas-smiths.org/t/wallet-utxo-covenant-id-lookup/142/7"
+  },
+  {
     "post_id": 365,
     "topic_id": 143,
     "post_number": 1,
@@ -2605,5 +2638,16 @@
     "updated_at": "2026-09-24T19:18:42Z",
     "raw": "Awesome I love this idea",
     "url": "https://kas-smiths.org/t/kcc-23-convention-for-binding-covenant-metadata-to-a-covenant-id/150/3"
+  },
+  {
+    "post_id": 392,
+    "topic_id": 150,
+    "post_number": 4,
+    "username": "0xKnitser",
+    "display_name": "Knitser",
+    "created_at": "2026-09-25T13:22:38Z",
+    "updated_at": "2026-09-25T13:22:38Z",
+    "raw": "Big +1 on this. Some tokens already put their JSON straight in the genesis payload, but the covenant ID never covers that payload, so the metadata isn't really tied to the covenant. KCC-23 fixes exactly that.\n\nI left a review on the PR after checking the test vectors with a separate script (they all match): https://github.com/kaspanet/kccs/pull/26\n\nThe short version is three open questions:\n\n1. JSON libraries disagree on a few edge cases (duplicate keys, huge numbers, very deep nesting). A strict list of what's allowed would keep wallets and explorers in agreement.\n2. Should the metadata count for every output of the prep transaction, or only the first? Right now anyone paid by that transaction can create a covenant that verifies as the same token.\n3. The v1 transaction ID is defined in KIP-24, which would be good to list as a requirement.\n\nI'd love to hear from launchpads on 2, since you're the ones adding fee outputs.",
+    "url": "https://kas-smiths.org/t/kcc-23-convention-for-binding-covenant-metadata-to-a-covenant-id/150/4"
   }
 ]
