@@ -2649,5 +2649,27 @@
     "updated_at": "2026-09-25T13:22:38Z",
     "raw": "Big +1 on this. Some tokens already put their JSON straight in the genesis payload, but the covenant ID never covers that payload, so the metadata isn't really tied to the covenant. KCC-23 fixes exactly that.\n\nI left a review on the PR after checking the test vectors with a separate script (they all match): https://github.com/kaspanet/kccs/pull/26\n\nThe short version is three open questions:\n\n1. JSON libraries disagree on a few edge cases (duplicate keys, huge numbers, very deep nesting). A strict list of what's allowed would keep wallets and explorers in agreement.\n2. Should the metadata count for every output of the prep transaction, or only the first? Right now anyone paid by that transaction can create a covenant that verifies as the same token.\n3. The v1 transaction ID is defined in KIP-24, which would be good to list as a requirement.\n\nI'd love to hear from launchpads on 2, since you're the ones adding fee outputs.",
     "url": "https://kas-smiths.org/t/kcc-23-convention-for-binding-covenant-metadata-to-a-covenant-id/150/4"
+  },
+  {
+    "post_id": 399,
+    "topic_id": 150,
+    "post_number": 6,
+    "username": "Manyfest",
+    "display_name": "Sivan Helfer",
+    "created_at": "2026-09-26T18:39:04Z",
+    "updated_at": "2026-09-26T18:39:04Z",
+    "raw": "The tx.payload would bind to each of the prep tx outpoints. This is a declarative schema only, there is no issue with one payload declarations to be connected to many different covenants.\nWhat is kip24?",
+    "url": "https://kas-smiths.org/t/kcc-23-convention-for-binding-covenant-metadata-to-a-covenant-id/150/6"
+  },
+  {
+    "post_id": 397,
+    "topic_id": 154,
+    "post_number": 1,
+    "username": "Curiousbeing99",
+    "display_name": "Isaac Victor",
+    "created_at": "2026-09-26T08:50:09Z",
+    "updated_at": "2026-09-26T09:12:26Z",
+    "raw": "# Kaspa Wallet Switch To a Covenant Wallet State For Funds Sovereignty:\n\n#### A Covenant wallet that is blonde by a covenant state\n\nWhere a user create wallet or import wallet by a covenant user need to claim their.k name as a unique id to blonde to their wallet and fund's deposit in a covenant address or id to protect funds and enfored by user but the rules are base on the covenant state timeline base on user enforcement. creating a sub covenant vault but it still link to you is possible too.\n\n# 👤 USER\n\nCREATE WALLET  OR  IMPORT WALLET\n▼\nCLAIM\n▼\n🆔 @name.k\n|\nYOUR UNIQUE ID\n▼\n🏦 YOUR MAIN VAULT\n▼\nCOVENANT\n\n#### │ 🔐 Protected │\n\n│ 💰 Your KAS  │\n│ 🆔 @name.k  │\n│ 📋 Your rules  |\n▼\nYou can divide your money\naccording to its purpose\n▼\nSPEND   /   SAVE\n▼\nCovenant Vault Never Expired, Only if you set up expired Time line\n\n1. #### You create your wallet\n\n   You choose a unique identity: @name.k\n   That's the easy name you use to identify your wallet.\n\n2. #### Your wallet gets a main covenant vault\n\n   Think of this like your main secure box. Your KAS goes into this box, and the covenant establishes the rules for how the funds can move.\n\n3. #### You can create smaller-purpose vaults. From your main vault, you can have (spend money you want to use for normal payments) and (save money you want to keep separately for savings).They are still connected to you, you don't need three completely different wallets. They are different purpose vaults belongs to the same @name.k identity. Think of it like a house, your @name.k is your identity inside the house.\n\n   You have:\n   🏠 @name.k\n   │\n   ├── 💳 Spending room\n   └── 🏦 Savings room\n   The covenant is like the rules for each room and you enforce the rules by choosing either to put it on vault that never expired and can be withdraw at anything but it secure by the covenant rules itself or choose other covenant state .\n\n   ```\n    The main Idea \n   ```\n\n   One human-readable identity → one main covenant vault multiple purpose-specific covenant vaults. And the important distinction remains:\n   @name.k = your identity/name\n   Covenant = the rules controlling the vault and enforce by you\n   KAS = the money stored in the vault.\n\n4. ### CONCLUSIONS: Covenant is a very powerful tools I believe in the future kaspa covenant can help institute funds safe and lock and saving on chain with covenant it can help alot. It will fix the funds stolely and hacking issues. Wallet can build covenant for wallet user you open a wallet with a covenant to secure funds on chain even if attack happen. You can't lose your funds if you don't approve the covenant transactions. Remember covenant as a unique id that can't be steal or hack non fake",
+    "url": "https://kas-smiths.org/t/covenant-wallet/154/1"
   }
 ]
