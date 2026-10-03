@@ -2693,5 +2693,16 @@
     "updated_at": "2026-09-28T16:13:16Z",
     "raw": "One of the ideas for quantum security without excessive refactoring is to make covenantial merklization. The solution apparent is to employ an orchestrator functionality within the covenant that will upon spending activation leave the unused leaves on an off-chain while the activated path is committed to the p2sh covenant merkle root. Special thanks to Ori and Michael for taking less than a minute to point this solution out - just wanted to make this more publicly visible as an avenue to pursue and lightly comment on.",
     "url": "https://kas-smiths.org/t/multi-leaf-collection-covenant/155/1"
+  },
+  {
+    "post_id": 402,
+    "topic_id": 156,
+    "post_number": 1,
+    "username": "olafweller",
+    "display_name": "Olaf Weller",
+    "created_at": "2026-10-02T14:43:33Z",
+    "updated_at": "2026-10-02T14:43:33Z",
+    "raw": "I’ve started an open research initiative around a simple question:\n\n**Can native KAS support strong optional privacy without introducing another cryptocurrency or trusted custodian?**\n\nThe idea is to investigate a shielded domain in which native KAS remains locked under protocol rules while private notes/claims can change ownership without publicly exposing internal balances, transfer amounts or the transaction graph.\n\nWe are intentionally not committing to an architecture yet.\n\nThe first major question is:\n\n**What is the minimal architecture for shielded native KAS using current Toccata primitives, and which parts actually require a based-app/vProgs architecture?**\n\nWe currently compare three candidate directions:\n\n1. minimal L1 covenant + ZK pool\n2. sharded/native covenant state\n3. based-app/vProgs shared state\n\nSecurity invariants, threat model, ADR-0001, PoC roadmap and the first research issues are now public.\n\nI’m not a cryptographer or Kaspa core developer. My role is to initiate and organize the effort and bring together people who understand different parts of the problem.\n\nCriticism is very welcome. In particular, I’d like people to identify assumptions that are wrong before we start building substantial cryptographic code.\n\nGitHub: https://github.com/olafweller/kaspa-privacy-initiative",
+    "url": "https://kas-smiths.org/t/kaspa-privacy-initiative-exploring-optional-privacy-for-native-kas/156/1"
   }
 ]
