@@ -704,6 +704,17 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/73"
   },
   {
+    "post_id": 404,
+    "topic_id": 8,
+    "post_number": 74,
+    "username": "Ross",
+    "display_name": null,
+    "created_at": "2026-10-08T03:44:19Z",
+    "updated_at": "2026-10-08T03:45:10Z",
+    "raw": "Question on the default 3/3 slot limit and settlement batching\n\nI may be missing something here, so please correct me if this is off.\n\nFrom what we measured, the slot limits are compiled into the token program, and since the whole program is pushed in every token input's sigscript, the limit chosen at issuance seems to be paid by every later transfer, including a simple 1→1 payment. Our numbers in rusty-kaspa v2.1.0's TxScriptEngine:\n\n| Program | Redeem | 1→1 | 16 orders settled in one tx |\n\n| Reference 3/3 | 3,090 B | 0.00702 KAS | not possible |\n\n| 8/8 | 6,820 B | 0.01448 KAS | not possible |\n\n| 16/16 | 12,788 B | 0.02642 KAS | 0.471 KAS |\n\n| 3/3 + batch leader (below) | 3,090 B | 0.00702 KAS | 0.173 KAS |\n\n3/3 looks right for payments, but for settlement (a matcher filling several orders against one taker, or a holder merging a fragmented balance) it takes several transactions. Raising the default would make every holder pay for capacity they rarely use, so we were hesitant to suggest that.\n\nWhile testing, we noticed something that might already solve this, though I'd appreciate a check on our reading. As we understand §2, a delegator validates only its own owner and leaves the transition to the leader, and the leader's template isn't checked; its presence is bounded by the covenant lineage (KCC-1). If that's correct, a token whose genesis also creates an amount-0 batch-leader UTXO can settle up to 16 holder inputs and outputs in one transaction with the holder program unchanged. In our tests the leader enforces conservation, canonical successor states and the same \\`extension_commitment\\`, and never authorizes a holder (each holder input still signs as a delegator). Leaders can be cloned permissionlessly from the genesis seed.\n\nIf this reading holds, two humble suggestions before Final:\n\n1\\. If a \"leader must be my own template\" check is being considered for the delegator path, could it also accept one standard batch-leader template? Otherwise batching would only be possible with a larger N×N per token.\n\n2\\. It might be worth considering a standard optional batch leader, so wallets and indexers see one holder template and one leader template rather than one program per issuer.\n\nFor issuers who'd like holders to name the leader they accept, we also tried a holder variant with an optional leader commitment (all zeros = disabled). It's 15–19 B larger and passes the 62 conformance vectors in both settings.\n\nEverything is in a public repo and has not been audited, so there may well be mistakes: \\`contracts/kcc20/p2/\\` and \\`crates/kob-tests/tests/kcc20_opt_tests.rs\\`, \\`kcc20_p2_tests.rs\\` in https://github.com/RossKU/kob\n\nHappy to be corrected on any of this, and thanks for all the work on the spec.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/74"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
