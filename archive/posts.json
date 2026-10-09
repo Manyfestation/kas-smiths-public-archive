@@ -1199,6 +1199,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/32"
   },
   {
+    "post_id": 405,
+    "topic_id": 15,
+    "post_number": 33,
+    "username": "Seb287",
+    "display_name": null,
+    "created_at": "2026-10-08T11:25:16Z",
+    "updated_at": "2026-10-08T11:25:16Z",
+    "raw": "Hi @elldeeone, great work. A few pointers from running my own KAS pay-per-request setup on mykai.app (built in isolation, small scale: 6 months live on mainnet, 29 accounts, all started with free credit, 7 on-chain top-ups):\n\n1. **Variable pricing is the missing building block.** LLM/RAG requests don't have a fixed price: over my 190 paid requests the cost ranged from $0.013 to $1.80 (median $0.09, 95th percentile $0.74). A fixed price either overcharges simple questions or undercharges complex ones, so I built my own cost estimate that quotes each call after retrieval and before generation. In your draft, exact needs a fixed price up front, batch v3 excludes metered pricing, and upto is out. A supported way to do variable pricing on Kaspa would matter for AI APIs, which is exactly the agent use case x402 is aimed at. Related, for upstream: x402's discovery (Bazaar) lists an endpoint's offers but can't say that a resource is variably priced. In my own discovery file I declare a pricing model (free, flat, dynamic, tiered) so agents can tell before calling.\n\n2. **Prepaid balances are what got used.** All 190 paid requests were charged against account balances, funded by the free credits and the top-ups (each to that account's own deposit address), mostly through an embedded widget billed to the site owner. Not a single request was paid per-request on L1, even though that path existed. That supports batch-settlement. It also makes x402's `sign-in-with-x` extension (CAIP-122) worth a look: a Kaspa signature type for it, building on the CAIP-10 profile in your CASA PR, would let operators key a balance to the payer's wallet instead of an account.\n\n3. **USD pricing.** Most operators will price in USD and convert to sompi at quote time. Worth stating whether rate source and quote time belong in `extra` or are out of scope.\n\n4. **Small correction:** #27 recommends batch-settlement for metered requests, but the rc.2 batch v3 spec excludes usage-metered pricing.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/33"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
