@@ -715,6 +715,28 @@
     "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/74"
   },
   {
+    "post_id": 408,
+    "topic_id": 8,
+    "post_number": 75,
+    "username": "michaelsutton",
+    "display_name": "Michael Sutton",
+    "created_at": "2026-10-09T12:33:26Z",
+    "updated_at": "2026-10-09T12:38:01Z",
+    "raw": "[quote=\"Ross, post:74, topic:8\"]\nIf a “leader must be my own template” check is being considered for the delegator path\n\n[/quote]\n\nI don't see this as the standard's role. The contract is obligated to make sure delegation is always used with a correct leader.\n\nIn the current reference [code](https://github.com/argent-lang/kcc20-reference/blob/master/contracts/kcc20.ag#L192):\n\n![image|624x169](upload://6mn3SZe1LxBdvCMNu7Gy1LpDEAs.png)\n\nwe indeed verify the specific leader. Likewise you can add additional delegate entries that forward to other actors/templates in the app, but then it's your obligation to verify that all entries of that leader are consistent with the delegation (it also becomes a custom way to transfer the token).\n\nAdding a batch leader to the standard itself requires justification and would also complicate the std and make it a multi-contract app. If anything, I think it should only be an optional addition/extension (ie in a different KCC).\n\nI might be missing details or usage context you already have, so I'm happy to be corrected with more info.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/75"
+  },
+  {
+    "post_id": 410,
+    "topic_id": 8,
+    "post_number": 76,
+    "username": "Ross",
+    "display_name": null,
+    "created_at": "2026-10-10T01:32:46Z",
+    "updated_at": "2026-10-10T01:32:46Z",
+    "raw": "Thanks, that makes sense. What it adds is doing it in one transaction, i.e. atomicity, and I can't think of a standard use case that needs that right now. So I'll withdraw the extension idea. Thanks for taking the time to explain.",
+    "url": "https://kas-smiths.org/t/fungible-token-covenant-specification-kcc20/8/76"
+  },
+  {
     "post_id": 11,
     "topic_id": 10,
     "post_number": 1,
@@ -2726,5 +2748,16 @@
     "updated_at": "2026-10-02T14:43:33Z",
     "raw": "I’ve started an open research initiative around a simple question:\n\n**Can native KAS support strong optional privacy without introducing another cryptocurrency or trusted custodian?**\n\nThe idea is to investigate a shielded domain in which native KAS remains locked under protocol rules while private notes/claims can change ownership without publicly exposing internal balances, transfer amounts or the transaction graph.\n\nWe are intentionally not committing to an architecture yet.\n\nThe first major question is:\n\n**What is the minimal architecture for shielded native KAS using current Toccata primitives, and which parts actually require a based-app/vProgs architecture?**\n\nWe currently compare three candidate directions:\n\n1. minimal L1 covenant + ZK pool\n2. sharded/native covenant state\n3. based-app/vProgs shared state\n\nSecurity invariants, threat model, ADR-0001, PoC roadmap and the first research issues are now public.\n\nI’m not a cryptographer or Kaspa core developer. My role is to initiate and organize the effort and bring together people who understand different parts of the problem.\n\nCriticism is very welcome. In particular, I’d like people to identify assumptions that are wrong before we start building substantial cryptographic code.\n\nGitHub: https://github.com/olafweller/kaspa-privacy-initiative",
     "url": "https://kas-smiths.org/t/kaspa-privacy-initiative-exploring-optional-privacy-for-native-kas/156/1"
+  },
+  {
+    "post_id": 409,
+    "topic_id": 160,
+    "post_number": 1,
+    "username": "weirdtualguy",
+    "display_name": "Weirdtual Guy 𐤊",
+    "created_at": "2026-10-09T20:42:28Z",
+    "updated_at": "2026-10-09T20:42:28Z",
+    "raw": "Hey everyone! I wanted to ask the community if the scenarios below are actually problems, or if Kaspa’s architecture already solves them in ways I’m just not seeing yet.\n\n1. Imagine a Kaspa DEX where all the liquidity sits in one big covenant UTXO (the pool). If 20 people try to swap tokens at the exact same time, all 20 transactions are trying to \"spend\" that exact same pool UTXO to update the reserves. Since a UTXO can only be spent once, does GHOSTDAG just pick one winner and reject the other 19 as double-spends? If so, does that mean users just experience a ton of failed transactions and have to keep hitting \"retry\" until they get lucky? Or is there a way for the DAG to sequence these without them colliding at the UTXO level?\n\n\n2. On slower chains, updating a contract's global state every block is fine. But on Kaspa, we are producing 10 blocks every single second. If my covenant needs to update an interest rate, a counter, or a fee tier every single block, it means I’m destroying the old state UTXO and creating a new one 10 times a second. Does KIP-0009 (Storage Mass) heavily punish this kind of constant \"state mutation\"? Or is a simple 1-input -> 1-output state update actually super cheap and not a big deal for the network?\n\n3.  MEV Bots on covenant-based AMMs. With blocks coming in every 100ms, doesn't that just give sophisticated bots a super tight, high-frequency playground to front-run or sandwich retail trades in the mempool before the next block even confirms? Do fast blocks eliminate MEV or they just compress it into a high-frequency playground?",
+    "url": "https://kas-smiths.org/t/high-bps-covenant-state-pressure-utxo-contention-storage-mass-and-settlement-frequency-seeking-corrections/160/1"
   }
 ]
