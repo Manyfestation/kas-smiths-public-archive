@@ -1232,6 +1232,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/33"
   },
   {
+    "post_id": 414,
+    "topic_id": 15,
+    "post_number": 34,
+    "username": "Ross",
+    "display_name": null,
+    "created_at": "2026-10-17T04:35:07Z",
+    "updated_at": "2026-10-17T04:35:07Z",
+    "raw": "Hi, @elldeeone thanks a lot for the 1.0.0 release!\n\nI might be missing something, so please correct me if this is intended. In protocol/vectors/exact/consensus-profiles.json (v1.0.0, e5f5b0e), the \\`standardNative\\` case has fee = 200000 sompi with computeMass = 2036.\n\nWhen we tried it against a rusty-kaspa v2.1.0 node, the relay floor forthis shape seemed to be 100 sompi/gram × max = 203600 sompi, so the tx looked consensus-valid but wouldn't be relayed.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/34"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
