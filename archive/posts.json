@@ -1243,6 +1243,28 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/34"
   },
   {
+    "post_id": 415,
+    "topic_id": 15,
+    "post_number": 35,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-10-19T04:18:37Z",
+    "updated_at": "2026-10-19T04:18:37Z",
+    "raw": "Huge thanks Ross, you were right. My stupid mistake here. I checked consensus validity but missed the default relay policy, and my funded tests used higher fees so they didn’t catch it either. The additive vector had the same issue.\n\nFixed in [v1.0.1](https://github.com/elldeeone/kaspa-x402/releases/tag/v1.0.1). I also went back through the testing setup, added the missing relay-policy checks to CI, including a signed low-fee rejection case, and reran the funded TN10 tests against the corrected release.\n\nAppreciate you catching this. I’ve credited you in the release notes.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/35"
+  },
+  {
+    "post_id": 416,
+    "topic_id": 15,
+    "post_number": 36,
+    "username": "elldeeone",
+    "display_name": "Luke Dunshea",
+    "created_at": "2026-10-19T04:48:01Z",
+    "updated_at": "2026-10-19T04:48:01Z",
+    "raw": "Thanks Seb, sorry for the slow reply. Appreciate you sharing the numbers from your setup.\n\n1. **Variable pricing:** You can already set a different amount per request through the SDK. The payer still has to approve it before the paid work starts, and that request’s charge stays fixed. So your upfront estimate approach fits that model, but I haven’t added a way to charge for actual usage after generation. I also agree with you that agents should be able to tell whether an endpoint has a fixed price or needs a quote. I haven’t added pricing-model discovery yet.\n\n2. **Prepaid balances:** Your numbers reinforce why I kept batch, especially that nobody used your per-request L1 option. I use covenant escrow and payer-signed vouchers to avoid a transaction for every request. I like your sign-in-with-x suggestion for tying prepaid balances to wallets.\n\n3. **USD pricing:** I’d leave conversion to the application and put the resulting sompi amount in the payment offer. I haven’t defined fields for rate source or quote time. I could see those going in `extra` as informational metadata, but I’d need to define their format and meaning first. I should make that clearer in the docs.\n\n4. Yep, you’re right. I shouldn’t have called that metered. I’ll tidy up the wording in the repo when I get a moment.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/36"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
