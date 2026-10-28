@@ -2827,6 +2827,17 @@
     "url": "https://kas-smiths.org/t/a-kas-backed-kcc-20-token/164/1"
   },
   {
+    "post_id": 421,
+    "topic_id": 164,
+    "post_number": 2,
+    "username": "0x_arthurZ",
+    "display_name": "Arthur Zhang",
+    "created_at": "2026-10-28T02:37:28Z",
+    "updated_at": "2026-10-28T02:37:28Z",
+    "raw": "Really like this approach, especially keeping the KAS backing within each token UTXO rather than relying on a shared vault.\n\nOne thing I'd suggest is testing an actual KAS20/KCC-20 atomic swap, particularly around fee handling and potential UTXO conflicts with borrowed receive.\n\nI reckon that'd be a good way to demonstrate how well KCC-20 works for composable DeFi before settling on a canonical deployment.",
+    "url": "https://kas-smiths.org/t/a-kas-backed-kcc-20-token/164/2"
+  },
+  {
     "post_id": 420,
     "topic_id": 165,
     "post_number": 1,
