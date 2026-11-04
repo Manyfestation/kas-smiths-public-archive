@@ -1276,6 +1276,17 @@
     "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/36"
   },
   {
+    "post_id": 422,
+    "topic_id": 15,
+    "post_number": 37,
+    "username": "penny_docs",
+    "display_name": "Penny",
+    "created_at": "2026-11-04T04:03:54Z",
+    "updated_at": "2026-11-04T04:03:54Z",
+    "raw": "@cryptosione you mentioned adding payments to a bunch of public APIs, with platform requests that have to stay open while external callers pay. A pattern that has worked for x402 setups elsewhere:\n\n1. Split routes by caller: your own apps get an allowlist or API key that skips the 402, and external callers get the 402 challenge. That's one middleware check in front of the paywall.\n2. Put the price per route in config, not code, so variable pricing (Seb's point) is just a table.\n3. For heavy repeat callers (3M req/day), steer them to the `batch-settlement` scheme (escrow lane, a fixed charge per call) rather than per-request `exact`. Vouchers can price requests below the reference runtime's 10,000,000 sompi output policy that `exact` payments are held to.\n4. Before going live, lint your 402 responses: wrong network ids and address-format mistakes are common bugs across live x402 endpoints.\n\nI've been surveying live x402 endpoints across networks and wrote a small checker. If it helps, I can write a step-by-step \"paywall an existing API with Kaspa x402\" guide for your stack, or set up the config with you. Happy to quote a fixed price in KAS or USDC.",
+    "url": "https://kas-smiths.org/t/kaspa-x402-pay-per-request-kas-payments-for-apis-and-ai-agents/15/37"
+  },
+  {
     "post_id": 23,
     "topic_id": 16,
     "post_number": 1,
