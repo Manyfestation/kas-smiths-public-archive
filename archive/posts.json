@@ -2858,5 +2858,16 @@
     "updated_at": "2026-10-26T01:01:51Z",
     "raw": "KCC-1, KCC-2 and KCC-20 are Final. Thank you to everyone who got them there.\n\nWhat is still missing is a convention for unique assets: one unit, one owner, a collection, metadata. The pieces exist. Identity is the covenant ID (KCC-1). An owner can be a key or another covenant (KCC-2). Metadata binds to the covenant ID (KCC-23). The KCC721 draft from August showed a working shape on mainnet. Nobody has carried it into the KCC process yet.\n\nI am building B1TCOIN S1LVER, a multi-year replay of Bitcoin's history on Kaspa. It's built to bring people to Kaspa. It launches January 3rd 2027 with a fixed-supply of B1TCOINs (KCC-20 tokens) and numbered mining units that carry hashpower and artwork (the NFTs acting as virtual miners of B1Ts). Those units need exactly this convention, and we will swap them into whatever the ecosystem converges on.\n\nWe would like to help push it (an NFT standard, the way KCC20 was finalised last week). We can contribute a short draft reusing KCC-1/2/23 by reference, a reference contract in Silverscript, conformance vectors, and a live implementation on testnet-10 and then mainnet.\n\nWho wants to co-author? The KCC721 authors first of all, and anyone who has been building wallets or indexers for covenant assets. If the editors would rather see a PR at the Idea stage before a thread, say so and we open one.",
     "url": "https://kas-smiths.org/t/kaspa-nfts-a-unique-asset-kcc-on-top-of-kcc-1-2-23-offering-a-draft-a-reference-contract-and-a-live-implementation/165/1"
+  },
+  {
+    "post_id": 424,
+    "topic_id": 165,
+    "post_number": 2,
+    "username": "16bit.kas",
+    "display_name": null,
+    "created_at": "2026-11-13T20:51:10Z",
+    "updated_at": "2026-11-13T20:51:10Z",
+    "raw": "I would really love to see some progress on KCC721 standard.  What is really holding it back?  Seems like it would be just as important as KCC20.\n\nWhat can the community do to help?",
+    "url": "https://kas-smiths.org/t/kaspa-nfts-a-unique-asset-kcc-on-top-of-kcc-1-2-23-offering-a-draft-a-reference-contract-and-a-live-implementation/165/2"
   }
 ]
