@@ -537,5 +537,27 @@
     "last_posted_at": "2026-11-13T20:51:10Z",
     "tags": null,
     "url": "https://kas-smiths.org/t/kaspa-nfts-a-unique-asset-kcc-on-top-of-kcc-1-2-23-offering-a-draft-a-reference-contract-and-a-live-implementation/165"
+  },
+  {
+    "topic_id": 167,
+    "title": "Swaps on Kaspa L1 today: 8 ways to trade KAS and covenant tokens, with light versions running on testnet-10 (a first draft, feedback wanted)",
+    "slug": "swaps-on-kaspa-l1-today-8-ways-to-trade-kas-and-covenant-tokens-with-light-versions-running-on-testnet-10-a-first-draft-feedback-wanted",
+    "category_id": 6,
+    "category_name": "Product Use Cases",
+    "created_at": "2026-11-15T12:20:31Z",
+    "last_posted_at": "2026-11-15T12:22:11Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/swaps-on-kaspa-l1-today-8-ways-to-trade-kas-and-covenant-tokens-with-light-versions-running-on-testnet-10-a-first-draft-feedback-wanted/167"
+  },
+  {
+    "topic_id": 168,
+    "title": "Vprogs and covenant tokens",
+    "slug": "vprogs-and-covenant-tokens",
+    "category_id": 4,
+    "category_name": "General",
+    "created_at": "2026-11-15T15:24:02Z",
+    "last_posted_at": "2026-11-15T15:24:02Z",
+    "tags": null,
+    "url": "https://kas-smiths.org/t/vprogs-and-covenant-tokens/168"
   }
 ]
